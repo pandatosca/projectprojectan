@@ -148,6 +148,46 @@
         .modal-card { background: white; width: 85%; max-width: 340px; border-radius: 24px; padding: 1.5rem; }
         .debug-text { font-size: 0.7rem; color: red; margin-top: 0.5rem; text-align: center; }
         .progress-text { font-size: 0.75rem; font-weight: 600; color: var(--text-light); min-width: 2.5rem; text-align: right; }
+    
+        /* Location card styles */
+        .loc-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 0.9rem 1rem;
+            margin-bottom: 0.6rem;
+        }
+        .loc-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 0.3rem;
+        }
+        .loc-card-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text);
+            line-height: 1.3;
+            flex: 1;
+        }
+        .loc-card-sub {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-bottom: 0.6rem;
+            line-height: 1.4;
+        }
+        .loc-card-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.5rem;
+        }
+        .loc-card-actions .btn-tiny {
+            padding: 0.5rem 0.3rem;
+            font-size: 0.72rem;
+            justify-content: center;
+            min-height: 36px;
+        }
     </style>
 </head>
 <body>
@@ -228,11 +268,15 @@
     <div class="page" id="dashboardPage">
         <div class="app-header"><div><div class="brand-text">Admin Panel</div><div class="brand-sub">Monitoring & Setting</div></div><div class="user-role" onclick="logout()">Logout</div></div>
         <div class="main-container">
-            <div class="card"><div class="card-title">📊 Statistik Hari Ini</div><div class="stats-grid" id="adminStatsGrid"><div class="stat-card"><div class="stat-number" id="statTotalScan">0</div><div class="stat-label">Total Scan</div></div><div class="stat-card"><div class="stat-number" id="statActiveGuard">0</div><div class="stat-label">Satpam Aktif</div></div><div class="stat-card"><div class="stat-number" id="statValidScan">0</div><div class="stat-label">Scan Valid</div></div><div class="stat-card"><div class="stat-number" id="statOutZone">0</div><div class="stat-label">Luar Zona</div></div></div></div>
-            <div class="card"><div class="card-title">📅 Statistik Bulan Ini</div><div class="stats-grid" id="monthStatsGrid"><div class="stat-card"><div class="stat-number" id="monthTotalScan">0</div><div class="stat-label">Total Scan</div></div><div class="stat-card"><div class="stat-number" id="monthActiveDays">0</div><div class="stat-label">Hari Aktif</div></div><div class="stat-card"><div class="stat-number" id="monthAvgScan">0</div><div class="stat-label">Rata-rata/hari</div></div><div class="stat-card"><div class="stat-number" id="monthTopGuard">-</div><div class="stat-label">Top Satpam</div></div></div></div>
+            <!-- Statistik Gabungan -->
+            <div class="card"><div class="card-title">📊 Statistik</div>
+            <div style="font-size:0.75rem;font-weight:600;color:var(--text-light);margin-bottom:0.5rem;">Hari Ini</div>
+            <div class="stats-grid" id="adminStatsGrid"><div class="stat-card"><div class="stat-number" id="statTotalScan">0</div><div class="stat-label">Total Scan</div></div><div class="stat-card"><div class="stat-number" id="statActiveGuard">0</div><div class="stat-label">Satpam Aktif</div></div><div class="stat-card"><div class="stat-number" id="statValidScan">0</div><div class="stat-label">Scan Valid</div></div><div class="stat-card"><div class="stat-number" id="statOutZone">0</div><div class="stat-label">Luar Zona</div></div></div>
+            <div style="font-size:0.75rem;font-weight:600;color:var(--text-light);margin:0.75rem 0 0.5rem;">Bulan Ini</div>
+            <div class="stats-grid" id="monthStatsGrid"><div class="stat-card"><div class="stat-number" id="monthTotalScan">0</div><div class="stat-label">Total Scan</div></div><div class="stat-card"><div class="stat-number" id="monthActiveDays">0</div><div class="stat-label">Hari Aktif</div></div><div class="stat-card"><div class="stat-number" id="monthAvgScan">0</div><div class="stat-label">Rata-rata/hari</div></div><div class="stat-card"><div class="stat-number" id="monthTopGuard">-</div><div class="stat-label">Top Satpam</div></div></div></div>
             <div class="card"><div class="card-title">🕒 Aktivitas Terbaru</div><div id="adminRecentActivities"></div></div>
             <div class="card"><div class="card-title">📈 Progress per Satpam</div><div id="adminProgressList"></div></div>
-            <div class="card"><div class="card-title">📍 Daftar Titik Lokasi</div><div class="card-subtitle">Tambah, edit, atau hapus titik patroli. Status lokasi hanya ditampilkan sekali dalam daftar.</div>
+            <div class="card"><div class="card-title">📍 Kelola Titik Patroli & QR</div><div class="card-subtitle">Tambah titik baru. Edit, hapus, atau download QR dari daftar di bawah.</div>
             <div class="stats-grid">
                 <div class="input-group" style="margin-bottom:0;"><label class="input-label">Nama Tampilan</label><input type="text" id="newLocName" class="input-field" placeholder="Gate 1 Utama"></div>
                 <div class="input-group" style="margin-bottom:0;"><label class="input-label">Kode QR</label><input type="text" id="newLocId" class="input-field" placeholder="gate1utama (kosongkan = auto)"></div>
@@ -248,7 +292,7 @@
             <hr style="margin: 1rem 0;">
             <div id="adminLocationList"></div></div>
             <div class="card"><div class="card-title">👮 Manajemen Satpam</div><div class="input-group"><label class="input-label">Nama Baru</label><input type="text" id="newGuardName" class="input-field"></div><div class="input-group"><label class="input-label">PIN (4 digit)</label><input type="text" id="newGuardPin" class="input-field" maxlength="4" inputmode="numeric"></div><button class="btn btn-primary btn-tiny" onclick="addGuard()">Tambah Satpam</button><hr style="margin: 1rem 0;"><div id="adminGuardList"></div></div>
-            <div class="card"><div class="card-title">📷 Generate Lokasi QR</div><div class="card-subtitle">Nama lokasi (tanpa spasi) → QR berisi <strong>gdr:namalokasi</strong>. Paste link GMap → Lat/Lng terisi otomatis.</div><div class="input-group"><label class="input-label">Nama Lokasi</label><input type="text" id="qrLocName" class="input-field" placeholder="edelweiss"></div><div class="input-group"><label class="input-label">Link GMap</label><input type="url" id="qrLocLink" class="input-field" placeholder="https://maps.app.goo.gl/... atau link panjang Google Maps"><div id="qrLocParseStatus" class="card-subtitle" style="margin-top:0.4rem;margin-bottom:0;"></div></div><div class="stats-grid"><div class="input-group" style="margin-bottom:0;"><label class="input-label">Latitude</label><input type="number" step="any" id="qrLocLat" class="input-field" placeholder="-6.4012"></div><div class="input-group" style="margin-bottom:0;"><label class="input-label">Longitude</label><input type="number" step="any" id="qrLocLng" class="input-field" placeholder="106.7885"></div></div><div class="input-group"><label class="input-label">Radius (meter)</label><input type="number" id="qrLocRadius" class="input-field" value="50" min="10" max="500"></div><button class="btn btn-primary" onclick="generateAndDownloadQR()">Generate & Download QR</button><div id="qrCodeTemp" style="display:none;"></div><canvas id="qrCanvas" style="display:none;"></canvas></div>
+            
             <div class="card"><div class="card-title">🔐 Ganti PIN Admin</div><div class="input-group"><label class="input-label">PIN Baru (4 Digit)</label><input type="password" id="newAdminPin" class="input-field" maxlength="4" inputmode="numeric"></div><button class="btn btn-secondary btn-tiny" onclick="changeAdminPin()">Update PIN</button></div>
         </div>
         <div class="app-footer"><div>[Trial] App by GDR127</div><div>Sistem Patroli Satpam GDR</div></div>
@@ -796,55 +840,77 @@
     function renderAdminLocations() {
         const container = document.getElementById('adminLocationList');
         if (!container) return;
-        const todayKey = dateKeyLocal();
-        const allScansToday = JSON.parse(localStorage.getItem(`gdr_all_scans_${todayKey}`)) || [];
-        const scannedToday = new Set(allScansToday.map(s => s.locId));
         if (!LOCATIONS.length) {
             container.innerHTML = '<div class="card-subtitle">Belum ada titik patroli</div>';
             return;
         }
-        const unchecked = LOCATIONS.filter(l => !scannedToday.has(l.id));
-        const checked = LOCATIONS.filter(l => scannedToday.has(l.id));
-        
-        let html = '';
-        
-        if (unchecked.length > 0) {
-            html += '<div style="margin-bottom: 1rem;"><div style="font-weight: 600; color: var(--warning); margin-bottom: 0.5rem;">⚠ Belum Dicek (' + unchecked.length + ')</div>';
-            html += unchecked.map(l => {
-                const hasCoords = l.lat && l.lng && !(l.lat === 0 && l.lng === 0);
-                return `<div class="list-item">
-                    <div>📍</div>
-                    <div class="list-info">
-                        <div class="list-title">${escapeHtml(l.name)}</div>
-                        <div class="list-sub">${escapeHtml(formatLocSubtitle(l))}${hasCoords ? '' : ' • ⚠ koordinat belum diisi'}</div>
-                    </div>
-                    <span class="badge badge-warning">Belum dicek</span>
-                    <button class="btn btn-secondary btn-tiny" onclick="openEditLocationModal(${JSON.stringify(l.id)})">Edit</button>
-                    <button class="btn btn-danger btn-tiny" onclick="deleteLocation(${JSON.stringify(l.id)})">Hapus</button>
-                </div>`;
-            }).join('');
-            html += '</div>';
+        container.innerHTML = LOCATIONS.map(l => {
+            const hasCoords = l.lat && l.lng && !(l.lat === 0 && l.lng === 0);
+            const subText = escapeHtml(formatLocSubtitle(l)) + (hasCoords ? '' : ' • ⚠ koordinat belum diisi');
+            return `<div class="loc-card">
+                <div class="loc-card-header">
+                    <div class="loc-card-name">📍 ${escapeHtml(l.name)}</div>
+                </div>
+                <div class="loc-card-sub">${subText}</div>
+                <div class="loc-card-actions">
+                    <button class="btn btn-secondary btn-tiny" onclick="openEditLocationModalById('${escapeHtml(l.id)}')">✏️ Edit</button>
+                    <button class="btn btn-danger btn-tiny" onclick="deleteLocationById('${escapeHtml(l.id)}')">🗑 Hapus</button>
+                    <button class="btn btn-primary btn-tiny" onclick="downloadQRForLocation('${escapeHtml(l.id)}')">📥 QR</button>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function openEditLocationModalById(id) {
+        openEditLocationModal(id);
+    }
+    function deleteLocationById(id) {
+        deleteLocation(id);
+    }
+    function downloadQRForLocation(locId) {
+        const loc = LOCATIONS.find(l => l.id === locId);
+        if (!loc) return showToast('Lokasi tidak ditemukan');
+        let qrText = 'gdr:' + loc.id;
+        let tempDiv = document.getElementById('qrCodeTemp');
+        if (!tempDiv) {
+            tempDiv = document.createElement('div');
+            tempDiv.id = 'qrCodeTemp';
+            tempDiv.style.display = 'none';
+            document.body.appendChild(tempDiv);
         }
-        
-        if (checked.length > 0) {
-            html += '<div><div style="font-weight: 600; color: var(--success); margin-bottom: 0.5rem;">✓ Sudah Dicek (' + checked.length + ')</div>';
-            html += checked.map(l => {
-                const hasCoords = l.lat && l.lng && !(l.lat === 0 && l.lng === 0);
-                return `<div class="list-item">
-                    <div>📍</div>
-                    <div class="list-info">
-                        <div class="list-title">${escapeHtml(l.name)}</div>
-                        <div class="list-sub">${escapeHtml(formatLocSubtitle(l))}${hasCoords ? '' : ' • ⚠ koordinat belum diisi'}</div>
-                    </div>
-                    <span class="badge badge-success">Sudah dicek</span>
-                    <button class="btn btn-secondary btn-tiny" onclick="openEditLocationModal(${JSON.stringify(l.id)})">Edit</button>
-                    <button class="btn btn-danger btn-tiny" onclick="deleteLocation(${JSON.stringify(l.id)})">Hapus</button>
-                </div>`;
-            }).join('');
-            html += '</div>';
-        }
-        
-        container.innerHTML = html;
+        tempDiv.innerHTML = '';
+        new QRCode(tempDiv, { text: qrText, width: 800, height: 800, colorDark: "#000", colorLight: "#fff", correctLevel: QRCode.CorrectLevel.H });
+        setTimeout(() => {
+            let qrImg = tempDiv.querySelector('img') || tempDiv.querySelector('canvas');
+            if (!qrImg) return showToast('Gagal generate QR');
+            let canvas = document.getElementById('qrCanvas');
+            if (!canvas) {
+                canvas = document.createElement('canvas');
+                canvas.id = 'qrCanvas';
+                canvas.style.display = 'none';
+                document.body.appendChild(canvas);
+            }
+            canvas.width = 1080; canvas.height = 1080;
+            let ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#FFF';
+            ctx.fillRect(0, 0, 1080, 1080);
+            const qrSize = 760;
+            const qrX = (1080 - qrSize) / 2;
+            const qrY = 140;
+            ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+            const label = qrText;
+            const fontSize = label.length > 18 ? 42 : label.length > 14 ? 48 : 54;
+            ctx.fillStyle = '#111827';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = `bold ${fontSize}px Inter, sans-serif`;
+            ctx.fillText(label, 540, qrY + qrSize + 72);
+            let a = document.createElement('a');
+            a.download = `QR_${loc.id}.jpg`;
+            a.href = canvas.toDataURL('image/jpeg', 1.0);
+            a.click();
+            showToast(`QR "${qrText}" berhasil di-download`);
+        }, 300);
     }
 
     function readLocationForm(prefix) {
@@ -998,15 +1064,25 @@
     function addGuard(){
         let name = document.getElementById('newGuardName').value.trim();
         let pin = document.getElementById('newGuardPin').value.trim();
-        if(!name || pin.length!==4) return showToast('Nama & PIN 4 digit wajib');
-        
-        // Simpan pin murni sebagai string agar match dengan fungsi login verifyPin()
-        GUARDS.push({ id: Date.now(), name: name, pin: pin, role:'guard', avatar: '' });
+        if(!name || pin.length!==4 || !/^\d{4}$/.test(pin)) return showToast('Nama & PIN 4 digit angka wajib');
+
+        // Validasi PIN unik
+        if(GUARDS.some(g => g.pin === pin)) return showToast('PIN sudah dipakai satpam lain');
+
+        // ID unik: timestamp + random untuk hindari bentrok
+        let newId = Date.now() + Math.floor(Math.random() * 1000);
+        while(GUARDS.some(g => g.id === newId)) {
+            newId = Date.now() + Math.floor(Math.random() * 1000);
+        }
+
+        // Simpan pin sebagai string, pastikan tidak ada konversi number
+        let newGuard = { id: newId, name: name, pin: String(pin), role:'guard', avatar: '' };
+        GUARDS.push(newGuard);
         localStorage.setItem('gdr_guards', JSON.stringify(GUARDS));
-        
+
         document.getElementById('newGuardName').value='';
         document.getElementById('newGuardPin').value='';
-        
+
         renderAdminGuards(); 
         refreshAdminDashboard(); 
         showToast('Satpam ditambahkan');
@@ -1102,15 +1178,7 @@
     }
     
     document.getElementById('loginPin').addEventListener('keyup',(e)=>{ if(e.target.value.length===4) verifyPin(); });
-    const qrLocLinkEl = document.getElementById('qrLocLink');
-    qrLocLinkEl.addEventListener('input', () => {
-        clearTimeout(mapLinkResolveTimer);
-        mapLinkResolveTimer = setTimeout(autoFillCoordsFromMapLink, 700);
-    });
-    qrLocLinkEl.addEventListener('paste', () => {
-        clearTimeout(mapLinkResolveTimer);
-        mapLinkResolveTimer = setTimeout(autoFillCoordsFromMapLink, 200);
-    });
+
     window.openEditModal = openEditModal; window.closeEditModal = closeEditModal; window.saveEditGuard = saveEditGuard; window.deleteGuard = deleteGuard;
     ['new', 'edit'].forEach(prefix => {
         const linkEl = document.getElementById(prefix + 'LocLink');
@@ -1125,6 +1193,9 @@
     window.addLocation = addLocation;
     window.refreshGPS = refreshGPS;
     window.requestLocationPermission = requestLocationPermission;
+    window.openEditLocationModalById = openEditLocationModalById;
+    window.deleteLocationById = deleteLocationById;
+    window.downloadQRForLocation = downloadQRForLocation;
 </script>
 </body>
 </html>
