@@ -232,7 +232,7 @@
             <div class="card"><div class="card-title">📅 Statistik Bulan Ini</div><div class="stats-grid" id="monthStatsGrid"><div class="stat-card"><div class="stat-number" id="monthTotalScan">0</div><div class="stat-label">Total Scan</div></div><div class="stat-card"><div class="stat-number" id="monthActiveDays">0</div><div class="stat-label">Hari Aktif</div></div><div class="stat-card"><div class="stat-number" id="monthAvgScan">0</div><div class="stat-label">Rata-rata/hari</div></div><div class="stat-card"><div class="stat-number" id="monthTopGuard">-</div><div class="stat-label">Top Satpam</div></div></div></div>
             <div class="card"><div class="card-title">🕒 Aktivitas Terbaru</div><div id="adminRecentActivities"></div></div>
             <div class="card"><div class="card-title">📈 Progress per Satpam</div><div id="adminProgressList"></div></div>
-            <div class="card"><div class="card-title">📍 Kelola Titik Patroli</div><div class="card-subtitle">Tambah, edit, atau hapus titik patroli beserta status pengecekannya.</div>
+            <div class="card"><div class="card-title">📍 Daftar Titik Lokasi</div><div class="card-subtitle">Tambah, edit, atau hapus titik patroli. Status lokasi hanya ditampilkan sekali dalam daftar.</div>
             <div class="stats-grid">
                 <div class="input-group" style="margin-bottom:0;"><label class="input-label">Nama Tampilan</label><input type="text" id="newLocName" class="input-field" placeholder="Gate 1 Utama"></div>
                 <div class="input-group" style="margin-bottom:0;"><label class="input-label">Kode QR</label><input type="text" id="newLocId" class="input-field" placeholder="gate1utama (kosongkan = auto)"></div>
@@ -262,15 +262,25 @@
 
 <script>
     // ==================== DATA GLOBAL ====================
-    let GUARDS = JSON.parse(localStorage.getItem('gdr_guards')) || [
-        { id: 1, name: 'Rudy', pin: '1111', role: 'guard', avatar: '' },
-        { id: 2, name: 'Puji', pin: '2222', role: 'guard', avatar: '' },
-        { id: 3, name: 'Idrus', pin: '3333', role: 'guard', avatar: '' },
-        { id: 4, name: 'Nasim', pin: '4444', role: 'guard', avatar: '' },
-        { id: 5, name: 'Wahyu', pin: '5555', role: 'guard', avatar: '' },
-        { id: 6, name: 'Haris', pin: '6666', role: 'guard', avatar: '' },
-        { id: 0, name: 'Admin', pin: '0000', role: 'admin', avatar: '' }
-    ];
+    let GUARDS = (() => {
+        const defaultGuards = [
+            { id: 1, name: 'Rudy', pin: '1111', role: 'guard', avatar: '' },
+            { id: 2, name: 'Puji', pin: '2222', role: 'guard', avatar: '' },
+            { id: 3, name: 'Idrus', pin: '3333', role: 'guard', avatar: '' },
+            { id: 4, name: 'Nasim', pin: '4444', role: 'guard', avatar: '' },
+            { id: 5, name: 'Wahyu', pin: '5555', role: 'guard', avatar: '' },
+            { id: 6, name: 'Haris', pin: '6666', role: 'guard', avatar: '' },
+            { id: 0, name: 'Admin', pin: '0000', role: 'admin', avatar: '' }
+        ];
+        try {
+            const stored = localStorage.getItem('gdr_guards');
+            const parsed = stored ? JSON.parse(stored) : null;
+            if (Array.isArray(parsed) && parsed.some(g => g.role === 'admin')) {
+                return parsed;
+            }
+        } catch (e) {}
+        return defaultGuards;
+    })();
 
     let LOCATIONS = JSON.parse(localStorage.getItem('gdr_locations')) || [
         { id: 'gate1utama', name: 'Gate 1 Utama', address: 'JL. Palm', lat: -6.4012, lng: 106.7885, radius: 50 },
@@ -796,13 +806,15 @@
         container.innerHTML = LOCATIONS.map(l => {
             const scanned = scannedToday.has(l.id);
             const hasCoords = l.lat && l.lng && !(l.lat === 0 && l.lng === 0);
+            const statusText = scanned ? 'Sudah dicek' : 'Belum dicek';
+            const statusClass = scanned ? 'badge-success' : 'badge-warning';
             return `<div class="list-item">
                 <div>📍</div>
                 <div class="list-info">
                     <div class="list-title">${escapeHtml(l.name)}</div>
                     <div class="list-sub">${escapeHtml(formatLocSubtitle(l))}${hasCoords ? '' : ' • ⚠ koordinat belum diisi'}</div>
                 </div>
-                <span class="badge ${scanned ? 'badge-success' : 'badge-warning'}">${scanned ? 'Sudah' : 'Belum'}</span>
+                <span class="badge ${statusClass}">${statusText}</span>
                 <button class="btn btn-secondary btn-tiny" onclick="openEditLocationModal(${JSON.stringify(l.id)})">Edit</button>
                 <button class="btn btn-danger btn-tiny" onclick="deleteLocation(${JSON.stringify(l.id)})">Hapus</button>
             </div>`;
