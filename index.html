@@ -247,7 +247,7 @@
             <button class="btn btn-primary btn-tiny" onclick="addLocation()">+ Tambah Titik</button>
             <hr style="margin: 1rem 0;">
             <div id="adminLocationList"></div></div>
-            <div class="card"><div class="card-title">👮 Manajemen Satpam</div><div class="input-group"><label class="input-label">Nama Baru</label><input type="text" id="newGuardName" class="input-field"></div><div class="input-group"><label class="input-label">PIN (4 digit)</label><input type="password" id="newGuardPin" class="input-field" maxlength="4" inputmode="numeric"></div><button class="btn btn-primary btn-tiny" onclick="addGuard()">Tambah Satpam</button><hr style="margin: 1rem 0;"><div id="adminGuardList"></div></div>
+            <div class="card"><div class="card-title">👮 Manajemen Satpam</div><div class="input-group"><label class="input-label">Nama Baru</label><input type="text" id="newGuardName" class="input-field"></div><div class="input-group"><label class="input-label">PIN (4 digit)</label><input type="text" id="newGuardPin" class="input-field" maxlength="4" inputmode="numeric"></div><button class="btn btn-primary btn-tiny" onclick="addGuard()">Tambah Satpam</button><hr style="margin: 1rem 0;"><div id="adminGuardList"></div></div>
             <div class="card"><div class="card-title">📷 Generate Lokasi QR</div><div class="card-subtitle">Nama lokasi (tanpa spasi) → QR berisi <strong>gdr:namalokasi</strong>. Paste link GMap → Lat/Lng terisi otomatis.</div><div class="input-group"><label class="input-label">Nama Lokasi</label><input type="text" id="qrLocName" class="input-field" placeholder="edelweiss"></div><div class="input-group"><label class="input-label">Link GMap</label><input type="url" id="qrLocLink" class="input-field" placeholder="https://maps.app.goo.gl/... atau link panjang Google Maps"><div id="qrLocParseStatus" class="card-subtitle" style="margin-top:0.4rem;margin-bottom:0;"></div></div><div class="stats-grid"><div class="input-group" style="margin-bottom:0;"><label class="input-label">Latitude</label><input type="number" step="any" id="qrLocLat" class="input-field" placeholder="-6.4012"></div><div class="input-group" style="margin-bottom:0;"><label class="input-label">Longitude</label><input type="number" step="any" id="qrLocLng" class="input-field" placeholder="106.7885"></div></div><div class="input-group"><label class="input-label">Radius (meter)</label><input type="number" id="qrLocRadius" class="input-field" value="50" min="10" max="500"></div><button class="btn btn-primary" onclick="generateAndDownloadQR()">Generate & Download QR</button><div id="qrCodeTemp" style="display:none;"></div><canvas id="qrCanvas" style="display:none;"></canvas></div>
             <div class="card"><div class="card-title">🔐 Ganti PIN Admin</div><div class="input-group"><label class="input-label">PIN Baru (4 Digit)</label><input type="password" id="newAdminPin" class="input-field" maxlength="4" inputmode="numeric"></div><button class="btn btn-secondary btn-tiny" onclick="changeAdminPin()">Update PIN</button></div>
         </div>
@@ -803,22 +803,48 @@
             container.innerHTML = '<div class="card-subtitle">Belum ada titik patroli</div>';
             return;
         }
-        container.innerHTML = LOCATIONS.map(l => {
-            const scanned = scannedToday.has(l.id);
-            const hasCoords = l.lat && l.lng && !(l.lat === 0 && l.lng === 0);
-            const statusText = scanned ? 'Sudah dicek' : 'Belum dicek';
-            const statusClass = scanned ? 'badge-success' : 'badge-warning';
-            return `<div class="list-item">
-                <div>📍</div>
-                <div class="list-info">
-                    <div class="list-title">${escapeHtml(l.name)}</div>
-                    <div class="list-sub">${escapeHtml(formatLocSubtitle(l))}${hasCoords ? '' : ' • ⚠ koordinat belum diisi'}</div>
-                </div>
-                <span class="badge ${statusClass}">${statusText}</span>
-                <button class="btn btn-secondary btn-tiny" onclick="openEditLocationModal(${JSON.stringify(l.id)})">Edit</button>
-                <button class="btn btn-danger btn-tiny" onclick="deleteLocation(${JSON.stringify(l.id)})">Hapus</button>
-            </div>`;
-        }).join('');
+        const unchecked = LOCATIONS.filter(l => !scannedToday.has(l.id));
+        const checked = LOCATIONS.filter(l => scannedToday.has(l.id));
+        
+        let html = '';
+        
+        if (unchecked.length > 0) {
+            html += '<div style="margin-bottom: 1rem;"><div style="font-weight: 600; color: var(--warning); margin-bottom: 0.5rem;">⚠ Belum Dicek (' + unchecked.length + ')</div>';
+            html += unchecked.map(l => {
+                const hasCoords = l.lat && l.lng && !(l.lat === 0 && l.lng === 0);
+                return `<div class="list-item">
+                    <div>📍</div>
+                    <div class="list-info">
+                        <div class="list-title">${escapeHtml(l.name)}</div>
+                        <div class="list-sub">${escapeHtml(formatLocSubtitle(l))}${hasCoords ? '' : ' • ⚠ koordinat belum diisi'}</div>
+                    </div>
+                    <span class="badge badge-warning">Belum dicek</span>
+                    <button class="btn btn-secondary btn-tiny" onclick="openEditLocationModal(${JSON.stringify(l.id)})">Edit</button>
+                    <button class="btn btn-danger btn-tiny" onclick="deleteLocation(${JSON.stringify(l.id)})">Hapus</button>
+                </div>`;
+            }).join('');
+            html += '</div>';
+        }
+        
+        if (checked.length > 0) {
+            html += '<div><div style="font-weight: 600; color: var(--success); margin-bottom: 0.5rem;">✓ Sudah Dicek (' + checked.length + ')</div>';
+            html += checked.map(l => {
+                const hasCoords = l.lat && l.lng && !(l.lat === 0 && l.lng === 0);
+                return `<div class="list-item">
+                    <div>📍</div>
+                    <div class="list-info">
+                        <div class="list-title">${escapeHtml(l.name)}</div>
+                        <div class="list-sub">${escapeHtml(formatLocSubtitle(l))}${hasCoords ? '' : ' • ⚠ koordinat belum diisi'}</div>
+                    </div>
+                    <span class="badge badge-success">Sudah dicek</span>
+                    <button class="btn btn-secondary btn-tiny" onclick="openEditLocationModal(${JSON.stringify(l.id)})">Edit</button>
+                    <button class="btn btn-danger btn-tiny" onclick="deleteLocation(${JSON.stringify(l.id)})">Hapus</button>
+                </div>`;
+            }).join('');
+            html += '</div>';
+        }
+        
+        container.innerHTML = html;
     }
 
     function readLocationForm(prefix) {
