@@ -152,6 +152,25 @@
 </head>
 <body>
     <div class="toast" id="toast"></div>
+    <div id="editLocationModal" class="modal">
+        <div class="modal-card" style="max-height:90vh;overflow-y:auto;">
+            <div class="card-title">Edit Titik Patroli</div>
+            <input type="hidden" id="editLocOldId">
+            <div class="input-group"><label class="input-label">Nama Tampilan</label><input id="editLocName" class="input-field"></div>
+            <div class="input-group"><label class="input-label">Kode QR (gdr:...)</label><input id="editLocId" class="input-field" placeholder="gate1utama"></div>
+            <div class="input-group"><label class="input-label">Alamat / Catatan</label><input id="editLocAddress" class="input-field" placeholder="JL. Palm"></div>
+            <div class="input-group"><label class="input-label">Link GMap</label><input type="url" id="editLocLink" class="input-field" placeholder="https://maps.app.goo.gl/..."><div id="editLocParseStatus" class="card-subtitle" style="margin-top:0.4rem;margin-bottom:0;"></div></div>
+            <div class="stats-grid">
+                <div class="input-group" style="margin-bottom:0;"><label class="input-label">Latitude</label><input type="number" step="any" id="editLocLat" class="input-field"></div>
+                <div class="input-group" style="margin-bottom:0;"><label class="input-label">Longitude</label><input type="number" step="any" id="editLocLng" class="input-field"></div>
+            </div>
+            <div class="input-group"><label class="input-label">Radius (meter)</label><input type="number" id="editLocRadius" class="input-field" min="10" max="500"></div>
+            <div class="card-subtitle" style="margin-bottom:0.75rem;">Ganti kode QR = cetak ulang QR di lokasi.</div>
+            <button class="btn btn-primary" onclick="saveEditLocation()">Simpan</button>
+            <button class="btn btn-secondary" onclick="closeEditLocationModal()">Batal</button>
+        </div>
+    </div>
+
     <div id="editModal" class="modal">
         <div class="modal-card">
             <div class="card-title">Edit Satpam</div>
@@ -214,6 +233,21 @@
             <div class="card"><div class="card-title">📅 Statistik Bulan Ini</div><div class="stats-grid" id="monthStatsGrid"><div class="stat-card"><div class="stat-number" id="monthTotalScan">0</div><div class="stat-label">Total Scan</div></div><div class="stat-card"><div class="stat-number" id="monthActiveDays">0</div><div class="stat-label">Hari Aktif</div></div><div class="stat-card"><div class="stat-number" id="monthAvgScan">0</div><div class="stat-label">Rata-rata/hari</div></div><div class="stat-card"><div class="stat-number" id="monthTopGuard">-</div><div class="stat-label">Top Satpam</div></div></div></div>
             <div class="card"><div class="card-title">🕒 Aktivitas Terbaru</div><div id="adminRecentActivities"></div></div>
             <div class="card"><div class="card-title">📈 Progress per Satpam</div><div id="adminProgressList"></div></div>
+            <div class="card"><div class="card-title">📍 Kelola Titik Patroli</div><div class="card-subtitle">Tambah, edit, atau hapus titik patroli.</div>
+            <div class="stats-grid">
+                <div class="input-group" style="margin-bottom:0;"><label class="input-label">Nama Tampilan</label><input type="text" id="newLocName" class="input-field" placeholder="Gate 1 Utama"></div>
+                <div class="input-group" style="margin-bottom:0;"><label class="input-label">Kode QR</label><input type="text" id="newLocId" class="input-field" placeholder="gate1utama (kosongkan = auto)"></div>
+            </div>
+            <div class="input-group"><label class="input-label">Alamat / Catatan</label><input type="text" id="newLocAddress" class="input-field" placeholder="JL. Palm"></div>
+            <div class="input-group"><label class="input-label">Link GMap</label><input type="url" id="newLocLink" class="input-field" placeholder="https://maps.app.goo.gl/..."><div id="newLocParseStatus" class="card-subtitle" style="margin-top:0.4rem;margin-bottom:0;"></div></div>
+            <div class="stats-grid">
+                <div class="input-group" style="margin-bottom:0;"><label class="input-label">Latitude</label><input type="number" step="any" id="newLocLat" class="input-field"></div>
+                <div class="input-group" style="margin-bottom:0;"><label class="input-label">Longitude</label><input type="number" step="any" id="newLocLng" class="input-field"></div>
+            </div>
+            <div class="input-group"><label class="input-label">Radius (meter)</label><input type="number" id="newLocRadius" class="input-field" value="50" min="10" max="500"></div>
+            <button class="btn btn-primary btn-tiny" onclick="addLocation()">+ Tambah Titik</button>
+            <hr style="margin: 1rem 0;">
+            <div id="adminLocationList"></div></div>
             <div class="card"><div class="card-title">📍 Titik Belum Dicek</div><div id="adminMissedPoints"></div></div>
             <div class="card"><div class="card-title">👮 Manajemen Satpam</div><div class="input-group"><label class="input-label">Nama Baru</label><input type="text" id="newGuardName" class="input-field"></div><div class="input-group"><label class="input-label">PIN (4 digit)</label><input type="password" id="newGuardPin" class="input-field" maxlength="4" inputmode="numeric"></div><button class="btn btn-primary btn-tiny" onclick="addGuard()">Tambah Satpam</button><hr style="margin: 1rem 0;"><div id="adminGuardList"></div></div>
             <div class="card"><div class="card-title">📷 Generate Lokasi QR</div><div class="card-subtitle">Nama lokasi (tanpa spasi) → QR berisi <strong>gdr:namalokasi</strong>. Paste link GMap → Lat/Lng terisi otomatis.</div><div class="input-group"><label class="input-label">Nama Lokasi</label><input type="text" id="qrLocName" class="input-field" placeholder="edelweiss"></div><div class="input-group"><label class="input-label">Link GMap</label><input type="url" id="qrLocLink" class="input-field" placeholder="https://maps.app.goo.gl/... atau link panjang Google Maps"><div id="qrLocParseStatus" class="card-subtitle" style="margin-top:0.4rem;margin-bottom:0;"></div></div><div class="stats-grid"><div class="input-group" style="margin-bottom:0;"><label class="input-label">Latitude</label><input type="number" step="any" id="qrLocLat" class="input-field" placeholder="-6.4012"></div><div class="input-group" style="margin-bottom:0;"><label class="input-label">Longitude</label><input type="number" step="any" id="qrLocLng" class="input-field" placeholder="106.7885"></div></div><div class="input-group"><label class="input-label">Radius (meter)</label><input type="number" id="qrLocRadius" class="input-field" value="50" min="10" max="500"></div><button class="btn btn-primary" onclick="generateAndDownloadQR()">Generate & Download QR</button><div id="qrCodeTemp" style="display:none;"></div><canvas id="qrCanvas" style="display:none;"></canvas></div>
@@ -412,6 +446,16 @@
         scanner = null;
         return active.stop().then(() => active.clear()).catch(() => {});
     }
+
+    function escapeHtml(str) {
+        return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+    function cleanLocId(name) { return name.toLowerCase().replace(/[^a-z0-9]/g, ''); }
+    function formatLocSubtitle(loc) {
+        if (loc.address && !/^https?:\/\//i.test(loc.address)) return loc.address;
+        return 'gdr:' + loc.id + ' • radius ' + (loc.radius || 50) + 'm';
+    }
+    function saveLocationsStorage() { localStorage.setItem('gdr_locations', JSON.stringify(LOCATIONS)); }
 
     // ==================== FUNGSI JARAK ====================
     function hitungJarak(lat1, lon1, lat2, lon2) {
@@ -684,7 +728,7 @@
         let user = GUARDS.find(g=>g.pin===pin);
         if(user){
             currentUser=user; document.getElementById('loginPin').value='';
-            if(user.role==='admin'){ showPage('dashboardPage'); refreshAdminDashboard(); renderAdminGuards(); }
+            if(user.role==='admin'){ showPage('dashboardPage'); refreshAdminDashboard(); renderAdminGuards(); renderAdminLocations(); }
             else { showPage('homePage'); initHome(); }
         } else { showToast('PIN salah'); document.getElementById('loginPin').value=''; }
     }
@@ -739,9 +783,130 @@
         
         let scannedToday = new Set(allScansToday.map(s=>s.locId));
         let missed = LOCATIONS.filter(l=>!scannedToday.has(l.id));
-        document.getElementById('adminMissedPoints').innerHTML = missed.length ? missed.map(l=>`<div class="list-item"><div>🔴</div><div class="list-info"><div class="list-title">${l.name}</div><div class="list-sub">${l.address||''}</div></div><span class="badge badge-warning">Belum</span></div>`).join('') : '<div class="card-subtitle">✅ Semua titik sudah dicek!</div>';
+        renderAdminLocations();
+        document.getElementById('adminMissedPoints').innerHTML = missed.length ? missed.map(l=>`<div class="list-item"><div>🔴</div><div class="list-info"><div class="list-title">${escapeHtml(l.name)}</div><div class="list-sub">${escapeHtml(formatLocSubtitle(l))}</div></div><span class="badge badge-warning">Belum</span></div>`).join('') : '<div class="card-subtitle">✅ Semua titik sudah dicek!</div>';
     }
     
+
+    function renderAdminLocations() {
+        const container = document.getElementById('adminLocationList');
+        if (!container) return;
+        const todayKey = dateKeyLocal();
+        const allScansToday = JSON.parse(localStorage.getItem(`gdr_all_scans_${todayKey}`)) || [];
+        const scannedToday = new Set(allScansToday.map(s => s.locId));
+        if (!LOCATIONS.length) {
+            container.innerHTML = '<div class="card-subtitle">Belum ada titik patroli</div>';
+            return;
+        }
+        container.innerHTML = LOCATIONS.map(l => {
+            const scanned = scannedToday.has(l.id);
+            const hasCoords = l.lat && l.lng && !(l.lat === 0 && l.lng === 0);
+            return `<div class="list-item">
+                <div>📍</div>
+                <div class="list-info">
+                    <div class="list-title">${escapeHtml(l.name)}</div>
+                    <div class="list-sub">${escapeHtml(formatLocSubtitle(l))}${hasCoords ? '' : ' • ⚠ koordinat belum diisi'}</div>
+                </div>
+                <span class="badge ${scanned ? 'badge-success' : 'badge-warning'}">${scanned ? 'Sudah' : 'Belum'}</span>
+                <button class="btn btn-secondary btn-tiny" onclick="openEditLocationModal(${JSON.stringify(l.id)})">Edit</button>
+                <button class="btn btn-danger btn-tiny" onclick="deleteLocation(${JSON.stringify(l.id)})">Hapus</button>
+            </div>`;
+        }).join('');
+    }
+
+    function readLocationForm(prefix) {
+        const name = document.getElementById(prefix + 'LocName').value.trim();
+        let id = document.getElementById(prefix + 'LocId').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (!id) id = cleanLocId(name);
+        const address = document.getElementById(prefix + 'LocAddress').value.trim();
+        const link = document.getElementById(prefix + 'LocLink').value.trim();
+        const lat = parseFloat(document.getElementById(prefix + 'LocLat').value);
+        const lng = parseFloat(document.getElementById(prefix + 'LocLng').value);
+        const radius = parseInt(document.getElementById(prefix + 'LocRadius').value, 10) || 50;
+        return { name, id, address, link, lat, lng, radius };
+    }
+
+    async function applyCoordsToLocationForm(prefix, link, latVal, lngVal) {
+        let coords = resolveQrLocationCoords(link, latVal, lngVal);
+        if (!coords && link) coords = await resolveMapLinkToCoords(link);
+        if (coords) {
+            document.getElementById(prefix + 'LocLat').value = coords.lat;
+            document.getElementById(prefix + 'LocLng').value = coords.lng;
+        }
+        return coords;
+    }
+
+    async function addLocation() {
+        const data = readLocationForm('new');
+        if (!data.name) return showToast('Nama titik wajib diisi');
+        if (!data.id) return showToast('Kode QR tidak valid');
+        if (LOCATIONS.some(l => l.id === data.id)) return showToast('Kode QR sudah dipakai');
+        const coords = await applyCoordsToLocationForm('new', data.link, data.lat, data.lng);
+        if (!coords || isNaN(coords.lat)) return showToast('Isi Lat/Lng atau paste link GMap');
+        LOCATIONS.push({ id: data.id, name: data.name, address: data.address || data.name, lat: coords.lat, lng: coords.lng, radius: data.radius });
+        saveLocationsStorage();
+        ['newLocName','newLocId','newLocAddress','newLocLink','newLocLat','newLocLng'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+        document.getElementById('newLocRadius').value = '50';
+        const st = document.getElementById('newLocParseStatus'); if (st) st.textContent = '';
+        renderAdminLocations(); refreshAdminDashboard(); showToast('Titik patroli ditambahkan');
+    }
+
+    function openEditLocationModal(id) {
+        const loc = LOCATIONS.find(l => l.id === id);
+        if (!loc) return;
+        document.getElementById('editLocOldId').value = loc.id;
+        document.getElementById('editLocId').value = loc.id;
+        document.getElementById('editLocName').value = loc.name;
+        document.getElementById('editLocAddress').value = (/^https?:\/\//i.test(loc.address || '') ? '' : (loc.address || ''));
+        document.getElementById('editLocLink').value = (/^https?:\/\//i.test(loc.address || '') ? loc.address : '');
+        document.getElementById('editLocLat').value = loc.lat || '';
+        document.getElementById('editLocLng').value = loc.lng || '';
+        document.getElementById('editLocRadius').value = loc.radius || 50;
+        document.getElementById('editLocParseStatus').textContent = '';
+        document.getElementById('editLocationModal').style.display = 'flex';
+    }
+
+    function closeEditLocationModal() { document.getElementById('editLocationModal').style.display = 'none'; }
+
+    async function saveEditLocation() {
+        const oldId = document.getElementById('editLocOldId').value;
+        const data = readLocationForm('edit');
+        if (!data.name) return showToast('Nama titik wajib diisi');
+        if (!data.id) return showToast('Kode QR tidak valid');
+        const idx = LOCATIONS.findIndex(l => l.id === oldId);
+        if (idx < 0) return;
+        if (data.id !== oldId && LOCATIONS.some(l => l.id === data.id)) return showToast('Kode QR sudah dipakai');
+        const coords = await applyCoordsToLocationForm('edit', data.link, data.lat, data.lng);
+        if (!coords || isNaN(coords.lat)) return showToast('Isi Lat/Lng atau paste link GMap');
+        if (data.id !== oldId && !confirm('Ganti kode QR? QR lama tidak berlaku. Lanjutkan?')) return;
+        LOCATIONS[idx] = { id: data.id, name: data.name, address: data.address || data.name, lat: coords.lat, lng: coords.lng, radius: data.radius };
+        saveLocationsStorage();
+        closeEditLocationModal();
+        renderAdminLocations(); refreshAdminDashboard(); showToast('Titik patroli diperbarui');
+    }
+
+    function deleteLocation(id) {
+        const loc = LOCATIONS.find(l => l.id === id);
+        if (!loc) return;
+        if (!confirm('Hapus titik "' + loc.name + '"?')) return;
+        LOCATIONS = LOCATIONS.filter(l => l.id !== id);
+        saveLocationsStorage();
+        renderAdminLocations(); refreshAdminDashboard(); showToast('Titik patroli dihapus');
+    }
+
+    async function autoFillCoordsForLocForm(prefix) {
+        const link = document.getElementById(prefix + 'LocLink').value.trim();
+        const statusEl = document.getElementById(prefix + 'LocParseStatus');
+        if (!link) { if (statusEl) statusEl.textContent = ''; return; }
+        if (statusEl) statusEl.textContent = /goo\.gl|maps\.app/i.test(link) ? 'Membuka link pendek GMap...' : 'Membaca koordinat...';
+        const coords = await resolveMapLinkToCoords(link);
+        if (coords) {
+            document.getElementById(prefix + 'LocLat').value = coords.lat;
+            document.getElementById(prefix + 'LocLng').value = coords.lng;
+            if (statusEl) { statusEl.textContent = '✓ Koordinat terisi (' + coords.lat.toFixed(5) + ', ' + coords.lng.toFixed(5) + ')'; statusEl.style.color = 'var(--success)'; }
+        } else if (statusEl) { statusEl.textContent = 'Gagal baca link. Isi Lat/Lng manual.'; statusEl.style.color = 'var(--danger)'; }
+    }
+
     function renderAdminGuards(){
         let container = document.getElementById('adminGuardList');
         let guards = GUARDS.filter(g=>g.role==='guard');
@@ -861,7 +1026,7 @@
                 const locData = {
                     id: cleanName,
                     name: name,
-                    address: link || (existing ? existing.address : ''),
+                    address: (link && /^https?:\/\//i.test(link)) ? name : (link || (existing && existing.address && !/^https?:\/\//i.test(existing.address) ? existing.address : name)),
                     lat: coords ? coords.lat : existing.lat,
                     lng: coords ? coords.lng : existing.lng,
                     radius: radius
@@ -871,7 +1036,8 @@
                 } else {
                     LOCATIONS.push(locData);
                 }
-                localStorage.setItem('gdr_locations', JSON.stringify(LOCATIONS));
+                saveLocationsStorage();
+                renderAdminLocations();
                 refreshAdminDashboard();
                 showToast(`QR berisi "${qrText}" siap download`);
             }, 300);
@@ -907,6 +1073,17 @@
         mapLinkResolveTimer = setTimeout(autoFillCoordsFromMapLink, 200);
     });
     window.openEditModal = openEditModal; window.closeEditModal = closeEditModal; window.saveEditGuard = saveEditGuard; window.deleteGuard = deleteGuard;
+    ['new', 'edit'].forEach(prefix => {
+        const linkEl = document.getElementById(prefix + 'LocLink');
+        if (!linkEl) return;
+        linkEl.addEventListener('input', () => { clearTimeout(mapLinkResolveTimer); mapLinkResolveTimer = setTimeout(() => autoFillCoordsForLocForm(prefix), 700); });
+        linkEl.addEventListener('paste', () => { clearTimeout(mapLinkResolveTimer); mapLinkResolveTimer = setTimeout(() => autoFillCoordsForLocForm(prefix), 200); });
+    });
+    window.openEditLocationModal = openEditLocationModal;
+    window.closeEditLocationModal = closeEditLocationModal;
+    window.saveEditLocation = saveEditLocation;
+    window.deleteLocation = deleteLocation;
+    window.addLocation = addLocation;
     window.refreshGPS = refreshGPS;
     window.requestLocationPermission = requestLocationPermission;
 </script>
