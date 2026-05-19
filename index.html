@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary: #0062FF;
@@ -249,6 +248,7 @@
             <button class="btn btn-primary btn-tiny" onclick="addLocation()">+ Tambah Titik</button>
             <hr style="margin: 1rem 0;">
             <div id="adminLocationList"></div></div>
+            <div class="card"><div class="card-title">📍 Titik Belum Dicek</div><div id="adminMissedPoints"></div></div>
             <div class="card"><div class="card-title">👮 Manajemen Satpam</div><div class="input-group"><label class="input-label">Nama Baru</label><input type="text" id="newGuardName" class="input-field"></div><div class="input-group"><label class="input-label">PIN (4 digit)</label><input type="password" id="newGuardPin" class="input-field" maxlength="4" inputmode="numeric"></div><button class="btn btn-primary btn-tiny" onclick="addGuard()">Tambah Satpam</button><hr style="margin: 1rem 0;"><div id="adminGuardList"></div></div>
             <div class="card"><div class="card-title">📷 Generate Lokasi QR</div><div class="card-subtitle">Nama lokasi (tanpa spasi) → QR berisi <strong>gdr:namalokasi</strong>. Paste link GMap → Lat/Lng terisi otomatis.</div><div class="input-group"><label class="input-label">Nama Lokasi</label><input type="text" id="qrLocName" class="input-field" placeholder="edelweiss"></div><div class="input-group"><label class="input-label">Link GMap</label><input type="url" id="qrLocLink" class="input-field" placeholder="https://maps.app.goo.gl/... atau link panjang Google Maps"><div id="qrLocParseStatus" class="card-subtitle" style="margin-top:0.4rem;margin-bottom:0;"></div></div><div class="stats-grid"><div class="input-group" style="margin-bottom:0;"><label class="input-label">Latitude</label><input type="number" step="any" id="qrLocLat" class="input-field" placeholder="-6.4012"></div><div class="input-group" style="margin-bottom:0;"><label class="input-label">Longitude</label><input type="number" step="any" id="qrLocLng" class="input-field" placeholder="106.7885"></div></div><div class="input-group"><label class="input-label">Radius (meter)</label><input type="number" id="qrLocRadius" class="input-field" value="50" min="10" max="500"></div><button class="btn btn-primary" onclick="generateAndDownloadQR()">Generate & Download QR</button><div id="qrCodeTemp" style="display:none;"></div><canvas id="qrCanvas" style="display:none;"></canvas></div>
             <div class="card"><div class="card-title">🔐 Ganti PIN Admin</div><div class="input-group"><label class="input-label">PIN Baru (4 Digit)</label><input type="password" id="newAdminPin" class="input-field" maxlength="4" inputmode="numeric"></div><button class="btn btn-secondary btn-tiny" onclick="changeAdminPin()">Update PIN</button></div>
@@ -263,22 +263,18 @@
     </div>
 
 <script>
-    // ==================== SUPABASE ====================
-    const SUPABASE_URL = 'https://ygvlxcnsdmdaggceeyew.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlndmx4Y25zZG1kYWdnY2VleWV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwOTA5MTIsImV4cCI6MjA5NDY2NjkxMn0.wl9ZC8DyUWfOf-zHJmhEy85wOaCljc7VYGkYI1Fwy8I';
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     // ==================== DATA GLOBAL ====================
-    const DEFAULT_GUARDS = [
-        { id: 0, name: 'Admin', pin: '0000', role: 'admin', avatar: '' },
+    let GUARDS = JSON.parse(localStorage.getItem('gdr_guards')) || [
         { id: 1, name: 'Rudy', pin: '1111', role: 'guard', avatar: '' },
         { id: 2, name: 'Puji', pin: '2222', role: 'guard', avatar: '' },
         { id: 3, name: 'Idrus', pin: '3333', role: 'guard', avatar: '' },
         { id: 4, name: 'Nasim', pin: '4444', role: 'guard', avatar: '' },
         { id: 5, name: 'Wahyu', pin: '5555', role: 'guard', avatar: '' },
-        { id: 6, name: 'Haris', pin: '6666', role: 'guard', avatar: '' }
+        { id: 6, name: 'Haris', pin: '6666', role: 'guard', avatar: '' },
+        { id: 0, name: 'Admin', pin: '0000', role: 'admin', avatar: '' }
     ];
-    const DEFAULT_LOCATIONS = [
+
+    let LOCATIONS = JSON.parse(localStorage.getItem('gdr_locations')) || [
         { id: 'gate1utama', name: 'Gate 1 Utama', address: 'JL. Palm', lat: -6.4012, lng: 106.7885, radius: 50 },
         { id: 'gate2', name: 'Gate 2', address: 'JL. Camelia', lat: -6.4025, lng: 106.7860, radius: 50 },
         { id: 'gate3rawakalong', name: 'Gate 3 Rawa Kalong', address: 'JL. Asoka 1', lat: -6.4040, lng: 106.7845, radius: 50 },
@@ -289,9 +285,6 @@
         { id: 'edelweiss', name: 'JL. Edelweiss / Pojok Timur', address: 'JL. Edelweiss', lat: -6.3995, lng: 106.7910, radius: 50 }
     ];
 
-    let GUARDS = [];
-    let LOCATIONS = [];
-
     let currentUser = null;
     let currentPosition = null;
     let scanner = null;
@@ -300,97 +293,6 @@
     let isProcessingScan = false;
     let mapLinkResolveTimer = null;
     let gpsSearching = false;
-
-    // ==================== SUPABASE HELPERS ====================
-    async function loadGuards() {
-        const { data, error } = await sb.from('guards').select('*');
-        if (error || !data || data.length === 0) {
-            // Seed default data if empty
-            if (!error && data && data.length === 0) {
-                const { error: insErr } = await sb.from('guards').insert(DEFAULT_GUARDS);
-                if (!insErr) { GUARDS = [...DEFAULT_GUARDS]; return; }
-            }
-            GUARDS = [...DEFAULT_GUARDS];
-            return;
-        }
-        GUARDS = data;
-    }
-
-    async function loadLocations() {
-        const { data, error } = await sb.from('locations').select('*');
-        if (error || !data || data.length === 0) {
-            if (!error && data && data.length === 0) {
-                const { error: insErr } = await sb.from('locations').insert(DEFAULT_LOCATIONS);
-                if (!insErr) { LOCATIONS = [...DEFAULT_LOCATIONS]; return; }
-            }
-            LOCATIONS = [...DEFAULT_LOCATIONS];
-            return;
-        }
-        LOCATIONS = data;
-    }
-
-    async function dbAddGuard(guard) {
-        const { error } = await sb.from('guards').insert([guard]);
-        if (error) { showToast('Gagal simpan ke server'); return false; }
-        return true;
-    }
-    async function dbUpdateGuard(guard) {
-        const { error } = await sb.from('guards').update({ name: guard.name, pin: guard.pin, avatar: guard.avatar }).eq('id', guard.id);
-        if (error) { showToast('Gagal update server'); return false; }
-        return true;
-    }
-    async function dbDeleteGuard(id) {
-        const { error } = await sb.from('guards').delete().eq('id', id);
-        if (error) { showToast('Gagal hapus dari server'); return false; }
-        return true;
-    }
-    async function dbUpsertLocation(loc) {
-        const { error } = await sb.from('locations').upsert([loc], { onConflict: 'id' });
-        if (error) { showToast('Gagal simpan lokasi'); return false; }
-        return true;
-    }
-    async function dbDeleteLocation(id) {
-        const { error } = await sb.from('locations').delete().eq('id', id);
-        if (error) { showToast('Gagal hapus lokasi'); return false; }
-        return true;
-    }
-    async function dbInsertScan(scan) {
-        const row = {
-            guard_id: scan.guardId, guard_name: scan.guardName,
-            loc_id: scan.locId, loc_name: scan.locName,
-            time: scan.time, timestamp: scan.timestamp,
-            status: scan.status, distance: scan.distance,
-            scan_date: dateKeyLocal()
-        };
-        const { error } = await sb.from('scans').insert([row]);
-        if (error) { showToast('Gagal simpan scan'); return false; }
-        return true;
-    }
-    async function dbGetScansToday() {
-        const { data, error } = await sb.from('scans').select('*').eq('scan_date', dateKeyLocal());
-        if (error) return [];
-        return (data || []).map(r => ({
-            guardId: r.guard_id, guardName: r.guard_name,
-            locId: r.loc_id, locName: r.loc_name,
-            time: r.time, timestamp: r.timestamp,
-            status: r.status, distance: r.distance
-        }));
-    }
-    async function dbGetScansMonth() {
-        const now = new Date();
-        const y = now.getFullYear();
-        const m = String(now.getMonth()+1).padStart(2,'0');
-        const from = `${y}-${m}-01`;
-        const to = `${y}-${m}-31`;
-        const { data, error } = await sb.from('scans').select('*').gte('scan_date', from).lte('scan_date', to);
-        if (error) return [];
-        return (data || []).map(r => ({
-            guardId: r.guard_id, guardName: r.guard_name,
-            locId: r.loc_id, locName: r.loc_name,
-            time: r.time, timestamp: r.timestamp,
-            status: r.status, distance: r.distance, scan_date: r.scan_date
-        }));
-    }
 
     function dateKeyLocal(d = new Date()) {
         const y = d.getFullYear();
@@ -553,7 +455,7 @@
         if (loc.address && !/^https?:\/\//i.test(loc.address)) return loc.address;
         return 'gdr:' + loc.id + ' • radius ' + (loc.radius || 50) + 'm';
     }
-    function saveLocationsStorage() { /* data saved to Supabase directly */ }
+    function saveLocationsStorage() { localStorage.setItem('gdr_locations', JSON.stringify(LOCATIONS)); }
 
     // ==================== FUNGSI JARAK ====================
     function hitungJarak(lat1, lon1, lat2, lon2) {
@@ -704,14 +606,15 @@
     }
 
     // ==================== HOME (GUARD) ====================
-    async function initHome() {
+    function initHome() {
         document.getElementById('homeUserName').textContent = currentUser.name;
         document.getElementById('homeDateText').textContent = new Date().toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'short' });
         let avatarEl = document.getElementById('homeAvatar');
         if(currentUser.avatar && currentUser.avatar !== '') avatarEl.innerHTML = `<img src="${currentUser.avatar}">`;
         else avatarEl.textContent = currentUser.name.charAt(0).toUpperCase();
         
-        let allScans = await dbGetScansToday();
+        let todayKey = dateKeyLocal();
+        let allScans = JSON.parse(localStorage.getItem(`gdr_all_scans_${todayKey}`)) || [];
         todayScans = allScans.filter(s => s.guardId === currentUser.id);
         renderHistory();
         
@@ -752,7 +655,7 @@
                 (text) => {
                     if (isProcessingScan) return;
                     isProcessingScan = true;
-                    if (scanner) scanner.stop().then(() => processQR(text), () => processQR(text));
+                    if (scanner) scanner.stop().then(() => processQR(text)).catch(() => processQR(text));
                 },
                 () => {}
             ).catch(() => { showToast('Kamera tidak tersedia'); stopScan(); });
@@ -764,7 +667,7 @@
         cleanupScanner().finally(() => showPage('homePage'));
     }
     
-    async function processQR(text){
+    function processQR(text){
         const failScan = (msg) => {
             isProcessingScan = false;
             showToast(msg);
@@ -796,10 +699,11 @@
             time: new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}),
             timestamp: Date.now(), status: status, distance: Math.round(jarakMeter)
         };
-        const ok = await dbInsertScan(newScan);
-        if (ok) {
-            todayScans.push(newScan);
-        }
+        let todayKey = dateKeyLocal();
+        let allScans = JSON.parse(localStorage.getItem(`gdr_all_scans_${todayKey}`)) || [];
+        allScans.push(newScan);
+        localStorage.setItem(`gdr_all_scans_${todayKey}`, JSON.stringify(allScans));
+        todayScans = allScans.filter(s => s.guardId === currentUser.id);
         showToast(status === 'valid' ? `Patroli Valid ✓ (${Math.round(jarakMeter)}m)` : `Luar Zona! Jarak ${Math.round(jarakMeter)}m > ${radiusIzinkan}m`);
         stopScan();
         initHome();
@@ -819,19 +723,32 @@
         showPage('loginPage');
     }
     
-    async function verifyPin(){
+    function verifyPin(){
         let pin = document.getElementById('loginPin').value;
         let user = GUARDS.find(g=>g.pin===pin);
         if(user){
             currentUser=user; document.getElementById('loginPin').value='';
-            if(user.role==='admin'){ showPage('dashboardPage'); refreshAdminDashboard(); renderAdminGuards(); }
+            if(user.role==='admin'){ showPage('dashboardPage'); refreshAdminDashboard(); renderAdminGuards(); renderAdminLocations(); }
             else { showPage('homePage'); initHome(); }
         } else { showToast('PIN salah'); document.getElementById('loginPin').value=''; }
     }
 
     // ==================== ADMIN FUNCTIONS ====================
-    async function refreshAdminDashboard(){
-        let allScansToday = await dbGetScansToday();
+    function getAllScansForMonth(){
+        let now = new Date(); let year=now.getFullYear(); let month=now.getMonth();
+        let scans = [];
+        for(let d=1; d<=31; d++){
+            let date = new Date(year, month, d);
+            if(date.getMonth() !== month) break;
+            let key = dateKeyLocal(date);
+            let dayScans = JSON.parse(localStorage.getItem(`gdr_all_scans_${key}`)) || [];
+            scans.push(...dayScans);
+        }
+        return scans;
+    }
+    function refreshAdminDashboard(){
+        let todayKey = dateKeyLocal();
+        let allScansToday = JSON.parse(localStorage.getItem(`gdr_all_scans_${todayKey}`)) || [];
         let activeGuards = new Set(allScansToday.map(s=>s.guardId)).size;
         let validCount = allScansToday.filter(s=>s.status==='valid').length;
         let outCount = allScansToday.length - validCount;
@@ -840,8 +757,8 @@
         document.getElementById('statValidScan').innerText = validCount;
         document.getElementById('statOutZone').innerText = outCount;
         
-        let monthScans = await dbGetScansMonth();
-        let uniqueDays = new Set(monthScans.map(s => s.scan_date || dateKeyLocal(new Date(s.timestamp)))).size;
+        let monthScans = getAllScansForMonth();
+        let uniqueDays = new Set(monthScans.map(s => dateKeyLocal(new Date(s.timestamp)))).size;
         let avgPerDay = uniqueDays===0?0:Math.round(monthScans.length/uniqueDays);
         let guardCounts = {};
         monthScans.forEach(s=>{ guardCounts[s.guardName] = (guardCounts[s.guardName]||0)+1; });
@@ -865,32 +782,34 @@
         document.getElementById('adminProgressList').innerHTML = progressHtml || '<div class="card-subtitle">Tidak ada data</div>';
         
         let scannedToday = new Set(allScansToday.map(s=>s.locId));
-        renderAdminLocations(scannedToday);
+        let missed = LOCATIONS.filter(l=>!scannedToday.has(l.id));
+        renderAdminLocations();
+        document.getElementById('adminMissedPoints').innerHTML = missed.length ? missed.map(l=>`<div class="list-item"><div>🔴</div><div class="list-info"><div class="list-title">${escapeHtml(l.name)}</div><div class="list-sub">${escapeHtml(formatLocSubtitle(l))}</div></div><span class="badge badge-warning">Belum</span></div>`).join('') : '<div class="card-subtitle">✅ Semua titik sudah dicek!</div>';
     }
     
 
-    function renderAdminLocations(scannedToday) {
+    function renderAdminLocations() {
         const container = document.getElementById('adminLocationList');
         if (!container) return;
-        // If scannedToday not passed, render without status
+        const todayKey = dateKeyLocal();
+        const allScansToday = JSON.parse(localStorage.getItem(`gdr_all_scans_${todayKey}`)) || [];
+        const scannedToday = new Set(allScansToday.map(s => s.locId));
         if (!LOCATIONS.length) {
             container.innerHTML = '<div class="card-subtitle">Belum ada titik patroli</div>';
             return;
         }
         container.innerHTML = LOCATIONS.map(l => {
-            const scanned = scannedToday ? scannedToday.has(l.id) : null;
+            const scanned = scannedToday.has(l.id);
             const hasCoords = l.lat && l.lng && !(l.lat === 0 && l.lng === 0);
-            const statusBadge = scanned === null ? '' :
-                `<span class="badge ${scanned ? 'badge-success' : 'badge-warning'}">${scanned ? '✓ Sudah' : 'Belum'}</span>`;
             return `<div class="list-item">
                 <div>📍</div>
                 <div class="list-info">
                     <div class="list-title">${escapeHtml(l.name)}</div>
                     <div class="list-sub">${escapeHtml(formatLocSubtitle(l))}${hasCoords ? '' : ' • ⚠ koordinat belum diisi'}</div>
                 </div>
-                ${statusBadge}
-                <button class="btn btn-secondary btn-tiny" onclick="window.openEditLocationModal(${JSON.stringify(l.id)})">Edit</button>
-                <button class="btn btn-danger btn-tiny" onclick="window.deleteLocation(${JSON.stringify(l.id)})">Hapus</button>
+                <span class="badge ${scanned ? 'badge-success' : 'badge-warning'}">${scanned ? 'Sudah' : 'Belum'}</span>
+                <button class="btn btn-secondary btn-tiny" onclick="openEditLocationModal(${JSON.stringify(l.id)})">Edit</button>
+                <button class="btn btn-danger btn-tiny" onclick="deleteLocation(${JSON.stringify(l.id)})">Hapus</button>
             </div>`;
         }).join('');
     }
@@ -924,14 +843,12 @@
         if (LOCATIONS.some(l => l.id === data.id)) return showToast('Kode QR sudah dipakai');
         const coords = await applyCoordsToLocationForm('new', data.link, data.lat, data.lng);
         if (!coords || isNaN(coords.lat)) return showToast('Isi Lat/Lng atau paste link GMap');
-        const newLoc = { id: data.id, name: data.name, address: data.address || data.name, lat: coords.lat, lng: coords.lng, radius: data.radius };
-        const ok = await dbUpsertLocation(newLoc);
-        if (!ok) return;
-        LOCATIONS.push(newLoc);
+        LOCATIONS.push({ id: data.id, name: data.name, address: data.address || data.name, lat: coords.lat, lng: coords.lng, radius: data.radius });
+        saveLocationsStorage();
         ['newLocName','newLocId','newLocAddress','newLocLink','newLocLat','newLocLng'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
         document.getElementById('newLocRadius').value = '50';
         const st = document.getElementById('newLocParseStatus'); if (st) st.textContent = '';
-        refreshAdminDashboard(); showToast('Titik patroli ditambahkan');
+        renderAdminLocations(); refreshAdminDashboard(); showToast('Titik patroli ditambahkan');
     }
 
     function openEditLocationModal(id) {
@@ -962,23 +879,19 @@
         const coords = await applyCoordsToLocationForm('edit', data.link, data.lat, data.lng);
         if (!coords || isNaN(coords.lat)) return showToast('Isi Lat/Lng atau paste link GMap');
         if (data.id !== oldId && !confirm('Ganti kode QR? QR lama tidak berlaku. Lanjutkan?')) return;
-        if (data.id !== oldId) await dbDeleteLocation(oldId);
-        const updLoc = { id: data.id, name: data.name, address: data.address || data.name, lat: coords.lat, lng: coords.lng, radius: data.radius };
-        const ok = await dbUpsertLocation(updLoc);
-        if (!ok) return;
-        LOCATIONS[idx] = updLoc;
+        LOCATIONS[idx] = { id: data.id, name: data.name, address: data.address || data.name, lat: coords.lat, lng: coords.lng, radius: data.radius };
+        saveLocationsStorage();
         closeEditLocationModal();
-        refreshAdminDashboard(); showToast('Titik patroli diperbarui');
+        renderAdminLocations(); refreshAdminDashboard(); showToast('Titik patroli diperbarui');
     }
 
-    async function deleteLocation(id) {
+    function deleteLocation(id) {
         const loc = LOCATIONS.find(l => l.id === id);
         if (!loc) return;
         if (!confirm('Hapus titik "' + loc.name + '"?')) return;
-        const ok = await dbDeleteLocation(id);
-        if (!ok) return;
         LOCATIONS = LOCATIONS.filter(l => l.id !== id);
-        refreshAdminDashboard(); showToast('Titik patroli dihapus');
+        saveLocationsStorage();
+        renderAdminLocations(); refreshAdminDashboard(); showToast('Titik patroli dihapus');
     }
 
     async function autoFillCoordsForLocForm(prefix) {
@@ -1018,7 +931,7 @@
         }
     }
     function closeEditModal(){ document.getElementById('editModal').style.display = 'none'; }
-    async function saveEditGuard(){
+    function saveEditGuard(){
         let id = parseInt(document.getElementById('editGuardId').value);
         let newName = document.getElementById('editGuardName').value.trim();
         let newPin = document.getElementById('editGuardPin').value.trim();
@@ -1029,47 +942,42 @@
             guard.name = newName; guard.pin = newPin;
             if(fileInput.files && fileInput.files[0]){
                 const reader = new FileReader();
-                reader.onload = async function(e) {
+                reader.onload = function(e) {
                     guard.avatar = e.target.result;
-                    await dbUpdateGuard(guard);
+                    localStorage.setItem('gdr_guards', JSON.stringify(GUARDS));
                     renderAdminGuards(); refreshAdminDashboard(); showToast('Satpam diperbarui (foto)');
                 };
                 reader.readAsDataURL(fileInput.files[0]);
             } else {
-                await dbUpdateGuard(guard);
+                localStorage.setItem('gdr_guards', JSON.stringify(GUARDS));
                 renderAdminGuards(); refreshAdminDashboard(); showToast('Satpam diperbarui');
             }
             closeEditModal();
         }
     }
-    async function deleteGuard(id){
+    function deleteGuard(id){
         if(confirm('Hapus satpam ini?')){
-            const ok = await dbDeleteGuard(id);
-            if (!ok) return;
             GUARDS = GUARDS.filter(g=>g.id!==id);
+            localStorage.setItem('gdr_guards', JSON.stringify(GUARDS));
             renderAdminGuards(); refreshAdminDashboard(); showToast('Satpam dihapus');
         }
     }
-    async function addGuard(){
+    function addGuard(){
         let name = document.getElementById('newGuardName').value.trim();
         let pin = document.getElementById('newGuardPin').value.trim();
         if(!name || pin.length!==4) return showToast('Nama & PIN 4 digit wajib');
-        const newGuard = { id: Date.now(), name, pin, role:'guard', avatar: '' };
-        const ok = await dbAddGuard(newGuard);
-        if (!ok) return;
-        GUARDS.push(newGuard);
+        GUARDS.push({ id: Date.now(), name, pin, role:'guard', avatar: '' });
+        localStorage.setItem('gdr_guards', JSON.stringify(GUARDS));
         document.getElementById('newGuardName').value='';
         document.getElementById('newGuardPin').value='';
         renderAdminGuards(); refreshAdminDashboard(); showToast('Satpam ditambahkan');
     }
-    async function changeAdminPin(){
+    function changeAdminPin(){
         let newPin = document.getElementById('newAdminPin').value;
         if(newPin.length!==4) return showToast('PIN harus 4 digit');
         let admin = GUARDS.find(g=>g.role==='admin');
-        if(admin) {
-            admin.pin = newPin;
-            await dbUpdateGuard(admin);
-        }
+        if(admin) admin.pin = newPin;
+        localStorage.setItem('gdr_guards', JSON.stringify(GUARDS));
         showToast('PIN Admin diubah');
         document.getElementById('newAdminPin').value='';
     }
@@ -1128,7 +1036,7 @@
                 } else {
                     LOCATIONS.push(locData);
                 }
-                dbUpsertLocation(locData);
+                saveLocationsStorage();
                 renderAdminLocations();
                 refreshAdminDashboard();
                 showToast(`QR berisi "${qrText}" siap download`);
@@ -1178,28 +1086,6 @@
     window.addLocation = addLocation;
     window.refreshGPS = refreshGPS;
     window.requestLocationPermission = requestLocationPermission;
-
-    // ==================== APP BOOT ====================
-    (async function appBoot() {
-        // Show loading overlay
-        const loginPage = document.getElementById('loginPage');
-        const loadingDiv = document.createElement('div');
-        loadingDiv.id = 'bootLoading';
-        loadingDiv.style.cssText = 'position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:1rem;';
-        loadingDiv.innerHTML = `
-            <div style="width:48px;height:48px;border:4px solid #E5E7EB;border-top-color:#0062FF;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-            <div style="font-size:0.9rem;font-weight:600;color:#6B7280;">Menghubungkan ke server...</div>
-            <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
-        `;
-        document.body.appendChild(loadingDiv);
-        try {
-            await Promise.all([loadGuards(), loadLocations()]);
-            loadingDiv.querySelector('div:nth-child(2)').textContent = 'Siap!';
-        } catch(e) {
-            loadingDiv.querySelector('div:nth-child(2)').textContent = 'Offline — data lokal dipakai';
-        }
-        setTimeout(() => loadingDiv.remove(), 400);
-    })();
 </script>
 </body>
 </html>
