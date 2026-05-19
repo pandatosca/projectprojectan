@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0062FF">
+    <title>Patroli GDR - Mobile Blue</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary: #0062FF;
+            --primary-light: #4D94FF;
+            --primary-dark: #004BCC;
+            --accent: #FACC15;
+            --danger: #EF4444;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --bg: #F8FAFC;
+            --card: #FFFFFF;
+            --text: #111827;
+            --text-light: #6B7280;
+            --border: #E5E7EB;
+            --shadow: 0 4px 24px rgba(0,0,0,0.04);
+            --radius-card: 16px;
+            --radius-btn: 12px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; }
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            min-height: 100vh; 
+            display: flex;
+            flex-direction: column;
+        }
+        .page {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+        }
+        .page.active {
+            display: flex;
+            flex-direction: column;
+        }
+        .app-header {
+            background: var(--card);
+            padding: 1rem 1.25rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .brand-text { font-size: 1.1rem; font-weight: 800; }
+        .brand-sub { font-size: 0.75rem; color: var(--text-light); }
+        .user-info { display: flex; align-items: center; gap: 0.75rem; }
+        .avatar {
+            width: 36px; height: 36px; border-radius: 12px;
+            background: var(--primary-light); color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 1rem; overflow: hidden;
+        }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .user-meta { text-align: right; }
+        .user-name { font-size: 0.9rem; font-weight: 700; }
+        .user-role { font-size: 0.7rem; color: var(--primary); font-weight: 600; cursor: pointer; }
+        .main-container { 
+            padding: 1rem; 
+            max-width: 520px; 
+            margin: 0 auto; 
+            width: 100%;
+            flex: 1;
+        }
+        .card {
+            background: var(--card); border-radius: var(--radius-card); padding: 1.25rem;
+            margin-bottom: 1rem; box-shadow: var(--shadow); border: 1px solid var(--border);
+        }
+        .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem; }
+        .card-subtitle { font-size: 0.8rem; color: var(--text-light); margin-bottom: 1rem; }
+        .btn {
+            width: 100%; padding: 0.85rem; border: none; border-radius: var(--radius-btn);
+            font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:disabled { background: #CBD5E1; color: #94A3B8; cursor: not-allowed; transform: none; }
+        .btn-secondary { background: #F3F4F6; color: var(--text); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-tiny { padding: 0.4rem 0.8rem; font-size: 0.75rem; border-radius: 8px; width: auto; display: inline-flex; }
+        .input-group { margin-bottom: 1rem; }
+        .input-label { font-size: 0.8rem; font-weight: 600; color: var(--text-light); margin-bottom: 0.4rem; display: block; }
+        .input-field {
+            width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border);
+            border-radius: var(--radius-btn); font-size: 0.9rem; background: var(--bg);
+        }
+        .input-field:focus { outline: none; border-color: var(--primary); background: #fff; }
+        .badge { padding: 0.25rem 0.6rem; border-radius: 6px; font-size: 0.7rem; font-weight: 600; }
+        .badge-success { background: #ECFDF5; color: var(--success); }
+        .badge-warning { background: #FFFBEB; color: var(--warning); }
+        .badge-primary { background: #EFF6FF; color: var(--primary); }
+        .badge-danger { background: #FEF2F2; color: var(--danger); }
+        .list-item {
+            display: flex; align-items: center; gap: 0.75rem; padding: 0.8rem;
+            border: 1px solid var(--border); border-radius: 12px; margin-bottom: 0.5rem;
+        }
+        .list-info { flex: 1; min-width: 0; }
+        .list-title { font-weight: 600; font-size: 0.9rem; }
+        .list-sub { font-size: 0.75rem; color: var(--text-light); margin-top: 0.2rem; }
+        .progress-wrapper { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.25rem; }
+        .progress-bar-bg { flex: 1; height: 6px; background: var(--border); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 0.5rem; }
+        .stat-card { background: var(--bg); border-radius: 14px; padding: 0.9rem; text-align: center; border: 1px solid var(--border); }
+        .stat-number { font-size: 1.8rem; font-weight: 800; color: var(--primary); line-height: 1.2; }
+        .stat-label { font-size: 0.7rem; font-weight: 600; color: var(--text-light); text-transform: uppercase; }
+        .app-footer {
+            text-align: center;
+            padding: 1rem 1rem 1.5rem;
+            color: var(--text-light);
+            font-size: 0.7rem;
+            border-top: 1px solid var(--border);
+            background: var(--card);
+            margin-top: auto;
+        }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .toast {
+            position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: #111827; color: white; padding: 0.8rem 1.2rem; border-radius: 12px;
+            font-size: 0.85rem; font-weight: 500; z-index: 1000; transition: transform 0.3s;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .gps-status { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 600; padding: 0.5rem; background: var(--bg); border-radius: 8px; justify-content: center; margin-bottom:1rem; flex-wrap: wrap; }
+        .gps-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-light); }
+        .gps-status.active .gps-dot { background: var(--success); box-shadow: 0 0 8px rgba(16,185,129,0.5); }
+        .gps-status.error .gps-dot { background: var(--danger); }
+        #scannerContainer { border-radius: 16px; overflow: hidden; height: 65vh; margin-bottom: 1rem; border: 2px solid var(--primary); }
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+            justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-card { background: white; width: 85%; max-width: 340px; border-radius: 24px; padding: 1.5rem; }
+        .debug-text { font-size: 0.7rem; color: red; margin-top: 0.5rem; text-align: center; }
+        .progress-text { font-size: 0.75rem; font-weight: 600; color: var(--text-light); min-width: 2.5rem; text-align: right; }
+    </style>
+</head>
+<body>
+    <div class="toast" id="toast"></div>
+    <div id="editModal" class="modal">
+        <div class="modal-card">
+            <div class="card-title">Edit Satpam</div>
+            <input type="hidden" id="editGuardId">
+            <div class="input-group"><label class="input-label">Nama</label><input id="editGuardName" class="input-field"></div>
+            <div class="input-group"><label class="input-label">PIN (4 digit)</label><input id="editGuardPin" class="input-field" maxlength="4" inputmode="numeric"></div>
+            <div class="input-group"><label class="input-label">Foto Profil</label><input type="file" id="editGuardAvatar" accept="image/*"></div>
+            <button class="btn btn-primary" onclick="saveEditGuard()">Simpan</button>
+            <button class="btn btn-secondary" onclick="closeEditModal()">Batal</button>
+        </div>
+    </div>
+
+    <div class="page active" id="loginPage">
+        <div class="main-container" style="margin-top: 2rem;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h1 style="color: var(--primary); font-weight: 800; font-size: 1.8rem;">Patroli GDR</h1>
+                <p style="color: var(--text-light);">Mobile App System</p>
+            </div>
+            <div class="card">
+                <div class="card-title">Login</div>
+                <div class="card-subtitle">Masukkan PIN 4 digit</div>
+                <input type="password" id="loginPin" class="input-field" placeholder="****" maxlength="4" style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem;" inputmode="numeric">
+                <button class="btn btn-primary" style="margin-top: 1rem;" onclick="verifyPin()">Masuk</button>
+            </div>
+        </div>
+        <div class="app-footer"><div>[Trial] App by GDR127</div><div>Sistem Patroli Satpam GDR</div></div>
+    </div>
+
+    <div class="page" id="homePage">
+        <div class="app-header">
+            <div><div class="brand-text">Patroli System</div><div class="brand-sub" id="homeDateText">-</div></div>
+            <div class="user-info"><div class="user-meta"><div class="user-name" id="homeUserName"></div><div class="user-role" onclick="logout()">Logout</div></div><div class="avatar" id="homeAvatar">U</div></div>
+        </div>
+        <div class="main-container">
+            <div class="card">
+                <div class="card-title">Mulai Patroli</div>
+                <div class="card-subtitle">Pastikan GPS aktif & berada di titik lokasi.</div>
+                <div class="gps-status" id="homeGpsStatus">
+                    <div class="gps-dot"></div>
+                    <span id="homeGpsText">Mencari GPS...</span>
+                </div>
+                <button class="btn btn-primary" id="btnScanQr" onclick="startScan()" disabled>Scan QR Code</button>
+                <button class="btn btn-secondary btn-tiny" style="margin-top:0.5rem;" onclick="requestLocationPermission()">📍 Minta Izin Lokasi</button>
+                <button class="btn btn-secondary btn-tiny" style="margin-top:0.3rem;" onclick="refreshGPS()">⟳ Refresh GPS</button>
+                <div id="gpsDebug" class="debug-text"></div>
+            </div>
+            <div class="card">
+                <div class="card-title flex-between"><span>Riwayat Hari Ini</span><span class="badge badge-primary" id="progressText">0/8</span></div>
+                <div id="historyList"></div>
+            </div>
+        </div>
+        <div class="app-footer"><div>[Trial] App by GDR127</div><div>Sistem Patroli Satpam GDR</div></div>
+    </div>
+
+    <div class="page" id="dashboardPage">
+        <div class="app-header"><div><div class="brand-text">Admin Panel</div><div class="brand-sub">Monitoring & Setting</div></div><div class="user-role" onclick="logout()">Logout</div></div>
+        <div class="main-container">
+            <!-- Statistik Hari Ini -->
+            <div class="card"><div class="card-title">📊 Statistik Hari Ini</div><div class="stats-grid" id="adminStatsGrid"><div class="stat-card"><div class="stat-number" id="statTotalScan">0</div><div class="stat-label">Total Scan</div></div><div class="stat-card"><div class="stat-number" id="statActiveGuard">0</div><div class="stat-label">Satpam Aktif</div></div><div class="stat-card"><div class="stat-number" id="statValidScan">0</div><div class="stat-label">Scan Valid</div></div><div class="stat-card"><div class="stat-number" id="statOutZone">0</div><div class="stat-label">Luar Zona</div></div></div></div>
+            <div class="card"><div class="card-title">📅 Statistik Bulan Ini</div><div class="stats-grid" id="monthStatsGrid"><div class="stat-card"><div class="stat-number" id="monthTotalScan">0</div><div class="stat-label">Total Scan</div></div><div class="stat-card"><div class="stat-number" id="monthActiveDays">0</div><div class="stat-label">Hari Aktif</div></div><div class="stat-card"><div class="stat-number" id="monthAvgScan">0</div><div class="stat-label">Rata-rata/hari</div></div><div class="stat-card"><div class="stat-number" id="monthTopGuard">-</div><div class="stat-label">Top Satpam</div></div></div></div>
+            <div class="card"><div class="card-title">🕒 Aktivitas Terbaru</div><div id="adminRecentActivities"></div></div>
+            <div class="card"><div class="card-title">📈 Progress per Satpam</div><div id="adminProgressList"></div></div>
+            <div class="card"><div class="card-title">📍 Titik Belum Dicek</div><div id="adminMissedPoints"></div></div>
+            <div class="card"><div class="card-title">👮 Manajemen Satpam</div><div class="input-group"><label class="input-label">Nama Baru</label><input type="text" id="newGuardName" class="input-field"></div><div class="input-group"><label class="input-label">PIN (4 digit)</label><input type="password" id="newGuardPin" class="input-field" maxlength="4" inputmode="numeric"></div><button class="btn btn-primary btn-tiny" onclick="addGuard()">Tambah Satpam</button><hr style="margin: 1rem 0;"><div id="adminGuardList"></div></div>
+            <div class="card"><div class="card-title">📷 Generate Lokasi QR</div><div class="card-subtitle">Nama lokasi (tanpa spasi) → QR berisi <strong>gdr:namalokasi</strong>. Paste link GMap → Lat/Lng terisi otomatis.</div><div class="input-group"><label class="input-label">Nama Lokasi</label><input type="text" id="qrLocName" class="input-field" placeholder="edelweiss"></div><div class="input-group"><label class="input-label">Link GMap</label><input type="url" id="qrLocLink" class="input-field" placeholder="https://maps.app.goo.gl/... atau link panjang Google Maps"><div id="qrLocParseStatus" class="card-subtitle" style="margin-top:0.4rem;margin-bottom:0;"></div></div><div class="stats-grid"><div class="input-group" style="margin-bottom:0;"><label class="input-label">Latitude</label><input type="number" step="any" id="qrLocLat" class="input-field" placeholder="-6.4012"></div><div class="input-group" style="margin-bottom:0;"><label class="input-label">Longitude</label><input type="number" step="any" id="qrLocLng" class="input-field" placeholder="106.7885"></div></div><div class="input-group"><label class="input-label">Radius (meter)</label><input type="number" id="qrLocRadius" class="input-field" value="50" min="10" max="500"></div><button class="btn btn-primary" onclick="generateAndDownloadQR()">Generate & Download QR</button><div id="qrCodeTemp" style="display:none;"></div><canvas id="qrCanvas" style="display:none;"></canvas></div>
+            <div class="card"><div class="card-title">🔐 Ganti PIN Admin</div><div class="input-group"><label class="input-label">PIN Baru (4 Digit)</label><input type="password" id="newAdminPin" class="input-field" maxlength="4" inputmode="numeric"></div><button class="btn btn-secondary btn-tiny" onclick="changeAdminPin()">Update PIN</button></div>
+        </div>
+        <div class="app-footer"><div>[Trial] App by GDR127</div><div>Sistem Patroli Satpam GDR</div></div>
+    </div>
+
+    <div class="page" id="scanPage">
+        <div class="app-header"><div class="brand-text">Scan QR</div><button class="btn btn-secondary btn-tiny" onclick="stopScan()">Batal</button></div>
+        <div class="main-container"><div id="scannerContainer"></div></div>
+        <div class="app-footer"><div>[Trial] App by GDR127</div><div>Sistem Patroli Satpam GDR</div></div>
+    </div>
+
+<script>
+    // ==================== DATA GLOBAL ====================
+    let GUARDS = JSON.parse(localStorage.getItem('gdr_guards')) || [
+        { id: 1, name: 'Rudy', pin: '1111', role: 'guard', avatar: '' },
+        { id: 2, name: 'Puji', pin: '2222', role: 'guard', avatar: '' },
+        { id: 3, name: 'Idrus', pin: '3333', role: 'guard', avatar: '' },
+        { id: 4, name: 'Nasim', pin: '4444', role: 'guard', avatar: '' },
+        { id: 5, name: 'Wahyu', pin: '5555', role: 'guard', avatar: '' },
+        { id: 6, name: 'Haris', pin: '6666', role: 'guard', avatar: '' },
+        { id: 0, name: 'Admin', pin: '0000', role: 'admin', avatar: '' }
+    ];
+
+    let LOCATIONS = JSON.parse(localStorage.getItem('gdr_locations')) || [
+        { id: 'gate1utama', name: 'Gate 1 Utama', address: 'JL. Palm', lat: -6.4012, lng: 106.7885, radius: 50 },
+        { id: 'gate2', name: 'Gate 2', address: 'JL. Camelia', lat: -6.4025, lng: 106.7860, radius: 50 },
+        { id: 'gate3rawakalong', name: 'Gate 3 Rawa Kalong', address: 'JL. Asoka 1', lat: -6.4040, lng: 106.7845, radius: 50 },
+        { id: 'poskeamanantengah', name: 'Pos Keamanan Tengah', address: 'JL. Bougenville', lat: -6.4005, lng: 106.7865, radius: 50 },
+        { id: 'lapanganbadminton', name: 'Lapangan Badminton GDR', address: 'JL. Anggrek', lat: -6.3990, lng: 106.7870, radius: 50 },
+        { id: 'cherry1', name: 'JL. Cherry 1 / Pojok Barat', address: 'Cherry 1', lat: -6.4035, lng: 106.7830, radius: 50 },
+        { id: 'lavender', name: 'JL. Lavender / Area Selatan', address: 'JL. Lavender', lat: -6.4060, lng: 106.7860, radius: 50 },
+        { id: 'edelweiss', name: 'JL. Edelweiss / Pojok Timur', address: 'JL. Edelweiss', lat: -6.3995, lng: 106.7910, radius: 50 }
+    ];
+
+    let currentUser = null;
+    let currentPosition = null;
+    let scanner = null;
+    let todayScans = [];
+    let watchId = null;
+    let isProcessingScan = false;
+    let mapLinkResolveTimer = null;
+    let gpsSearching = false;
+
+    function dateKeyLocal(d = new Date()) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    }
+
+    function isValidCoordPair(lat, lng) {
+        if (isNaN(lat) || isNaN(lng)) return false;
+        if (Math.abs(lat) > 90 || Math.abs(lng) > 180) return false;
+        if (lat === 0 && lng === 0) return false;
+        return true;
+    }
+
+    function parseCoordsFromMapText(text) {
+        if (!text) return null;
+        const patterns = [
+            { re: /!3d(-?\d+\.?\d*)!4d(-?\d+\.?\d*)/ },
+            { re: /!2d(-?\d+\.?\d*)!3d(-?\d+\.?\d*)/, swap: true },
+            { re: /@(-?\d+\.?\d*),(-?\d+\.?\d*)/ },
+            { re: /place\/[^"']*?@(-?\d+\.?\d*),(-?\d+\.?\d*)/ },
+            { re: /[?&](?:q|query|ll|sll)=(-?\d+\.?\d*)[,%20\s+]+(-?\d+\.?\d*)/i },
+            { re: /center=(-?\d+\.?\d*)%2C(-?\d+\.?\d*)/i },
+            { re: /\[null,null,(-?\d+\.?\d*),(-?\d+\.?\d*)\]/ },
+            { re: /"lat":\s*(-?\d+\.?\d*)\s*,\s*"lng":\s*(-?\d+\.?\d*)/ },
+            { re: /"latitude":\s*(-?\d+\.?\d*)\s*,\s*"longitude":\s*(-?\d+\.?\d*)/ },
+            { re: /"(-?\d+\.\d{4,})","(-?\d+\.\d{4,})"/ },
+            { re: /og:url[^>]+content="[^"]*@(-?\d+\.?\d*),(-?\d+\.?\d*)/i }
+        ];
+        for (const { re, swap } of patterns) {
+            const m = text.match(re);
+            if (!m) continue;
+            let lat = parseFloat(m[1]);
+            let lng = parseFloat(m[2]);
+            if (swap) { const t = lat; lat = lng; lng = t; }
+            if (isValidCoordPair(lat, lng)) return { lat, lng };
+        }
+        return null;
+    }
+
+    function parseCoordsFromMapLink(link) {
+        return parseCoordsFromMapText(link);
+    }
+
+    async function expandShortMapLink(link) {
+        const tryAllOrigins = async () => {
+            const resp = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(link)}`);
+            if (!resp.ok) return null;
+            const data = await resp.json();
+            return { finalUrl: data.status?.url || '', html: data.contents || '' };
+        };
+        const tryCorsProxy = async () => {
+            const resp = await fetch(`https://corsproxy.io/?${encodeURIComponent(link)}`);
+            if (!resp.ok) return null;
+            const html = await resp.text();
+            return { finalUrl: resp.url || '', html };
+        };
+        const tryCodetabs = async () => {
+            const resp = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(link)}`);
+            if (!resp.ok) return null;
+            return { finalUrl: '', html: await resp.text() };
+        };
+        for (const fn of [tryAllOrigins, tryCorsProxy, tryCodetabs]) {
+            try {
+                const result = await fn();
+                if (result && (result.finalUrl || result.html)) return result;
+            } catch (e) {}
+        }
+        return null;
+    }
+
+    async function resolveMapLinkToCoords(link) {
+        link = (link || '').trim();
+        if (!link) return null;
+
+        let coords = parseCoordsFromMapText(link);
+        if (coords) return coords;
+
+        if (!/maps|goo\.gl|g\.co|google\.com/i.test(link)) return null;
+
+        const expanded = await expandShortMapLink(link);
+        if (expanded) {
+            if (expanded.finalUrl) {
+                coords = parseCoordsFromMapText(expanded.finalUrl);
+                if (coords) return coords;
+            }
+            if (expanded.html) {
+                coords = parseCoordsFromMapText(expanded.html);
+                if (coords) return coords;
+            }
+        }
+
+        try {
+            const resp = await fetch(link, { method: 'GET', redirect: 'follow' });
+            coords = parseCoordsFromMapText(resp.url);
+            if (coords) return coords;
+            const body = await resp.text();
+            coords = parseCoordsFromMapText(body);
+            if (coords) return coords;
+        } catch (e) {}
+
+        return null;
+    }
+
+    function setQrLocParseStatus(msg, isError) {
+        const el = document.getElementById('qrLocParseStatus');
+        if (!el) return;
+        el.textContent = msg || '';
+        el.style.color = isError ? 'var(--danger)' : 'var(--success)';
+    }
+
+    async function autoFillCoordsFromMapLink() {
+        const linkInput = document.getElementById('qrLocLink');
+        const latInput = document.getElementById('qrLocLat');
+        const lngInput = document.getElementById('qrLocLng');
+        const link = linkInput.value.trim();
+        if (!link) {
+            setQrLocParseStatus('');
+            return;
+        }
+
+        const isShort = /goo\.gl|maps\.app/i.test(link);
+        setQrLocParseStatus(isShort ? 'Membuka link pendek GMap...' : 'Membaca koordinat dari link...');
+        const coords = await resolveMapLinkToCoords(link);
+        if (coords) {
+            latInput.value = coords.lat;
+            lngInput.value = coords.lng;
+            setQrLocParseStatus(`✓ Koordinat terisi otomatis (${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)})`);
+        } else if (/maps|goo\.gl|g\.co/i.test(link)) {
+            setQrLocParseStatus('Gagal baca link pendek. Tap link → Buka di Chrome → Salin URL panjang dari address bar → paste lagi.', true);
+        } else {
+            setQrLocParseStatus('');
+        }
+    }
+
+    function resolveQrLocationCoords(link, latInput, lngInput) {
+        let lat = parseFloat(latInput);
+        let lng = parseFloat(lngInput);
+        if (isNaN(lat) || isNaN(lng)) {
+            const parsed = parseCoordsFromMapLink(link);
+            if (parsed) { lat = parsed.lat; lng = parsed.lng; }
+        }
+        if (isNaN(lat) || isNaN(lng) || (lat === 0 && lng === 0)) return null;
+        return { lat, lng };
+    }
+
+    function cleanupScanner() {
+        if (!scanner) return Promise.resolve();
+        const active = scanner;
+        scanner = null;
+        return active.stop().then(() => active.clear()).catch(() => {});
+    }
+
+    // ==================== FUNGSI JARAK ====================
+    function hitungJarak(lat1, lon1, lat2, lon2) {
+        const R = 6371e3;
+        const φ1 = lat1 * Math.PI/180;
+        const φ2 = lat2 * Math.PI/180;
+        const Δφ = (lat2 - lat1) * Math.PI/180;
+        const Δλ = (lon2 - lon1) * Math.PI/180;
+        const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                  Math.cos(φ1) * Math.cos(φ2) *
+                  Math.sin(Δλ/2) * Math.sin(Δλ/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+
+    function showToast(msg) { let t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+    function showPage(pageId) { 
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
+        document.getElementById(pageId).classList.add('active'); 
+        window.scrollTo(0,0);
+        if(pageId === 'dashboardPage' && currentUser && currentUser.role === 'admin') refreshAdminDashboard();
+    }
+
+    function updateScanButtonState() {
+        const btn = document.getElementById('btnScanQr');
+        if (!btn) return;
+        const canScan = !!currentPosition && !gpsSearching;
+        btn.disabled = !canScan;
+    }
+
+    function requestLocationPermission() {
+        if (!navigator.geolocation) {
+            showToast('Browser tidak mendukung GPS');
+            return;
+        }
+        refreshGPS();
+    }
+
+    function refreshGPS() {
+        const statusDiv = document.getElementById('homeGpsStatus');
+        const textSpan = document.getElementById('homeGpsText');
+        const debugDiv = document.getElementById('gpsDebug');
+        statusDiv.className = 'gps-status';
+        textSpan.textContent = 'Mencari GPS... tunggu 10–20 detik';
+        if (debugDiv) debugDiv.textContent = '';
+
+        if (!navigator.geolocation) {
+            textSpan.textContent = 'GPS tidak didukung browser';
+            statusDiv.classList.add('error');
+            updateScanButtonState();
+            return;
+        }
+
+        if (watchId) {
+            navigator.geolocation.clearWatch(watchId);
+            watchId = null;
+        }
+
+        gpsSearching = true;
+        updateScanButtonState();
+
+        const tryGetPosition = (highAccuracy, onFinalFail) => {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    gpsSearching = false;
+                    onGPSSuccess(pos, statusDiv, textSpan, debugDiv);
+                },
+                (error) => {
+                    if (!highAccuracy) {
+                        textSpan.textContent = 'Mencari presisi tinggi...';
+                        tryGetPosition(true, onFinalFail);
+                    } else {
+                        gpsSearching = false;
+                        onFinalFail(error);
+                    }
+                },
+                highAccuracy
+                    ? { enableHighAccuracy: true, timeout: 25000, maximumAge: 0 }
+                    : { enableHighAccuracy: false, timeout: 15000, maximumAge: 120000 }
+            );
+        };
+
+        tryGetPosition(false, (error) => handleGPSError(error, statusDiv, textSpan, debugDiv));
+    }
+
+    function onGPSSuccess(pos, statusDiv, textSpan, debugDiv) {
+        currentPosition = {
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+            accuracy: pos.coords.accuracy,
+            timestamp: pos.timestamp
+        };
+
+        const accuracy = Math.round(pos.coords.accuracy);
+        textSpan.textContent = `GPS siap — bisa scan (±${accuracy}m)`;
+        statusDiv.className = 'gps-status active';
+
+        if (debugDiv) {
+            debugDiv.textContent = `Lat: ${pos.coords.latitude.toFixed(5)}, Lng: ${pos.coords.longitude.toFixed(5)} | ±${accuracy}m`;
+        }
+
+        showToast('GPS siap — bisa scan');
+        updateScanButtonState();
+        startWatchPosition(statusDiv, textSpan, debugDiv);
+    }
+
+    function startWatchPosition(statusDiv, textSpan, debugDiv) {
+        watchId = navigator.geolocation.watchPosition(
+            (pos) => {
+                currentPosition = {
+                    lat: pos.coords.latitude,
+                    lng: pos.coords.longitude,
+                    accuracy: pos.coords.accuracy,
+                    timestamp: pos.timestamp
+                };
+                const accuracy = Math.round(pos.coords.accuracy);
+                if (textSpan) textSpan.textContent = `GPS siap — bisa scan (±${accuracy}m)`;
+                if (debugDiv && Math.random() < 0.15) {
+                    debugDiv.textContent = `Lat: ${pos.coords.latitude.toFixed(5)}, Lng: ${pos.coords.longitude.toFixed(5)} | ±${accuracy}m`;
+                }
+                updateScanButtonState();
+            },
+            () => {},
+            { enableHighAccuracy: true, timeout: 30000, maximumAge: 5000 }
+        );
+    }
+
+    function handleGPSError(error, statusDiv, textSpan, debugDiv) {
+        let pesan = '';
+        switch (error.code) {
+            case 1:
+                pesan = 'Izin lokasi ditolak. Buka Pengaturan > Browser > Izinkan Lokasi';
+                break;
+            case 2:
+                pesan = 'GPS mati. Nyalakan Lokasi di pengaturan HP';
+                break;
+            case 3:
+                pesan = 'GPS timeout. Pindah ke tempat terbuka, lalu tap Refresh GPS';
+                break;
+            default:
+                pesan = 'GPS gagal: ' + error.message;
+        }
+        textSpan.textContent = pesan;
+        statusDiv.className = 'gps-status error';
+        if (debugDiv) debugDiv.textContent = '';
+        showToast(pesan);
+        updateScanButtonState();
+    }
+
+    // ==================== HOME (GUARD) ====================
+    function initHome() {
+        document.getElementById('homeUserName').textContent = currentUser.name;
+        document.getElementById('homeDateText').textContent = new Date().toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'short' });
+        let avatarEl = document.getElementById('homeAvatar');
+        if(currentUser.avatar && currentUser.avatar !== '') avatarEl.innerHTML = `<img src="${currentUser.avatar}">`;
+        else avatarEl.textContent = currentUser.name.charAt(0).toUpperCase();
+        
+        let todayKey = dateKeyLocal();
+        let allScans = JSON.parse(localStorage.getItem(`gdr_all_scans_${todayKey}`)) || [];
+        todayScans = allScans.filter(s => s.guardId === currentUser.id);
+        renderHistory();
+        
+        const statusDiv = document.getElementById('homeGpsStatus');
+        const textSpan = document.getElementById('homeGpsText');
+        const debugDiv = document.getElementById('gpsDebug');
+        updateScanButtonState();
+        if (currentPosition) {
+            const accuracy = Math.round(currentPosition.accuracy || 0);
+            textSpan.textContent = `GPS siap — bisa scan (±${accuracy}m)`;
+            statusDiv.className = 'gps-status active';
+            if (debugDiv) {
+                debugDiv.textContent = `Lat: ${currentPosition.lat.toFixed(5)}, Lng: ${currentPosition.lng.toFixed(5)} | ±${accuracy}m`;
+            }
+        } else {
+            textSpan.textContent = 'Mencari GPS...';
+            statusDiv.className = 'gps-status';
+            if (debugDiv) debugDiv.textContent = '';
+            refreshGPS();
+        }
+    }
+    
+    function renderHistory() {
+        let container = document.getElementById('historyList');
+        let unique = new Set(todayScans.map(s=>s.locId)).size;
+        document.getElementById('progressText').textContent = `${unique}/${LOCATIONS.length}`;
+        if(todayScans.length===0){ container.innerHTML='<div class="card-subtitle">Belum patroli hari ini</div>'; return; }
+        container.innerHTML = todayScans.slice().reverse().map(s=>`<div class="list-item"><div class="list-info"><div class="list-title">${s.locName}</div><div class="list-sub">${s.time} • Jarak: ${s.distance}m</div></div><span class="badge ${s.status === 'valid' ? 'badge-success' : 'badge-danger'}">${s.status}</span></div>`).join('');
+    }
+    
+    function startScan() {
+        if(!currentPosition){ showToast('GPS belum aktif. Tekan "Refresh GPS" dulu.'); return; }
+        isProcessingScan = false;
+        showPage('scanPage');
+        cleanupScanner().finally(() => {
+            scanner = new Html5Qrcode('scannerContainer');
+            scanner.start({ facingMode: 'environment' }, { fps: 10, qrbox: { width: 250, height: 250 } },
+                (text) => {
+                    if (isProcessingScan) return;
+                    isProcessingScan = true;
+                    if (scanner) scanner.stop().then(() => processQR(text)).catch(() => processQR(text));
+                },
+                () => {}
+            ).catch(() => { showToast('Kamera tidak tersedia'); stopScan(); });
+        });
+    }
+    
+    function stopScan() {
+        isProcessingScan = false;
+        cleanupScanner().finally(() => showPage('homePage'));
+    }
+    
+    function processQR(text){
+        const failScan = (msg) => {
+            isProcessingScan = false;
+            showToast(msg);
+            setTimeout(() => { if (document.getElementById('scanPage').classList.contains('active')) stopScan(); }, 1500);
+        };
+        if (!text || !text.startsWith('gdr:')) {
+            failScan('QR tidak valid! Gunakan QR dari menu admin.');
+            return;
+        }
+        let locId = text.substring(4);
+        let lokasiTujuan = LOCATIONS.find(l => l.id === locId);
+        if(!lokasiTujuan) {
+            failScan(`Lokasi "${locId}" tidak terdaftar.`);
+            return;
+        }
+        if (!lokasiTujuan.lat && !lokasiTujuan.lng || (lokasiTujuan.lat === 0 && lokasiTujuan.lng === 0)) {
+            failScan('Koordinat lokasi belum diatur. Hubungi admin.');
+            return;
+        }
+        if(!currentPosition) {
+            failScan('GPS belum siap. Refresh GPS.');
+            return;
+        }
+        let jarakMeter = hitungJarak(currentPosition.lat, currentPosition.lng, lokasiTujuan.lat, lokasiTujuan.lng);
+        let radiusIzinkan = lokasiTujuan.radius || 50;
+        let status = (jarakMeter <= radiusIzinkan) ? 'valid' : 'Luar Zona';
+        let newScan = {
+            guardId: currentUser.id, guardName: currentUser.name, locId: lokasiTujuan.id, locName: lokasiTujuan.name,
+            time: new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}),
+            timestamp: Date.now(), status: status, distance: Math.round(jarakMeter)
+        };
+        let todayKey = dateKeyLocal();
+        let allScans = JSON.parse(localStorage.getItem(`gdr_all_scans_${todayKey}`)) || [];
+        allScans.push(newScan);
+        localStorage.setItem(`gdr_all_scans_${todayKey}`, JSON.stringify(allScans));
+        todayScans = allScans.filter(s => s.guardId === currentUser.id);
+        showToast(status === 'valid' ? `Patroli Valid ✓ (${Math.round(jarakMeter)}m)` : `Luar Zona! Jarak ${Math.round(jarakMeter)}m > ${radiusIzinkan}m`);
+        stopScan();
+        initHome();
+    }
+    
+    function logout(){
+        currentUser = null;
+        isProcessingScan = false;
+        if (watchId) {
+            navigator.geolocation.clearWatch(watchId);
+            watchId = null;
+        }
+        currentPosition = null;
+        gpsSearching = false;
+        cleanupScanner();
+        updateScanButtonState();
+        showPage('loginPage');
+    }
+    
+    function verifyPin(){
+        let pin = document.getElementById('loginPin').value;
+        let user = GUARDS.find(g=>g.pin===pin);
+        if(user){
+            currentUser=user; document.getElementById('loginPin').value='';
+            if(user.role==='admin'){ showPage('dashboardPage'); refreshAdminDashboard(); renderAdminGuards(); }
+            else { showPage('homePage'); initHome(); }
+        } else { showToast('PIN salah'); document.getElementById('loginPin').value=''; }
+    }
+
+    // ==================== ADMIN FUNCTIONS ====================
+    function getAllScansForMonth(){
+        let now = new Date(); let year=now.getFullYear(); let month=now.getMonth();
+        let scans = [];
+        for(let d=1; d<=31; d++){
+            let date = new Date(year, month, d);
+            if(date.getMonth() !== month) break;
+            let key = dateKeyLocal(date);
+            let dayScans = JSON.parse(localStorage.getItem(`gdr_all_scans_${key}`)) || [];
+            scans.push(...dayScans);
+        }
+        return scans;
+    }
+    function refreshAdminDashboard(){
+        let todayKey = dateKeyLocal();
+        let allScansToday = JSON.parse(localStorage.getItem(`gdr_all_scans_${todayKey}`)) || [];
+        let activeGuards = new Set(allScansToday.map(s=>s.guardId)).size;
+        let validCount = allScansToday.filter(s=>s.status==='valid').length;
+        let outCount = allScansToday.length - validCount;
+        document.getElementById('statTotalScan').innerText = allScansToday.length;
+        document.getElementById('statActiveGuard').innerText = activeGuards;
+        document.getElementById('statValidScan').innerText = validCount;
+        document.getElementById('statOutZone').innerText = outCount;
+        
+        let monthScans = getAllScansForMonth();
+        let uniqueDays = new Set(monthScans.map(s => dateKeyLocal(new Date(s.timestamp)))).size;
+        let avgPerDay = uniqueDays===0?0:Math.round(monthScans.length/uniqueDays);
+        let guardCounts = {};
+        monthScans.forEach(s=>{ guardCounts[s.guardName] = (guardCounts[s.guardName]||0)+1; });
+        let topName = Object.keys(guardCounts).length ? Object.entries(guardCounts).sort((a,b)=>b[1]-a[1])[0][0] : '-';
+        document.getElementById('monthTotalScan').innerText = monthScans.length;
+        document.getElementById('monthActiveDays').innerText = uniqueDays;
+        document.getElementById('monthAvgScan').innerText = avgPerDay;
+        document.getElementById('monthTopGuard').innerText = topName.length>6?topName.slice(0,5):topName;
+        
+        let recent = [...allScansToday].sort((a,b)=>b.timestamp - a.timestamp).slice(0,5);
+        let recentHtml = recent.length ? recent.map(a=>`<div class="list-item"><div class="list-info"><div class="list-title">${a.guardName} - ${a.locName}</div><div class="list-sub">${a.time} • ${a.distance}m • ${a.status}</div></div><span class="badge ${a.status==='valid'?'badge-success':'badge-danger'}">${a.status}</span></div>`).join('') : '<div class="card-subtitle">Tidak ada aktivitas hari ini</div>';
+        document.getElementById('adminRecentActivities').innerHTML = recentHtml;
+        
+        let guardsOnly = GUARDS.filter(g=>g.role==='guard');
+        let progressHtml = guardsOnly.map(g=>{
+            let guardScans = allScansToday.filter(s=>s.guardId===g.id);
+            let scannedLocs = new Set(guardScans.map(s=>s.locId)).size;
+            let percent = LOCATIONS.length ? Math.round((scannedLocs/LOCATIONS.length)*100) : 0;
+            return `<div class="list-item" style="flex-direction:column; align-items:stretch;"><div class="flex-between"><span class="list-title">${g.name}</span><span class="badge badge-primary">${scannedLocs}/${LOCATIONS.length}</span></div><div class="progress-wrapper"><div class="progress-bar-bg"><div class="progress-fill" style="width:${percent}%;"></div></div><div class="progress-text">${percent}%</div></div></div>`;
+        }).join('');
+        document.getElementById('adminProgressList').innerHTML = progressHtml || '<div class="card-subtitle">Tidak ada data</div>';
+        
+        let scannedToday = new Set(allScansToday.map(s=>s.locId));
+        let missed = LOCATIONS.filter(l=>!scannedToday.has(l.id));
+        document.getElementById('adminMissedPoints').innerHTML = missed.length ? missed.map(l=>`<div class="list-item"><div>🔴</div><div class="list-info"><div class="list-title">${l.name}</div><div class="list-sub">${l.address||''}</div></div><span class="badge badge-warning">Belum</span></div>`).join('') : '<div class="card-subtitle">✅ Semua titik sudah dicek!</div>';
+    }
+    
+    function renderAdminGuards(){
+        let container = document.getElementById('adminGuardList');
+        let guards = GUARDS.filter(g=>g.role==='guard');
+        container.innerHTML = guards.map(g=>`
+            <div class="list-item">
+                <div class="avatar" style="width:40px;height:40px; background:var(--primary-light);">${g.avatar && g.avatar !== '' ? `<img src="${g.avatar}">` : g.name.charAt(0)}</div>
+                <div class="list-info"><div class="list-title">${g.name}</div><div class="list-sub">PIN: ${g.pin}</div></div>
+                <button class="btn btn-secondary btn-tiny" onclick="openEditModal(${g.id})">Edit</button>
+                <button class="btn btn-danger btn-tiny" onclick="deleteGuard(${g.id})">Hapus</button>
+            </div>
+        `).join('');
+    }
+    
+    function openEditModal(id){
+        let guard = GUARDS.find(g=>g.id===id);
+        if(guard){
+            document.getElementById('editGuardId').value = guard.id;
+            document.getElementById('editGuardName').value = guard.name;
+            document.getElementById('editGuardPin').value = guard.pin;
+            document.getElementById('editModal').style.display = 'flex';
+            document.getElementById('editGuardAvatar').value = '';
+        }
+    }
+    function closeEditModal(){ document.getElementById('editModal').style.display = 'none'; }
+    function saveEditGuard(){
+        let id = parseInt(document.getElementById('editGuardId').value);
+        let newName = document.getElementById('editGuardName').value.trim();
+        let newPin = document.getElementById('editGuardPin').value.trim();
+        let fileInput = document.getElementById('editGuardAvatar');
+        if(!newName || newPin.length!==4) return showToast('Nama & PIN 4 digit wajib');
+        let guard = GUARDS.find(g=>g.id===id);
+        if(guard){
+            guard.name = newName; guard.pin = newPin;
+            if(fileInput.files && fileInput.files[0]){
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    guard.avatar = e.target.result;
+                    localStorage.setItem('gdr_guards', JSON.stringify(GUARDS));
+                    renderAdminGuards(); refreshAdminDashboard(); showToast('Satpam diperbarui (foto)');
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                localStorage.setItem('gdr_guards', JSON.stringify(GUARDS));
+                renderAdminGuards(); refreshAdminDashboard(); showToast('Satpam diperbarui');
+            }
+            closeEditModal();
+        }
+    }
+    function deleteGuard(id){
+        if(confirm('Hapus satpam ini?')){
+            GUARDS = GUARDS.filter(g=>g.id!==id);
+            localStorage.setItem('gdr_guards', JSON.stringify(GUARDS));
+            renderAdminGuards(); refreshAdminDashboard(); showToast('Satpam dihapus');
+        }
+    }
+    function addGuard(){
+        let name = document.getElementById('newGuardName').value.trim();
+        let pin = document.getElementById('newGuardPin').value.trim();
+        if(!name || pin.length!==4) return showToast('Nama & PIN 4 digit wajib');
+        GUARDS.push({ id: Date.now(), name, pin, role:'guard', avatar: '' });
+        localStorage.setItem('gdr_guards', JSON.stringify(GUARDS));
+        document.getElementById('newGuardName').value='';
+        document.getElementById('newGuardPin').value='';
+        renderAdminGuards(); refreshAdminDashboard(); showToast('Satpam ditambahkan');
+    }
+    function changeAdminPin(){
+        let newPin = document.getElementById('newAdminPin').value;
+        if(newPin.length!==4) return showToast('PIN harus 4 digit');
+        let admin = GUARDS.find(g=>g.role==='admin');
+        if(admin) admin.pin = newPin;
+        localStorage.setItem('gdr_guards', JSON.stringify(GUARDS));
+        showToast('PIN Admin diubah');
+        document.getElementById('newAdminPin').value='';
+    }
+    function generateAndDownloadQR(){
+        let name = document.getElementById('qrLocName').value.trim();
+        let link = document.getElementById('qrLocLink').value.trim();
+        let radius = parseInt(document.getElementById('qrLocRadius').value, 10) || 50;
+        if(!name) return showToast('Isi nama lokasi');
+        let cleanName = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        if(cleanName === '') return showToast('Nama hanya huruf/angka');
+
+        const runGenerate = (coords) => {
+            let existing = LOCATIONS.find(l => l.id === cleanName);
+            if (!coords && !existing) return showToast('Isi Lat/Lng atau paste link GMap yang valid');
+            if (coords) {
+                document.getElementById('qrLocLat').value = coords.lat;
+                document.getElementById('qrLocLng').value = coords.lng;
+            }
+            let qrText = 'gdr:' + cleanName;
+            let tempDiv = document.getElementById('qrCodeTemp');
+            tempDiv.innerHTML = '';
+            new QRCode(tempDiv, { text: qrText, width: 800, height: 800, colorDark:"#000", colorLight:"#fff", correctLevel: QRCode.CorrectLevel.H });
+            setTimeout(()=>{
+                let qrImg = tempDiv.querySelector('img') || tempDiv.querySelector('canvas');
+                if(!qrImg) return showToast('Gagal generate QR');
+                let canvas = document.getElementById('qrCanvas');
+                canvas.width = 1080; canvas.height = 1080;
+                let ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#FFF';
+                ctx.fillRect(0, 0, 1080, 1080);
+                const qrSize = 760;
+                const qrX = (1080 - qrSize) / 2;
+                const qrY = 140;
+                ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+                const label = qrText;
+                const fontSize = label.length > 18 ? 42 : label.length > 14 ? 48 : 54;
+                ctx.fillStyle = '#111827';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = `bold ${fontSize}px Inter, sans-serif`;
+                ctx.fillText(label, 540, qrY + qrSize + 72);
+                let a = document.createElement('a');
+                a.download = `QR_${cleanName}.jpg`;
+                a.href = canvas.toDataURL('image/jpeg',1.0);
+                a.click();
+                const locData = {
+                    id: cleanName,
+                    name: name,
+                    address: link || (existing ? existing.address : ''),
+                    lat: coords ? coords.lat : existing.lat,
+                    lng: coords ? coords.lng : existing.lng,
+                    radius: radius
+                };
+                if (existing) {
+                    LOCATIONS[LOCATIONS.findIndex(l => l.id === cleanName)] = { ...existing, ...locData };
+                } else {
+                    LOCATIONS.push(locData);
+                }
+                localStorage.setItem('gdr_locations', JSON.stringify(LOCATIONS));
+                refreshAdminDashboard();
+                showToast(`QR berisi "${qrText}" siap download`);
+            }, 300);
+        };
+
+        let coords = resolveQrLocationCoords(link, document.getElementById('qrLocLat').value, document.getElementById('qrLocLng').value);
+        if (coords) {
+            runGenerate(coords);
+        } else if (link) {
+            setQrLocParseStatus('Membaca koordinat dari link...');
+            resolveMapLinkToCoords(link).then(resolved => {
+                if (resolved) {
+                    setQrLocParseStatus(`✓ Koordinat terisi otomatis (${resolved.lat.toFixed(5)}, ${resolved.lng.toFixed(5)})`);
+                    runGenerate(resolved);
+                } else {
+                    setQrLocParseStatus('Gagal baca koordinat dari link.', true);
+                    showToast('Gagal baca koordinat. Isi Lat/Lng manual.');
+                }
+            });
+        } else {
+            runGenerate(null);
+        }
+    }
+    
+    document.getElementById('loginPin').addEventListener('keyup',(e)=>{ if(e.target.value.length===4) verifyPin(); });
+    const qrLocLinkEl = document.getElementById('qrLocLink');
+    qrLocLinkEl.addEventListener('input', () => {
+        clearTimeout(mapLinkResolveTimer);
+        mapLinkResolveTimer = setTimeout(autoFillCoordsFromMapLink, 700);
+    });
+    qrLocLinkEl.addEventListener('paste', () => {
+        clearTimeout(mapLinkResolveTimer);
+        mapLinkResolveTimer = setTimeout(autoFillCoordsFromMapLink, 200);
+    });
+    window.openEditModal = openEditModal; window.closeEditModal = closeEditModal; window.saveEditGuard = saveEditGuard; window.deleteGuard = deleteGuard;
+    window.refreshGPS = refreshGPS;
+    window.requestLocationPermission = requestLocationPermission;
+</script>
+</body>
+</html>
