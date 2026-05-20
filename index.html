@@ -418,23 +418,53 @@
     }
     function stopScan() { isProcessingScan=false; cleanupScanner().finally(()=>showPage('homePage')); }
     async function processQR(text){
-        const failScan=(msg)=>{ isProcessingScan=false; showToast(msg); setTimeout(()=>{ if(document.getElementById('scanPage').classList.contains('active')) stopScan(); },1500); };
-        if(!text || !text.startsWith('gdr:')) return failScan('QR tidak valid! Gunakan QR dari menu admin.');
-        let locId=text.substring(4);
-        let lokasiTujuan=LOCATIONS.find(l=>l.id===locId);
-        if(!lokasiTujuan) return failScan(`Lokasi "${locId}" tidak terdaftar.`);
-        if(!lokasiTujuan.lat || !lokasiTujuan.lng || (lokasiTujuan.lat===0 && lokasiTujuan.lng===0)) return failScan('Koordinat lokasi belum diatur. Hubungi admin.');
-        if(!currentPosition) return failScan('GPS belum siap. Refresh GPS.');
-        let jarakMeter=hitungJarak(currentPosition.lat, currentPosition.lng, lokasiTujuan.lat, lokasiTujuan.lng);
-        let radiusIzinkan=lokasiTujuan.radius||20;
-        let status=(jarakMeter<=radiusIzinkan)?'valid':'Luar Zona';
-        let newScan={ guardId:currentUser.id, guardName:currentUser.name, locId:lokasiTujuan.id, locName:lokasiTujuan.name, time:new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}), timestamp:Date.now(), status:status, distance:Math.round(jarakMeter) };
-        const ok=await dbInsertScan(newScan);
-        if(ok) todayScans.push(newScan);
-        showToast(status==='valid'?`Patroli Valid ✓ (${Math.round(jarakMeter)}m)`:`Luar Zona! Jarak ${Math.round(jarakMeter)}m > ${radiusIzinkan}m`);
-        stopScan();
-        await initHome();
+    // Cegah double processing
+    if (isProcessingScan) return;
+    isProcessingScan = true;
+    
+    const failScan = (msg) => {
+        isProcessingScan = false;
+        showToast(msg);
+        setTimeout(() => { if (document.getElementById('scanPage').classList.contains('active')) stopScan(); }, 1500);
+    };
+    if (!text || !text.startsWith('gdr:')) {
+        failScan('QR tidak valid! Gunakan QR dari menu admin.');
+        return;
     }
+    let locId = text.substring(4);
+    let lokasiTujuan = LOCATIONS.find(l => l.id === locId);
+    if(!lokasiTujuan) {
+        failScan(`Lokasi "${locId}" tidak terdaftar.`);
+        return;
+    }
+    if (!lokasiTujuan.lat || !lokasiTujuan.lng || (lokasiTujuan.lat === 0 && lokasiTujuan.lng === 0)) {
+        failScan('Koordinat lokasi belum diatur. Hubungi admin.');
+        return;
+    }
+    if(!currentPosition) {
+        failScan('GPS belum siap. Refresh GPS.');
+        return;
+    }
+    let jarakMeter = hitungJarak(currentPosition.lat, currentPosition.lng, lokasiTujuan.lat, lokasiTujuan.lng);
+    let radiusIzinkan = lokasiTujuan.radius || 20;
+    let status = (jarakMeter <= radiusIzinkan) ? 'valid' : 'Luar Zona';
+    let newScan = { 
+        guardId: currentUser.id, guardName: currentUser.name, 
+        locId: lokasiTujuan.id, locName: lokasiTujuan.name,
+        time: new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}),
+        timestamp: Date.now(), status: status, distance: Math.round(jarakMeter) 
+    };
+    const ok = await dbInsertScan(newScan);
+    if (ok) {
+        todayScans.push(newScan);
+        renderHistory(); // langsung update riwayat tanpa initHome full
+    }
+    showToast(status === 'valid' ? `Patroli Valid ✓ (${Math.round(jarakMeter)}m)` : `Luar Zona! Jarak ${Math.round(jarakMeter)}m > ${radiusIzinkan}m`);
+    
+    // Reset flag setelah selesai
+    isProcessingScan = false;
+    stopScan(); // ini akan memanggil showPage('homePage')
+}
     function logout(){
         currentUser=null; isProcessingScan=false;
         if(watchId){ navigator.geolocation.clearWatch(watchId); watchId=null; }
