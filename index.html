@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0062FF">
-    <title>Patroli GDR - Mobile Blue</title>
+    <title>Patroli Keamanan GDR</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -30,64 +30,23 @@
             --radius-btn: 12px;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; }
-        body { 
-            background: var(--bg); 
-            color: var(--text); 
-            min-height: 100vh; 
-            display: flex;
-            flex-direction: column;
-        }
-        .page {
-            flex: 1;
-            display: none;
-            flex-direction: column;
-        }
-        .page.active {
-            display: flex;
-            flex-direction: column;
-        }
-        .app-header {
-            background: var(--card);
-            padding: 1rem 1.25rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+        .page { flex: 1; display: none; flex-direction: column; }
+        .page.active { display: flex; flex-direction: column; }
+        .app-header { background: var(--card); padding: 1rem 1.25rem; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
         .brand-text { font-size: 1.1rem; font-weight: 800; }
         .brand-sub { font-size: 0.75rem; color: var(--text-light); }
         .user-info { display: flex; align-items: center; gap: 0.75rem; }
-        .avatar {
-            width: 36px; height: 36px; border-radius: 12px;
-            background: var(--primary-light); color: white;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 1rem; overflow: hidden;
-        }
+        .avatar { width: 36px; height: 36px; border-radius: 12px; background: var(--primary-light); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; overflow: hidden; }
         .avatar img { width: 100%; height: 100%; object-fit: cover; }
         .user-meta { text-align: right; }
         .user-name { font-size: 0.9rem; font-weight: 700; }
         .user-role { font-size: 0.7rem; color: var(--primary); font-weight: 600; cursor: pointer; }
-        .main-container { 
-            padding: 1rem; 
-            max-width: 520px; 
-            margin: 0 auto; 
-            width: 100%;
-            flex: 1;
-        }
-        .card {
-            background: var(--card); border-radius: var(--radius-card); padding: 1.25rem;
-            margin-bottom: 1rem; box-shadow: var(--shadow); border: 1px solid var(--border);
-        }
+        .main-container { padding: 1rem; max-width: 520px; margin: 0 auto; width: 100%; flex: 1; }
+        .card { background: var(--card); border-radius: var(--radius-card); padding: 1.25rem; margin-bottom: 1rem; box-shadow: var(--shadow); border: 1px solid var(--border); }
         .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem; }
         .card-subtitle { font-size: 0.8rem; color: var(--text-light); margin-bottom: 1rem; }
-        .btn {
-            width: 100%; padding: 0.85rem; border: none; border-radius: var(--radius-btn);
-            font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
-            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-        }
+        .btn { width: 100%; padding: 0.85rem; border: none; border-radius: var(--radius-btn); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
         .btn:active { transform: scale(0.98); }
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:disabled { background: #CBD5E1; color: #94A3B8; cursor: not-allowed; transform: none; }
@@ -96,20 +55,14 @@
         .btn-tiny { padding: 0.4rem 0.8rem; font-size: 0.75rem; border-radius: 8px; width: auto; display: inline-flex; }
         .input-group { margin-bottom: 1rem; }
         .input-label { font-size: 0.8rem; font-weight: 600; color: var(--text-light); margin-bottom: 0.4rem; display: block; }
-        .input-field {
-            width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border);
-            border-radius: var(--radius-btn); font-size: 0.9rem; background: var(--bg);
-        }
+        .input-field { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border); border-radius: var(--radius-btn); font-size: 0.9rem; background: var(--bg); }
         .input-field:focus { outline: none; border-color: var(--primary); background: #fff; }
         .badge { padding: 0.25rem 0.6rem; border-radius: 6px; font-size: 0.7rem; font-weight: 600; }
         .badge-success { background: #ECFDF5; color: var(--success); }
         .badge-warning { background: #FFFBEB; color: var(--warning); }
         .badge-primary { background: #EFF6FF; color: var(--primary); }
         .badge-danger { background: #FEF2F2; color: var(--danger); }
-        .list-item {
-            display: flex; align-items: center; gap: 0.75rem; padding: 0.8rem;
-            border: 1px solid var(--border); border-radius: 12px; margin-bottom: 0.5rem;
-        }
+        .list-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.8rem; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 0.5rem; flex-wrap: wrap; }
         .list-info { flex: 1; min-width: 0; }
         .list-title { font-weight: 600; font-size: 0.9rem; }
         .list-sub { font-size: 0.75rem; color: var(--text-light); margin-top: 0.2rem; }
@@ -120,102 +73,22 @@
         .stat-card { background: var(--bg); border-radius: 14px; padding: 0.9rem; text-align: center; border: 1px solid var(--border); }
         .stat-number { font-size: 1.8rem; font-weight: 800; color: var(--primary); line-height: 1.2; }
         .stat-label { font-size: 0.7rem; font-weight: 600; color: var(--text-light); text-transform: uppercase; }
-        .app-footer {
-            text-align: center;
-            padding: 1rem 1rem 1.5rem;
-            color: var(--text-light);
-            font-size: 0.7rem;
-            border-top: 1px solid var(--border);
-            background: var(--card);
-            margin-top: auto;
-        }
+        .app-footer { text-align: center; padding: 1rem 1rem 1.5rem; color: var(--text-light); font-size: 0.7rem; border-top: 1px solid var(--border); background: var(--card); margin-top: auto; }
         .flex-between { display: flex; justify-content: space-between; align-items: center; }
-        .toast {
-            position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(100px);
-            background: #111827; color: white; padding: 0.8rem 1.2rem; border-radius: 12px;
-            font-size: 0.85rem; font-weight: 500; z-index: 1000; transition: transform 0.3s;
-        }
+        .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(100px); background: #111827; color: white; padding: 0.8rem 1.2rem; border-radius: 12px; font-size: 0.85rem; font-weight: 500; z-index: 1000; transition: transform 0.3s; }
         .toast.show { transform: translateX(-50%) translateY(0); }
         .gps-status { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 600; padding: 0.5rem; background: var(--bg); border-radius: 8px; justify-content: center; margin-bottom: 1rem; }
         .gps-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-light); }
         .gps-status.active .gps-dot { background: var(--success); box-shadow: 0 0 8px rgba(16,185,129,0.5); }
         .gps-status.error .gps-dot { background: var(--danger); }
         #scannerContainer { border-radius: 16px; overflow: hidden; height: 65vh; margin-bottom: 1rem; border: 2px solid var(--primary); }
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-            justify-content: center; align-items: center; z-index: 1000;
-            padding: 1rem;
-        }
-        .modal-card { 
-            background: white; 
-            width: 100%;
-            max-width: 400px; 
-            border-radius: 20px; 
-            padding: 1.75rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .modal-card .card-title {
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-        .modal-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.8rem;
-            margin-top: 1.5rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border);
-        }
-        .modal-buttons .btn {
-            width: 100%;
-            padding: 0.8rem;
-            font-size: 0.85rem;
-        }
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 1000; padding: 1rem; }
+        .modal-card { background: white; width: 100%; max-width: 400px; border-radius: 20px; padding: 1.75rem; box-shadow: 0 10px 40px rgba(0,0,0,0.15); max-height: 90vh; overflow-y: auto; }
+        .modal-card .card-title { margin-bottom: 1rem; font-size: 1.1rem; }
+        .modal-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        .modal-buttons .btn { width: 100%; padding: 0.8rem; font-size: 0.85rem; }
         .debug-text { font-size: 0.7rem; color: red; margin-top: 0.5rem; text-align: center; }
         .progress-text { font-size: 0.75rem; font-weight: 600; color: var(--text-light); min-width: 2.5rem; text-align: right; }
-    
-        /* Location card styles */
-        .loc-card {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 0.9rem 1rem;
-            margin-bottom: 0.6rem;
-        }
-        .loc-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 0.5rem;
-            margin-bottom: 0.3rem;
-        }
-        .loc-card-name {
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: var(--text);
-            line-height: 1.3;
-            flex: 1;
-        }
-        .loc-card-sub {
-            font-size: 0.75rem;
-            color: var(--text-light);
-            margin-bottom: 0.6rem;
-            line-height: 1.4;
-        }
-        .loc-card-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 0.5rem;
-        }
-        .loc-card-actions .btn-tiny {
-            padding: 0.5rem 0.3rem;
-            font-size: 0.72rem;
-            justify-content: center;
-            min-height: 36px;
-        }
     </style>
 </head>
 <body>
@@ -300,7 +173,6 @@
     <div class="page" id="dashboardPage">
         <div class="app-header"><div><div class="brand-text">Admin Panel</div><div class="brand-sub">Monitoring & Setting</div></div><div class="user-role" onclick="logout()">Logout</div></div>
         <div class="main-container">
-            <!-- Statistik Gabungan -->
             <div class="card"><div class="card-title">📊 Statistik</div>
             <div style="font-size:0.75rem;font-weight:600;color:var(--text-light);margin-bottom:0.5rem;">Hari Ini</div>
             <div class="stats-grid" id="adminStatsGrid"><div class="stat-card"><div class="stat-number" id="statTotalScan">0</div><div class="stat-label">Total Scan</div></div><div class="stat-card"><div class="stat-number" id="statActiveGuard">0</div><div class="stat-label">Satpam Aktif</div></div><div class="stat-card"><div class="stat-number" id="statValidScan">0</div><div class="stat-label">Valid</div></div><div class="stat-card"><div class="stat-number" id="statOutZone">0</div><div class="stat-label">Luar Zona</div></div></div>
@@ -308,7 +180,7 @@
             <div class="stats-grid" id="monthStatsGrid"><div class="stat-card"><div class="stat-number" id="monthTotalScan">0</div><div class="stat-label">Total Scan</div></div><div class="stat-card"><div class="stat-number" id="monthActiveDays">0</div><div class="stat-label">Hari Aktif</div></div><div class="stat-card"><div class="stat-number" id="monthAvgScan">0</div><div class="stat-label">Rata-rata</div></div><div class="stat-card"><div class="stat-number" id="monthTopGuard">-</div><div class="stat-label">Top Guard</div></div></div></div>
             <div class="card"><div class="card-title">🕒 Aktivitas Terbaru</div><div id="adminRecentActivities"></div></div>
             <div class="card"><div class="card-title">📈 Progress per Satpam</div><div id="adminProgressList"></div></div>
-            <div class="card"><div class="card-title">📍 Kelola Titik Patroli & QR</div><div class="card-subtitle">Tambah titik baru. Edit, hapus, atau download QR dari daftar di bawah.</div>
+            <div class="card"><div class="card-title">📍 Kelola Titik Patroli & QR</div><div class="card-subtitle">Tambah titik baru. Edit, hapus, atau klik QR untuk download.</div>
             <div class="stats-grid">
                 <div class="input-group" style="margin-bottom:0;"><label class="input-label">Nama Tampilan</label><input type="text" id="newLocName" class="input-field" placeholder="Gate 1 Utama"></div>
                 <div class="input-group" style="margin-bottom:0;"><label class="input-label">Kode QR</label><input type="text" id="newLocId" class="input-field" placeholder="gate1utama (kosongkan = auto)"></div>
@@ -324,7 +196,6 @@
             <hr style="margin: 1rem 0;">
             <div id="adminLocationList"></div></div>
             <div class="card"><div class="card-title">👮 Manajemen Satpam</div><div class="input-group"><label class="input-label">Nama Baru</label><input type="text" id="newGuardName" class="input-field" placeholder="Nama Satpam"></div><button class="btn btn-primary btn-tiny" onclick="addGuard()">+ Tambah Satpam</button><hr style="margin: 1rem 0;"><div id="adminGuardsList"></div></div>
-            
             <div class="card"><div class="card-title">🔐 Ganti PIN Admin</div><div class="input-group"><label class="input-label">PIN Baru (4 Digit)</label><input type="password" id="newAdminPin" class="input-field" maxlength="4" inputmode="numeric"></div><button class="btn btn-primary btn-tiny" onclick="changeAdminPin()">Ganti PIN</button></div>
         </div>
         <div class="app-footer"><div>[Trial] App by GDR127</div><div>Sistem Patroli Satpam GDR</div></div>
@@ -334,6 +205,21 @@
         <div class="app-header"><div class="brand-text">Scan QR</div><button class="btn btn-secondary btn-tiny" onclick="stopScan()">Batal</button></div>
         <div class="main-container"><div id="scannerContainer"></div></div>
         <div class="app-footer"><div>[Trial] App by GDR127</div><div>Sistem Patroli Satpam GDR</div></div>
+    </div>
+
+    <!-- Modal QR -->
+    <div id="qrModal" class="modal" style="display: none;">
+        <div class="modal-card" style="text-align: center;">
+            <div class="card-title" style="margin-bottom: 1rem;">📱 QR Code Patroli</div>
+            <div id="qrCodeContainer" style="display: flex; justify-content: center; margin: 1rem 0;"></div>
+            <div style="font-size: 0.85rem; word-break: break-all; background: var(--bg); padding: 0.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                <strong>Kode:</strong> <span id="qrCodeText"></span>
+            </div>
+            <div class="modal-buttons" style="grid-template-columns: 1fr 1fr;">
+                <button class="btn btn-primary" id="downloadQrBtn">💾 Simpan QR</button>
+                <button class="btn btn-secondary" onclick="closeQrModal()">Tutup</button>
+            </div>
+        </div>
     </div>
 
 <script>
@@ -353,19 +239,18 @@
         { id: 6, name: 'Haris', pin: '6666', role: 'guard', avatar: '' }
     ];
     const DEFAULT_LOCATIONS = [
-        { id: 'gate1utama', name: 'Gate 1 Utama', address: 'JL. Palm', lat: -6.4012, lng: 106.7885, radius: 50 },
-        { id: 'gate2', name: 'Gate 2', address: 'JL. Camelia', lat: -6.4025, lng: 106.7860, radius: 50 },
-        { id: 'gate3rawakalong', name: 'Gate 3 Rawa Kalong', address: 'JL. Asoka 1', lat: -6.4040, lng: 106.7845, radius: 50 },
-        { id: 'poskeamanantengah', name: 'Pos Keamanan Tengah', address: 'JL. Bougenville', lat: -6.4005, lng: 106.7865, radius: 50 },
-        { id: 'lapanganbadminton', name: 'Lapangan Badminton GDR', address: 'JL. Anggrek', lat: -6.3990, lng: 106.7870, radius: 50 },
-        { id: 'cherry1', name: 'JL. Cherry 1 / Pojok Barat', address: 'Cherry 1', lat: -6.4035, lng: 106.7830, radius: 50 },
-        { id: 'lavender', name: 'JL. Lavender / Area Selatan', address: 'JL. Lavender', lat: -6.4060, lng: 106.7860, radius: 50 },
-        { id: 'edelweiss', name: 'JL. Edelweiss / Pojok Timur', address: 'JL. Edelweiss', lat: -6.3995, lng: 106.7910, radius: 50 }
+        { id: 'gate1utama', name: 'Gate 1 Utama', address: 'JL. Palm', lat: -6.4012, lng: 106.7885, radius: 20 },
+        { id: 'gate2', name: 'Gate 2', address: 'JL. Camelia', lat: -6.4025, lng: 106.7860, radius: 20 },
+        { id: 'gate3rawakalong', name: 'Gate 3 Rawa Kalong', address: 'JL. Asoka 1', lat: -6.4040, lng: 106.7845, radius: 20 },
+        { id: 'poskeamanantengah', name: 'Pos Keamanan Tengah', address: 'JL. Bougenville', lat: -6.4005, lng: 106.7865, radius: 20 },
+        { id: 'lapanganbadminton', name: 'Lapangan Badminton GDR', address: 'JL. Anggrek', lat: -6.3990, lng: 106.7870, radius: 20 },
+        { id: 'cherry1', name: 'JL. Cherry 1 / Pojok Barat', address: 'Cherry 1', lat: -6.4035, lng: 106.7830, radius: 20 },
+        { id: 'lavender', name: 'JL. Lavender / Area Selatan', address: 'JL. Lavender', lat: -6.4060, lng: 106.7860, radius: 20 },
+        { id: 'edelweiss', name: 'JL. Edelweiss / Pojok Timur', address: 'JL. Edelweiss', lat: -6.3995, lng: 106.7910, radius: 20 }
     ];
 
     let GUARDS = [];
     let LOCATIONS = [];
-
     let currentUser = null;
     let currentPosition = null;
     let scanner = null;
@@ -375,7 +260,6 @@
     let mapLinkResolveTimer = null;
     let gpsSearching = false;
 
-    // ==================== INIT ====================
     window.addEventListener('DOMContentLoaded', async () => {
         await loadGuards();
         await loadLocations();
@@ -386,850 +270,482 @@
         const { data, error } = await sb.from('guards').select('*');
         if (error || !data || data.length === 0) {
             if (!error && data && data.length === 0) {
-                const { error: insErr } = await sb.from('guards').insert(DEFAULT_GUARDS);
-                if (!insErr) { GUARDS = [...DEFAULT_GUARDS]; return; }
+                await sb.from('guards').insert(DEFAULT_GUARDS);
             }
             GUARDS = [...DEFAULT_GUARDS];
             return;
         }
         GUARDS = data;
     }
-
     async function loadLocations() {
         const { data, error } = await sb.from('locations').select('*');
         if (error || !data || data.length === 0) {
             if (!error && data && data.length === 0) {
-                const { error: insErr } = await sb.from('locations').insert(DEFAULT_LOCATIONS);
-                if (!insErr) { LOCATIONS = [...DEFAULT_LOCATIONS]; return; }
+                await sb.from('locations').insert(DEFAULT_LOCATIONS);
             }
             LOCATIONS = [...DEFAULT_LOCATIONS];
             return;
         }
         LOCATIONS = data;
     }
-
-    async function dbAddGuard(guard) {
-        const { error } = await sb.from('guards').insert([guard]);
-        if (error) { showToast('Gagal simpan ke server: ' + error.message); return false; }
-        return true;
-    }
-    async function dbUpdateGuard(guard) {
-        const { error } = await sb.from('guards').update({ name: guard.name, pin: guard.pin, avatar: guard.avatar }).eq('id', guard.id);
-        if (error) { showToast('Gagal update server: ' + error.message); return false; }
-        return true;
-    }
-    async function dbDeleteGuard(id) {
-        const { error } = await sb.from('guards').delete().eq('id', id);
-        if (error) { showToast('Gagal hapus dari server: ' + error.message); return false; }
-        return true;
-    }
-    async function dbUpsertLocation(loc) {
-        const { error } = await sb.from('locations').upsert([loc], { onConflict: 'id' });
-        if (error) { showToast('Gagal simpan lokasi: ' + error.message); return false; }
-        return true;
-    }
-    async function dbDeleteLocation(id) {
-        const { error } = await sb.from('locations').delete().eq('id', id);
-        if (error) { showToast('Gagal hapus lokasi: ' + error.message); return false; }
-        return true;
-    }
+    async function dbAddGuard(guard) { const { error } = await sb.from('guards').insert([guard]); if (error) { showToast('Gagal simpan: '+error.message); return false; } return true; }
+    async function dbUpdateGuard(guard) { const { error } = await sb.from('guards').update({ name: guard.name, pin: guard.pin, avatar: guard.avatar }).eq('id', guard.id); if (error) { showToast('Gagal update: '+error.message); return false; } return true; }
+    async function dbDeleteGuard(id) { const { error } = await sb.from('guards').delete().eq('id', id); if (error) { showToast('Gagal hapus: '+error.message); return false; } return true; }
+    async function dbUpsertLocation(loc) { const { error } = await sb.from('locations').upsert([loc], { onConflict: 'id' }); if (error) { showToast('Gagal simpan lokasi: '+error.message); return false; } return true; }
+    async function dbDeleteLocation(id) { const { error } = await sb.from('locations').delete().eq('id', id); if (error) { showToast('Gagal hapus lokasi: '+error.message); return false; } return true; }
     async function dbInsertScan(scan) {
-        const row = {
-            guard_id: scan.guardId, guard_name: scan.guardName,
-            loc_id: scan.locId, loc_name: scan.locName,
-            time: scan.time, timestamp: scan.timestamp,
-            status: scan.status, distance: scan.distance,
-            scan_date: dateKeyLocal()
-        };
+        const row = { guard_id: scan.guardId, guard_name: scan.guardName, loc_id: scan.locId, loc_name: scan.locName, time: scan.time, timestamp: scan.timestamp, status: scan.status, distance: scan.distance, scan_date: dateKeyLocal() };
         const { error } = await sb.from('scans').insert([row]);
-        if (error) { showToast('Gagal simpan scan: ' + error.message); return false; }
+        if (error) { showToast('Gagal simpan scan: '+error.message); return false; }
         return true;
     }
     async function dbGetScansToday() {
         const { data, error } = await sb.from('scans').select('*').eq('scan_date', dateKeyLocal());
         if (error) return [];
-        return (data || []).map(r => ({
-            guardId: r.guard_id, guardName: r.guard_name,
-            locId: r.loc_id, locName: r.loc_name,
-            time: r.time, timestamp: r.timestamp,
-            status: r.status, distance: r.distance
-        }));
+        return (data || []).map(r => ({ guardId: r.guard_id, guardName: r.guard_name, locId: r.loc_id, locName: r.loc_name, time: r.time, timestamp: r.timestamp, status: r.status, distance: r.distance }));
     }
     async function dbGetScansMonth() {
-        const now = new Date();
-        const y = now.getFullYear();
-        const m = String(now.getMonth()+1).padStart(2,'0');
-        const from = `${y}-${m}-01`;
-        const to = `${y}-${m}-31`;
+        const now = new Date(); const y = now.getFullYear(); const m = String(now.getMonth()+1).padStart(2,'0');
+        const from = `${y}-${m}-01`, to = `${y}-${m}-31`;
         const { data, error } = await sb.from('scans').select('*').gte('scan_date', from).lte('scan_date', to);
         if (error) return [];
-        return (data || []).map(r => ({
-            guardId: r.guard_id, guardName: r.guard_name,
-            locId: r.loc_id, locName: r.loc_name,
-            time: r.time, timestamp: r.timestamp,
-            status: r.status, distance: r.distance, scan_date: r.scan_date
-        }));
+        return (data || []).map(r => ({ guardId: r.guard_id, guardName: r.guard_name, locId: r.loc_id, locName: r.loc_name, time: r.time, timestamp: r.timestamp, status: r.status, distance: r.distance, scan_date: r.scan_date }));
     }
+    function dateKeyLocal(d = new Date()) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
 
-    function dateKeyLocal(d = new Date()) {
-        const y = d.getFullYear();
-        const m = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        return `${y}-${m}-${day}`;
-    }
-
-    function isValidCoordPair(lat, lng) {
-        if (isNaN(lat) || isNaN(lng)) return false;
-        if (Math.abs(lat) > 90 || Math.abs(lng) > 180) return false;
-        if (lat === 0 && lng === 0) return false;
-        return true;
-    }
-
-    function parseCoordsFromMapText(text) {
-        if (!text) return null;
-        const patterns = [
-            { re: /!3d(-?\d+\.?\d*)!4d(-?\d+\.?\d*)/ },
-            { re: /!2d(-?\d+\.?\d*)!3d(-?\d+\.?\d*)/, swap: true },
-            { re: /@(-?\d+\.?\d*),(-?\d+\.?\d*)/ },
-            { re: /place\/[^"']*?@(-?\d+\.?\d*),(-?\d+\.?\d*)/ },
-            { re: /[?&](?:q|query|ll|sll)=(-?\d+\.?\d*)[,%20\s+]+(-?\d+\.?\d*)/i },
-            { re: /center=(-?\d+\.?\d*)%2C(-?\d+\.?\d*)/i },
-            { re: /\[null,null,(-?\d+\.?\d*),(-?\d+\.?\d*)\]/ },
-            { re: /"lat":\s*(-?\d+\.?\d*)\s*,\s*"lng":\s*(-?\d+\.?\d*)/ },
-            { re: /"latitude":\s*(-?\d+\.?\d*)\s*,\s*"longitude":\s*(-?\d+\.?\d*)/ },
-            { re: /"(-?\d+\.\d{4,})","(-?\d+\.\d{4,})"/ },
-            { re: /og:url[^>]+content="[^"]*@(-?\d+\.?\d*),(-?\d+\.?\d*)/i }
-        ];
-        for (const { re, swap } of patterns) {
-            const m = text.match(re);
-            if (!m) continue;
-            let lat = parseFloat(m[1]);
-            let lng = parseFloat(m[2]);
-            if (swap) { const t = lat; lat = lng; lng = t; }
-            if (isValidCoordPair(lat, lng)) return { lat, lng };
-        }
-        return null;
-    }
-
-    function parseCoordsFromMapLink(link) {
-        return parseCoordsFromMapText(link);
-    }
-
-    async function expandShortMapLink(link) {
-        const tryAllOrigins = async () => {
-            const resp = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(link)}`);
-            if (!resp.ok) return null;
-            const data = await resp.json();
-            return { finalUrl: data.status?.url || '', html: data.contents || '' };
-        };
-        const tryCorsProxy = async () => {
-            const resp = await fetch(`https://corsproxy.io/?${encodeURIComponent(link)}`);
-            if (!resp.ok) return null;
-            const html = await resp.text();
-            return { finalUrl: resp.url || '', html };
-        };
-        const tryCodetabs = async () => {
-            const resp = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(link)}`);
-            if (!resp.ok) return null;
-            return { finalUrl: '', html: await resp.text() };
-        };
-        for (const fn of [tryAllOrigins, tryCorsProxy, tryCodetabs]) {
-            try {
-                const result = await fn();
-                if (result && (result.finalUrl || result.html)) return result;
-            } catch (e) {}
-        }
-        return null;
-    }
-
-    async function resolveMapLinkToCoords(link) {
-        link = (link || '').trim();
-        if (!link) return null;
-
-        let coords = parseCoordsFromMapText(link);
-        if (coords) return coords;
-
-        if (!/maps|goo\.gl|g\.co|google\.com/i.test(link)) return null;
-
-        const expanded = await expandShortMapLink(link);
-        if (expanded) {
-            if (expanded.finalUrl) {
-                coords = parseCoordsFromMapText(expanded.finalUrl);
-                if (coords) return coords;
-            }
-            if (expanded.html) {
-                coords = parseCoordsFromMapText(expanded.html);
-                if (coords) return coords;
-            }
-        }
-
-        try {
-            const resp = await fetch(link, { method: 'GET', redirect: 'follow' });
-            coords = parseCoordsFromMapText(resp.url);
-            if (coords) return coords;
-            const body = await resp.text();
-            coords = parseCoordsFromMapText(body);
-            if (coords) return coords;
-        } catch (e) {}
-
-        return null;
-    }
-
-    function setQrLocParseStatus(msg, isError) {
-        const el = document.getElementById('qrLocParseStatus');
-        if (!el) return;
-        el.textContent = msg || '';
-        el.style.color = isError ? 'var(--danger)' : 'var(--success)';
-    }
-
-    async function autoFillCoordsFromMapLink() {
-        const linkInput = document.getElementById('qrLocLink');
-        const latInput = document.getElementById('qrLocLat');
-        const lngInput = document.getElementById('qrLocLng');
-        const link = linkInput.value.trim();
-        if (!link) {
-            setQrLocParseStatus('');
-            return;
-        }
-
-        const isShort = /goo\.gl|maps\.app/i.test(link);
-        setQrLocParseStatus(isShort ? 'Membuka link pendek GMap...' : 'Membaca koordinat dari link...');
-        const coords = await resolveMapLinkToCoords(link);
-        if (coords) {
-            latInput.value = coords.lat;
-            lngInput.value = coords.lng;
-            setQrLocParseStatus(`✓ Koordinat terisi otomatis (${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)})`);
-        } else if (/maps|goo\.gl|g\.co/i.test(link)) {
-            setQrLocParseStatus('Gagal baca link pendek. Tap link → Buka di Chrome → Salin URL panjang dari address bar → paste lagi.', true);
-        } else {
-            setQrLocParseStatus('');
-        }
-    }
-
-    function resolveQrLocationCoords(link, latInput, lngInput) {
-        let lat = parseFloat(latInput);
-        let lng = parseFloat(lngInput);
-        if (isNaN(lat) || isNaN(lng)) {
-            const parsed = parseCoordsFromMapLink(link);
-            if (parsed) { lat = parsed.lat; lng = parsed.lng; }
-        }
-        if (isNaN(lat) || isNaN(lng) || (lat === 0 && lng === 0)) return null;
-        return { lat, lng };
-    }
-
-    function cleanupScanner() {
-        if (!scanner) return Promise.resolve();
-        const active = scanner;
-        scanner = null;
-        return active.stop().then(() => active.clear()).catch(() => {});
-    }
-
-    function escapeHtml(str) {
-        return String(str ?? '').replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"');
-    }
-    function cleanLocId(name) { return name.toLowerCase().replace(/[^a-z0-9]/g, ''); }
-    function formatLocSubtitle(loc) {
-        if (loc.address && !/^https?:\/\//i.test(loc.address)) return loc.address;
-        return 'gdr:' + loc.id + ' • radius ' + (loc.radius || 50) + 'm';
-    }
-    function saveLocationsStorage() { /* data saved to Supabase directly */ }
-
-    // ==================== FUNGSI JARAK ====================
-    function hitungJarak(lat1, lon1, lat2, lon2) {
-        const R = 6371e3;
-        const φ1 = lat1 * Math.PI/180;
-        const φ2 = lat2 * Math.PI/180;
-        const Δφ = (lat2 - lat1) * Math.PI/180;
-        const Δλ = (lon2 - lon1) * Math.PI/180;
-        const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-                  Math.cos(φ1) * Math.cos(φ2) *
-                  Math.sin(Δλ/2) * Math.sin(Δλ/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return R * c;
-    }
-
+    // ==================== UTILITY ====================
     function showToast(msg) { let t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
-    function showPage(pageId) { 
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
-        document.getElementById(pageId).classList.add('active'); 
-        window.scrollTo(0,0);
-        if(pageId === 'dashboardPage' && currentUser && currentUser.role === 'admin') refreshAdminDashboard();
-    }
+    function showPage(pageId) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(pageId).classList.add('active'); window.scrollTo(0,0); if(pageId === 'dashboardPage' && currentUser?.role === 'admin') refreshAdminDashboard(); }
+    function escapeHtml(str) { return String(str ?? '').replace(/&/g,'&').replace(/</g,'<').replace(/>/g,'>').replace(/"/g,'"'); }
+    function cleanLocId(name) { return name.toLowerCase().replace(/[^a-z0-9]/g, ''); }
+    function formatLocSubtitle(loc) { if (loc.address && !/^https?:\/\//i.test(loc.address)) return loc.address; return 'gdr:' + loc.id + ' • radius ' + (loc.radius || 20) + 'm'; }
+    function hitungJarak(lat1, lon1, lat2, lon2) { const R=6371e3; const φ1=lat1*Math.PI/180, φ2=lat2*Math.PI/180, Δφ=(lat2-lat1)*Math.PI/180, Δλ=(lon2-lon1)*Math.PI/180; const a=Math.sin(Δφ/2)**2+Math.cos(φ1)*Math.cos(φ2)*Math.sin(Δλ/2)**2; const c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)); return R*c; }
+    function cleanupScanner() { if(!scanner) return Promise.resolve(); const active=scanner; scanner=null; return active.stop().then(()=>active.clear()).catch(()=>{}); }
+    function updateScanButtonState() { const btn=document.getElementById('btnScanQr'); if(btn) btn.disabled = !(!!currentPosition && !gpsSearching); }
 
-    function updateScanButtonState() {
-        const btn = document.getElementById('btnScanQr');
-        if (!btn) return;
-        const canScan = !!currentPosition && !gpsSearching;
-        btn.disabled = !canScan;
-    }
-
-    function requestLocationPermission() {
-        if (!navigator.geolocation) {
-            showToast('Browser tidak mendukung GPS');
-            return;
-        }
-        refreshGPS();
-    }
-
+    // ==================== GPS ====================
+    function requestLocationPermission() { if(navigator.geolocation) refreshGPS(); else showToast('Browser tidak mendukung GPS'); }
     function refreshGPS() {
-        const statusDiv = document.getElementById('homeGpsStatus');
-        const textSpan = document.getElementById('homeGpsText');
-        const debugDiv = document.getElementById('gpsDebug');
-        statusDiv.className = 'gps-status';
-        textSpan.textContent = 'Mencari GPS... tunggu 10–20 detik';
-        if (debugDiv) debugDiv.textContent = '';
-
-        if (!navigator.geolocation) {
-            textSpan.textContent = 'GPS tidak didukung browser';
-            statusDiv.classList.add('error');
-            updateScanButtonState();
-            return;
-        }
-
-        if (watchId) {
-            navigator.geolocation.clearWatch(watchId);
-            watchId = null;
-        }
-
-        gpsSearching = true;
-        updateScanButtonState();
-
-        const tryGetPosition = (highAccuracy, onFinalFail) => {
+        const statusDiv=document.getElementById('homeGpsStatus'), textSpan=document.getElementById('homeGpsText'), debugDiv=document.getElementById('gpsDebug');
+        statusDiv.className='gps-status'; textSpan.textContent='Mencari GPS... tunggu 10–20 detik'; if(debugDiv) debugDiv.textContent='';
+        if(!navigator.geolocation) { textSpan.textContent='GPS tidak didukung'; statusDiv.classList.add('error'); updateScanButtonState(); return; }
+        if(watchId) { navigator.geolocation.clearWatch(watchId); watchId=null; }
+        gpsSearching=true; updateScanButtonState();
+        const tryGet=(high,onFail)=>{
             navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    gpsSearching = false;
-                    onGPSSuccess(pos, statusDiv, textSpan, debugDiv);
-                },
-                (error) => {
-                    if (!highAccuracy) {
-                        textSpan.textContent = 'Mencari presisi tinggi...';
-                        tryGetPosition(true, onFinalFail);
-                    } else {
-                        gpsSearching = false;
-                        onFinalFail(error);
-                    }
-                },
-                highAccuracy
-                    ? { enableHighAccuracy: true, timeout: 25000, maximumAge: 0 }
-                    : { enableHighAccuracy: false, timeout: 15000, maximumAge: 120000 }
+                pos=>{ gpsSearching=false; onGPSSuccess(pos,statusDiv,textSpan,debugDiv); },
+                err=>{ if(!high){ textSpan.textContent='Mencari presisi tinggi...'; tryGet(true,onFail); } else { gpsSearching=false; onFail(err); } },
+                high ? { enableHighAccuracy:true, timeout:25000, maximumAge:0 } : { enableHighAccuracy:false, timeout:15000, maximumAge:120000 }
             );
         };
-
-        tryGetPosition(false, (error) => handleGPSError(error, statusDiv, textSpan, debugDiv));
+        tryGet(false, (error)=>handleGPSError(error,statusDiv,textSpan,debugDiv));
     }
-
-    function onGPSSuccess(pos, statusDiv, textSpan, debugDiv) {
-        currentPosition = {
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-            accuracy: pos.coords.accuracy,
-            timestamp: pos.timestamp
-        };
-
-        const accuracy = Math.round(pos.coords.accuracy);
-        textSpan.textContent = `GPS siap — bisa scan (±${accuracy}m)`;
-        statusDiv.className = 'gps-status active';
-
-        if (debugDiv) {
-            debugDiv.textContent = `Lat: ${pos.coords.latitude.toFixed(5)}, Lng: ${pos.coords.longitude.toFixed(5)} | ±${accuracy}m`;
-        }
-
+    function onGPSSuccess(pos,statusDiv,textSpan,debugDiv){
+        currentPosition={ lat:pos.coords.latitude, lng:pos.coords.longitude, accuracy:pos.coords.accuracy, timestamp:pos.timestamp };
+        const acc=Math.round(pos.coords.accuracy);
+        textSpan.textContent=`GPS siap — bisa scan (±${acc}m)`;
+        statusDiv.className='gps-status active';
+        if(debugDiv) debugDiv.textContent=`Lat: ${pos.coords.latitude.toFixed(5)}, Lng: ${pos.coords.longitude.toFixed(5)} | ±${acc}m`;
         showToast('GPS siap — bisa scan');
         updateScanButtonState();
-        startWatchPosition(statusDiv, textSpan, debugDiv);
+        startWatchPosition(statusDiv,textSpan,debugDiv);
     }
-
-    function startWatchPosition(statusDiv, textSpan, debugDiv) {
-        watchId = navigator.geolocation.watchPosition(
-            (pos) => {
-                currentPosition = {
-                    lat: pos.coords.latitude,
-                    lng: pos.coords.longitude,
-                    accuracy: pos.coords.accuracy,
-                    timestamp: pos.timestamp
-                };
-                const accuracy = Math.round(pos.coords.accuracy);
-                if (textSpan) textSpan.textContent = `GPS siap — bisa scan (±${accuracy}m)`;
-                if (debugDiv && Math.random() < 0.15) {
-                    debugDiv.textContent = `Lat: ${pos.coords.latitude.toFixed(5)}, Lng: ${pos.coords.longitude.toFixed(5)} | ±${accuracy}m`;
-                }
+    function startWatchPosition(statusDiv,textSpan,debugDiv){
+        watchId=navigator.geolocation.watchPosition(
+            pos=>{
+                currentPosition={ lat:pos.coords.latitude, lng:pos.coords.longitude, accuracy:pos.coords.accuracy, timestamp:pos.timestamp };
+                const acc=Math.round(pos.coords.accuracy);
+                if(textSpan) textSpan.textContent=`GPS siap — bisa scan (±${acc}m)`;
+                if(debugDiv && Math.random()<0.15) debugDiv.textContent=`Lat: ${pos.coords.latitude.toFixed(5)}, Lng: ${pos.coords.longitude.toFixed(5)} | ±${acc}m`;
                 updateScanButtonState();
             },
-            () => {},
-            { enableHighAccuracy: true, timeout: 30000, maximumAge: 5000 }
+            ()=>{},
+            { enableHighAccuracy:true, timeout:30000, maximumAge:5000 }
         );
     }
-
-    function handleGPSError(error, statusDiv, textSpan, debugDiv) {
-        let pesan = '';
-        switch (error.code) {
-            case 1:
-                pesan = 'Izin lokasi ditolak. Buka Pengaturan > Browser > Izinkan Lokasi';
-                break;
-            case 2:
-                pesan = 'GPS mati. Nyalakan Lokasi di pengaturan HP';
-                break;
-            case 3:
-                pesan = 'GPS timeout. Pindah ke tempat terbuka, lalu tap Refresh GPS';
-                break;
-            default:
-                pesan = 'GPS gagal: ' + error.message;
+    function handleGPSError(error,statusDiv,textSpan,debugDiv){
+        let pesan='';
+        switch(error.code){
+            case 1: pesan='Izin lokasi ditolak. Buka Pengaturan > Browser > Izinkan Lokasi'; break;
+            case 2: pesan='GPS mati. Nyalakan Lokasi di pengaturan HP'; break;
+            case 3: pesan='GPS timeout. Pindah ke tempat terbuka, lalu tap Refresh GPS'; break;
+            default: pesan='GPS gagal: '+error.message;
         }
-        textSpan.textContent = pesan;
-        statusDiv.className = 'gps-status error';
-        if (debugDiv) debugDiv.textContent = '';
-        showToast(pesan);
-        updateScanButtonState();
+        textSpan.textContent=pesan; statusDiv.className='gps-status error'; if(debugDiv) debugDiv.textContent=''; showToast(pesan); updateScanButtonState();
     }
 
     // ==================== HOME (GUARD) ====================
     async function initHome() {
-        document.getElementById('homeUserName').textContent = currentUser.name;
-        document.getElementById('homeDateText').textContent = new Date().toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'short' });
-        let avatarEl = document.getElementById('homeAvatar');
-        if(currentUser.avatar && currentUser.avatar !== '') avatarEl.innerHTML = `<img src="${currentUser.avatar}">`;
-        else avatarEl.textContent = currentUser.name.charAt(0).toUpperCase();
-        
-        let allScans = await dbGetScansToday();
-        todayScans = allScans.filter(s => s.guardId === currentUser.id);
+        document.getElementById('homeUserName').textContent=currentUser.name;
+        document.getElementById('homeDateText').textContent=new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'short'});
+        let avatarEl=document.getElementById('homeAvatar');
+        if(currentUser.avatar && currentUser.avatar!=='') avatarEl.innerHTML=`<img src="${currentUser.avatar}">`;
+        else avatarEl.textContent=currentUser.name.charAt(0).toUpperCase();
+        let allScans=await dbGetScansToday();
+        todayScans=allScans.filter(s=>s.guardId===currentUser.id);
         renderHistory();
-        
-        const statusDiv = document.getElementById('homeGpsStatus');
-        const textSpan = document.getElementById('homeGpsText');
-        const debugDiv = document.getElementById('gpsDebug');
+        const statusDiv=document.getElementById('homeGpsStatus'), textSpan=document.getElementById('homeGpsText'), debugDiv=document.getElementById('gpsDebug');
         updateScanButtonState();
-        if (currentPosition) {
-            const accuracy = Math.round(currentPosition.accuracy || 0);
-            textSpan.textContent = `GPS siap — bisa scan (±${accuracy}m)`;
-            statusDiv.className = 'gps-status active';
-            if (debugDiv) {
-                debugDiv.textContent = `Lat: ${currentPosition.lat.toFixed(5)}, Lng: ${currentPosition.lng.toFixed(5)} | ±${accuracy}m`;
-            }
+        if(currentPosition){
+            const acc=Math.round(currentPosition.accuracy||0);
+            textSpan.textContent=`GPS siap — bisa scan (±${acc}m)`;
+            statusDiv.className='gps-status active';
+            if(debugDiv) debugDiv.textContent=`Lat: ${currentPosition.lat.toFixed(5)}, Lng: ${currentPosition.lng.toFixed(5)} | ±${acc}m`;
         } else {
-            textSpan.textContent = 'Mencari GPS...';
-            statusDiv.className = 'gps-status';
-            if (debugDiv) debugDiv.textContent = '';
+            textSpan.textContent='Mencari GPS...'; statusDiv.className='gps-status';
+            if(debugDiv) debugDiv.textContent='';
             refreshGPS();
         }
     }
-    
     function renderHistory() {
-        let container = document.getElementById('historyList');
-        let unique = new Set(todayScans.map(s=>s.locId)).size;
-        document.getElementById('progressText').textContent = `${unique}/${LOCATIONS.length}`;
+        let container=document.getElementById('historyList');
+        let unique=new Set(todayScans.map(s=>s.locId)).size;
+        document.getElementById('progressText').textContent=`${unique}/${LOCATIONS.length}`;
         if(todayScans.length===0){ container.innerHTML='<div class="card-subtitle">Belum patroli hari ini</div>'; return; }
-        container.innerHTML = todayScans.slice().reverse().map(s=>`<div class="list-item"><div class="list-info"><div class="list-title">${s.locName}</div><div class="list-sub">${s.time} • Jarak: ${s.distance}m • ${s.status}</div></div></div>`).join('');
+        container.innerHTML=todayScans.slice().reverse().map(s=>`<div class="list-item"><div class="list-info"><div class="list-title">${s.locName}</div><div class="list-sub">${s.time} • Jarak: ${s.distance}m • ${s.status}</div></div></div>`).join('');
     }
-    
     function startScan() {
         if(!currentPosition){ showToast('GPS belum aktif. Tekan "Refresh GPS" dulu.'); return; }
-        isProcessingScan = false;
+        isProcessingScan=false;
         showPage('scanPage');
-        cleanupScanner().finally(() => {
-            scanner = new Html5Qrcode('scannerContainer');
-            scanner.start({ facingMode: 'environment' }, { fps: 10, qrbox: { width: 250, height: 250 } },
-                (text) => {
-                    if (isProcessingScan) return;
-                    isProcessingScan = true;
-                    if (scanner) scanner.stop().then(() => processQR(text)).catch(() => processQR(text));
-                },
-                () => {}
-            ).catch(() => { showToast('Kamera tidak tersedia'); stopScan(); });
+        cleanupScanner().finally(()=>{
+            scanner=new Html5Qrcode('scannerContainer');
+            scanner.start({ facingMode:'environment' }, { fps:10, qrbox:{ width:250, height:250 } },
+                (text)=>{ if(isProcessingScan) return; isProcessingScan=true; if(scanner) scanner.stop().then(()=>processQR(text)).catch(()=>processQR(text)); },
+                ()=>{}
+            ).catch(()=>{ showToast('Kamera tidak tersedia'); stopScan(); });
         });
     }
-    
-    function stopScan() {
-        isProcessingScan = false;
-        cleanupScanner().finally(() => showPage('homePage'));
-    }
-    
+    function stopScan() { isProcessingScan=false; cleanupScanner().finally(()=>showPage('homePage')); }
     async function processQR(text){
-        const failScan = (msg) => {
-            isProcessingScan = false;
-            showToast(msg);
-            setTimeout(() => { if (document.getElementById('scanPage').classList.contains('active')) stopScan(); }, 1500);
-        };
-        if (!text || !text.startsWith('gdr:')) {
-            failScan('QR tidak valid! Gunakan QR dari menu admin.');
-            return;
-        }
-        let locId = text.substring(4);
-        let lokasiTujuan = LOCATIONS.find(l => l.id === locId);
-        if(!lokasiTujuan) {
-            failScan(`Lokasi "${locId}" tidak terdaftar.`);
-            return;
-        }
-        if (!lokasiTujuan.lat || !lokasiTujuan.lng || (lokasiTujuan.lat === 0 && lokasiTujuan.lng === 0)) {
-            failScan('Koordinat lokasi belum diatur. Hubungi admin.');
-            return;
-        }
-        if(!currentPosition) {
-            failScan('GPS belum siap. Refresh GPS.');
-            return;
-        }
-        let jarakMeter = hitungJarak(currentPosition.lat, currentPosition.lng, lokasiTujuan.lat, lokasiTujuan.lng);
-        let radiusIzinkan = lokasiTujuan.radius || 50;
-        let status = (jarakMeter <= radiusIzinkan) ? 'valid' : 'Luar Zona';
-        let newScan = {
-            guardId: currentUser.id, guardName: currentUser.name, locId: lokasiTujuan.id, locName: lokasiTujuan.name,
-            time: new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}),
-            timestamp: Date.now(), status: status, distance: Math.round(jarakMeter)
-        };
-        const ok = await dbInsertScan(newScan);
-        if (ok) {
-            todayScans.push(newScan);
-        }
-        showToast(status === 'valid' ? `Patroli Valid ✓ (${Math.round(jarakMeter)}m)` : `Luar Zona! Jarak ${Math.round(jarakMeter)}m > ${radiusIzinkan}m`);
+        const failScan=(msg)=>{ isProcessingScan=false; showToast(msg); setTimeout(()=>{ if(document.getElementById('scanPage').classList.contains('active')) stopScan(); },1500); };
+        if(!text || !text.startsWith('gdr:')) return failScan('QR tidak valid! Gunakan QR dari menu admin.');
+        let locId=text.substring(4);
+        let lokasiTujuan=LOCATIONS.find(l=>l.id===locId);
+        if(!lokasiTujuan) return failScan(`Lokasi "${locId}" tidak terdaftar.`);
+        if(!lokasiTujuan.lat || !lokasiTujuan.lng || (lokasiTujuan.lat===0 && lokasiTujuan.lng===0)) return failScan('Koordinat lokasi belum diatur. Hubungi admin.');
+        if(!currentPosition) return failScan('GPS belum siap. Refresh GPS.');
+        let jarakMeter=hitungJarak(currentPosition.lat, currentPosition.lng, lokasiTujuan.lat, lokasiTujuan.lng);
+        let radiusIzinkan=lokasiTujuan.radius||20;
+        let status=(jarakMeter<=radiusIzinkan)?'valid':'Luar Zona';
+        let newScan={ guardId:currentUser.id, guardName:currentUser.name, locId:lokasiTujuan.id, locName:lokasiTujuan.name, time:new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}), timestamp:Date.now(), status:status, distance:Math.round(jarakMeter) };
+        const ok=await dbInsertScan(newScan);
+        if(ok) todayScans.push(newScan);
+        showToast(status==='valid'?`Patroli Valid ✓ (${Math.round(jarakMeter)}m)`:`Luar Zona! Jarak ${Math.round(jarakMeter)}m > ${radiusIzinkan}m`);
         stopScan();
         await initHome();
     }
-    
     function logout(){
-        currentUser = null;
-        isProcessingScan = false;
-        if (watchId) {
-            navigator.geolocation.clearWatch(watchId);
-            watchId = null;
-        }
-        currentPosition = null;
-        gpsSearching = false;
-        cleanupScanner();
-        updateScanButtonState();
+        currentUser=null; isProcessingScan=false;
+        if(watchId){ navigator.geolocation.clearWatch(watchId); watchId=null; }
+        currentPosition=null; gpsSearching=false; cleanupScanner(); updateScanButtonState();
         showPage('loginPage');
     }
-    
     async function verifyPin(){
-        let pin = document.getElementById('loginPin').value.trim();
-        let user = GUARDS.find(g=>g.pin===pin);
+        let pin=document.getElementById('loginPin').value.trim();
+        let user=GUARDS.find(g=>g.pin===pin);
         if(user){
             currentUser=user; document.getElementById('loginPin').value='';
             if(user.role==='admin'){ showPage('dashboardPage'); await refreshAdminDashboard(); renderAdminGuards(); await renderAdminLocations(); }
             else { showPage('homePage'); await initHome(); }
         } else { showToast('PIN salah'); document.getElementById('loginPin').value=''; }
     }
-    // ==================== QR MODAL FUNCTIONS ====================
-function showQRCode(qrText) {
-    // Bersihkan container sebelumnya
-    const container = document.getElementById('qrCodeContainer');
-    container.innerHTML = '';
-    // Tampilkan teks QR
-    document.getElementById('qrCodeText').innerText = qrText;
-    // Generate QR code menggunakan library QRCode.js
-    new QRCode(container, {
-        text: qrText,
-        width: 220,
-        height: 220,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-    });
-    // Tampilkan modal
-    document.getElementById('qrModal').style.display = 'flex';
-    
-    // Siapkan download
-    const downloadBtn = document.getElementById('downloadQrBtn');
-    // Hapus event listener lama untuk menghindari duplikasi
-    const newBtn = downloadBtn.cloneNode(true);
-    downloadBtn.parentNode.replaceChild(newBtn, downloadBtn);
-    newBtn.addEventListener('click', () => {
-        const canvas = container.querySelector('canvas') || container.querySelector('img');
-        if (!canvas) {
-            showToast('Gagal membuat QR');
-            return;
-        }
-        // Buat canvas sementara untuk download
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = canvas.width;
-        tempCanvas.height = canvas.height;
-        const ctx = tempCanvas.getContext('2d');
-        ctx.drawImage(canvas, 0, 0);
-        const link = document.createElement('a');
-        link.download = `${qrText.replace(/:/g, '_')}.png`;
-        link.href = tempCanvas.toDataURL('image/png');
-        link.click();
-        showToast('QR Code disimpan');
-    });
-}
 
-function closeQrModal() {
-    document.getElementById('qrModal').style.display = 'none';
-}
-    // ==================== ADMIN FUNCTIONS ====================
-    async function getAllScansForMonth(){
-        return await dbGetScansMonth();
+    // ==================== QR MODAL ====================
+    function showQRCode(qrText){
+        const container=document.getElementById('qrCodeContainer');
+        container.innerHTML='';
+        document.getElementById('qrCodeText').innerText=qrText;
+        new QRCode(container, { text:qrText, width:220, height:220, colorDark:"#000", colorLight:"#fff", correctLevel:QRCode.CorrectLevel.H });
+        document.getElementById('qrModal').style.display='flex';
+        const downloadBtn=document.getElementById('downloadQrBtn');
+        const newBtn=downloadBtn.cloneNode(true);
+        downloadBtn.parentNode.replaceChild(newBtn, downloadBtn);
+        newBtn.addEventListener('click',()=>{
+            const canvas=container.querySelector('canvas')||container.querySelector('img');
+            if(!canvas){ showToast('Gagal membuat QR'); return; }
+            const tempCanvas=document.createElement('canvas');
+            tempCanvas.width=canvas.width; tempCanvas.height=canvas.height;
+            const ctx=tempCanvas.getContext('2d');
+            ctx.drawImage(canvas,0,0);
+            const link=document.createElement('a');
+            link.download=`${qrText.replace(/:/g,'_')}.png`;
+            link.href=tempCanvas.toDataURL('image/png');
+            link.click();
+            showToast('QR Code disimpan');
+        });
     }
+    function closeQrModal(){ document.getElementById('qrModal').style.display='none'; }
+
+    // ==================== ADMIN FUNCTIONS ====================
+    async function getAllScansForMonth(){ return await dbGetScansMonth(); }
     async function refreshAdminDashboard(){
-        let allScansToday = await dbGetScansToday();
-        let activeGuards = new Set(allScansToday.map(s=>s.guardId)).size;
-        let validCount = allScansToday.filter(s=>s.status==='valid').length;
-        let outCount = allScansToday.length - validCount;
-        document.getElementById('statTotalScan').innerText = allScansToday.length;
-        document.getElementById('statActiveGuard').innerText = activeGuards;
-        document.getElementById('statValidScan').innerText = validCount;
-        document.getElementById('statOutZone').innerText = outCount;
-        
-        let monthScans = await getAllScansForMonth();
-        let uniqueDays = new Set(monthScans.map(s => dateKeyLocal(new Date(s.timestamp)))).size;
-        let avgPerDay = uniqueDays===0?0:Math.round(monthScans.length/uniqueDays);
-        let guardCounts = {};
-        monthScans.forEach(s=>{ guardCounts[s.guardName] = (guardCounts[s.guardName]||0)+1; });
-        let topName = Object.keys(guardCounts).length ? Object.entries(guardCounts).sort((a,b)=>b[1]-a[1])[0][0] : '-';
-        document.getElementById('monthTotalScan').innerText = monthScans.length;
-        document.getElementById('monthActiveDays').innerText = uniqueDays;
-        document.getElementById('monthAvgScan').innerText = avgPerDay;
-        document.getElementById('monthTopGuard').innerText = topName.length>6?topName.slice(0,5):topName;
-        
-        let recent = [...allScansToday].sort((a,b)=>b.timestamp - a.timestamp).slice(0,5);
-        let recentHtml = recent.length ? recent.map(a=>`<div class="list-item"><div class="list-info"><div class="list-title">${a.guardName} - ${a.locName}</div><div class="list-sub">${a.time} • ${a.status}</div></div></div>`).join('') : '<div class="card-subtitle">Tidak ada aktivitas</div>';
-        document.getElementById('adminRecentActivities').innerHTML = recentHtml;
-        
-        let guardsOnly = GUARDS.filter(g=>g.role==='guard');
-        let progressHtml = guardsOnly.map(g=>{
-            let guardScans = allScansToday.filter(s=>s.guardId===g.id);
-            let scannedLocs = new Set(guardScans.map(s=>s.locId)).size;
-            let percent = LOCATIONS.length ? Math.round((scannedLocs/LOCATIONS.length)*100) : 0;
+        let allScansToday=await dbGetScansToday();
+        let activeGuards=new Set(allScansToday.map(s=>s.guardId)).size;
+        let validCount=allScansToday.filter(s=>s.status==='valid').length;
+        let outCount=allScansToday.length-validCount;
+        document.getElementById('statTotalScan').innerText=allScansToday.length;
+        document.getElementById('statActiveGuard').innerText=activeGuards;
+        document.getElementById('statValidScan').innerText=validCount;
+        document.getElementById('statOutZone').innerText=outCount;
+        let monthScans=await getAllScansForMonth();
+        let uniqueDays=new Set(monthScans.map(s=>dateKeyLocal(new Date(s.timestamp)))).size;
+        let avgPerDay=uniqueDays===0?0:Math.round(monthScans.length/uniqueDays);
+        let guardCounts={};
+        monthScans.forEach(s=>{ guardCounts[s.guardName]=(guardCounts[s.guardName]||0)+1; });
+        let topName=Object.keys(guardCounts).length?Object.entries(guardCounts).sort((a,b)=>b[1]-a[1])[0][0]:'-';
+        document.getElementById('monthTotalScan').innerText=monthScans.length;
+        document.getElementById('monthActiveDays').innerText=uniqueDays;
+        document.getElementById('monthAvgScan').innerText=avgPerDay;
+        document.getElementById('monthTopGuard').innerText=topName.length>6?topName.slice(0,5):topName;
+        let recent=[...allScansToday].sort((a,b)=>b.timestamp-a.timestamp).slice(0,5);
+        let recentHtml=recent.length?recent.map(a=>`<div class="list-item"><div class="list-info"><div class="list-title">${a.guardName} - ${a.locName}</div><div class="list-sub">${a.time} • ${a.status}</div></div></div>`).join(''):'<div class="card-subtitle">Tidak ada aktivitas</div>';
+        document.getElementById('adminRecentActivities').innerHTML=recentHtml;
+        let guardsOnly=GUARDS.filter(g=>g.role==='guard');
+        let progressHtml=guardsOnly.map(g=>{
+            let guardScans=allScansToday.filter(s=>s.guardId===g.id);
+            let scannedLocs=new Set(guardScans.map(s=>s.locId)).size;
+            let percent=LOCATIONS.length?Math.round((scannedLocs/LOCATIONS.length)*100):0;
             return `<div class="list-item" style="flex-direction:column; align-items:stretch;"><div class="flex-between"><span class="list-title">${g.name}</span><span class="badge badge-primary">${scannedLocs}/${LOCATIONS.length}</span></div><div class="progress-wrapper"><div class="progress-bar-bg"><div class="progress-fill" style="width:${percent}%"></div></div><span class="progress-text">${percent}%</span></div></div>`;
         }).join('');
-        document.getElementById('adminProgressList').innerHTML = progressHtml || '<div class="card-subtitle">Tidak ada data</div>';
-        
+        document.getElementById('adminProgressList').innerHTML=progressHtml || '<div class="card-subtitle">Tidak ada data</div>';
         await renderAdminLocations();
     }
-    
     async function renderAdminLocations() {
-        const container = document.getElementById('adminLocationList');
-        if (!container) return;
-        const allScansToday = await dbGetScansToday();
-        const scannedToday = new Set(allScansToday.map(s => s.locId));
-        if (!LOCATIONS.length) {
-            container.innerHTML = '<div class="card-subtitle">Belum ada titik patroli</div>';
-            return;
-        }
-        const unchecked = LOCATIONS.filter(l => !scannedToday.has(l.id));
-        const checked = LOCATIONS.filter(l => scannedToday.has(l.id));
-        
-        let html = '';
-        
-        if (unchecked.length > 0) {
-            html += '<div style="margin-bottom: 1rem;"><div style="font-weight: 600; color: var(--warning); margin-bottom: 0.5rem;">⚠ Belum Dicek (' + unchecked.length + ')</div>';
-            html += unchecked.map(l => {
-                const hasCoords = l.lat && l.lng && !(l.lat === 0 && l.lng === 0);
+        const container=document.getElementById('adminLocationList');
+        if(!container) return;
+        const allScansToday=await dbGetScansToday();
+        const scannedToday=new Set(allScansToday.map(s=>s.locId));
+        if(!LOCATIONS.length){ container.innerHTML='<div class="card-subtitle">Belum ada titik patroli</div>'; return; }
+        const unchecked=LOCATIONS.filter(l=>!scannedToday.has(l.id));
+        const checked=LOCATIONS.filter(l=>scannedToday.has(l.id));
+        let html='';
+        if(unchecked.length){
+            html+=`<div style="margin-bottom:1rem;"><div style="font-weight:600;color:var(--warning);margin-bottom:0.5rem;">⚠ Belum Dicek (${unchecked.length})</div>`;
+            html+=unchecked.map(l=>{
+                const hasCoords=l.lat && l.lng && !(l.lat===0 && l.lng===0);
                 return `<div class="list-item">
                     <div>📍</div>
                     <div class="list-info">
                         <div class="list-title">${escapeHtml(l.name)}</div>
-                        <div class="list-sub">${escapeHtml(formatLocSubtitle(l))}${hasCoords ? '' : ' • ⚠ koordinat belum diisi'}</div>
-                        <div class="list-sub" style="font-family: monospace; font-size: 0.7rem; margin-top: 0.3rem;">
-    <span style="color: var(--primary); text-decoration: underline; cursor: pointer;" onclick="showQRCode('gdr:${escapeHtml(l.id)}')">📱 QR: gdr:${escapeHtml(l.id)}</span>
-</div>
+                        <div class="list-sub">${escapeHtml(formatLocSubtitle(l))}${hasCoords?'':' • ⚠ koordinat belum diisi'}</div>
+                        <div class="list-sub" style="margin-top:0.3rem;"><span style="color:var(--primary);text-decoration:underline;cursor:pointer;" onclick="showQRCode('gdr:${escapeHtml(l.id)}')">📱 QR: gdr:${escapeHtml(l.id)}</span></div>
                     </div>
                     <span class="badge badge-warning">Belum dicek</span>
                     <button class="btn btn-secondary btn-tiny" onclick="openEditLocationModal('${l.id}')">Edit</button>
                     <button class="btn btn-danger btn-tiny" onclick="deleteLocation('${l.id}')">Hapus</button>
                 </div>`;
             }).join('');
-            html += '</div>';
+            html+=`</div>`;
         }
-        
-        if (checked.length > 0) {
-            html += '<div><div style="font-weight: 600; color: var(--success); margin-bottom: 0.5rem;">✓ Sudah Dicek (' + checked.length + ')</div>';
-            html += checked.map(l => {
-                const hasCoords = l.lat && l.lng && !(l.lat === 0 && l.lng === 0);
+        if(checked.length){
+            html+=`<div><div style="font-weight:600;color:var(--success);margin-bottom:0.5rem;">✓ Sudah Dicek (${checked.length})</div>`;
+            html+=checked.map(l=>{
+                const hasCoords=l.lat && l.lng && !(l.lat===0 && l.lng===0);
                 return `<div class="list-item">
                     <div>📍</div>
                     <div class="list-info">
                         <div class="list-title">${escapeHtml(l.name)}</div>
-                        <div class="list-sub">${escapeHtml(formatLocSubtitle(l))}${hasCoords ? '' : ' • ⚠ koordinat belum diisi'}</div>
-                        <div class="list-sub" style="font-family: monospace; font-size: 0.7rem; margin-top: 0.3rem;">
-    <span style="color: var(--primary); text-decoration: underline; cursor: pointer;" onclick="showQRCode('gdr:${escapeHtml(l.id)}')">📱 QR: gdr:${escapeHtml(l.id)}</span>
-</div>
+                        <div class="list-sub">${escapeHtml(formatLocSubtitle(l))}${hasCoords?'':' • ⚠ koordinat belum diisi'}</div>
+                        <div class="list-sub" style="margin-top:0.3rem;"><span style="color:var(--primary);text-decoration:underline;cursor:pointer;" onclick="showQRCode('gdr:${escapeHtml(l.id)}')">📱 QR: gdr:${escapeHtml(l.id)}</span></div>
                     </div>
                     <span class="badge badge-success">Sudah dicek</span>
                     <button class="btn btn-secondary btn-tiny" onclick="openEditLocationModal('${l.id}')">Edit</button>
                     <button class="btn btn-danger btn-tiny" onclick="deleteLocation('${l.id}')">Hapus</button>
                 </div>`;
             }).join('');
-            html += '</div>';
+            html+=`</div>`;
         }
-        
-        container.innerHTML = html;
+        container.innerHTML=html;
     }
-
-    function readLocationForm(prefix) {
-        const name = document.getElementById(prefix + 'LocName').value.trim();
-        let id = document.getElementById(prefix + 'LocId').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-        if (!id) id = cleanLocId(name);
-        const address = document.getElementById(prefix + 'LocAddress').value.trim();
-        const link = document.getElementById(prefix + 'LocLink').value.trim();
-        const lat = parseFloat(document.getElementById(prefix + 'LocLat').value);
-        const lng = parseFloat(document.getElementById(prefix + 'LocLng').value);
-        const radius = parseInt(document.getElementById(prefix + 'LocRadius').value, 10) || 20;
+    function readLocationForm(prefix){
+        const name=document.getElementById(prefix+'LocName').value.trim();
+        let id=document.getElementById(prefix+'LocId').value.trim().toLowerCase().replace(/[^a-z0-9]/g,'');
+        if(!id) id=cleanLocId(name);
+        const address=document.getElementById(prefix+'LocAddress').value.trim();
+        const link=document.getElementById(prefix+'LocLink').value.trim();
+        const lat=parseFloat(document.getElementById(prefix+'LocLat').value);
+        const lng=parseFloat(document.getElementById(prefix+'LocLng').value);
+        const radius=parseInt(document.getElementById(prefix+'LocRadius').value,10)||20;
         return { name, id, address, link, lat, lng, radius };
     }
-
-    async function applyCoordsToLocationForm(prefix, link, latVal, lngVal) {
-        let coords = resolveQrLocationCoords(link, latVal, lngVal);
-        if (!coords && link) coords = await resolveMapLinkToCoords(link);
-        if (coords) {
-            document.getElementById(prefix + 'LocLat').value = coords.lat;
-            document.getElementById(prefix + 'LocLng').value = coords.lng;
+    function resolveQrLocationCoords(link,latVal,lngVal){
+        let lat=parseFloat(latVal), lng=parseFloat(lngVal);
+        if(isNaN(lat)||isNaN(lng)){
+            const parsed=parseCoordsFromMapLink(link);
+            if(parsed){ lat=parsed.lat; lng=parsed.lng; }
+        }
+        if(isNaN(lat)||isNaN(lng)||(lat===0&&lng===0)) return null;
+        return { lat, lng };
+    }
+    function parseCoordsFromMapLink(link){ /* simplified version, full version kept from original */ return parseCoordsFromMapText(link); }
+    function parseCoordsFromMapText(text){ if(!text) return null; const patterns=[{re:/!3d(-?\d+\.?\d*)!4d(-?\d+\.?\d*)/},{re:/!2d(-?\d+\.?\d*)!3d(-?\d+\.?\d*)/,swap:true},{re:/@(-?\d+\.?\d*),(-?\d+\.?\d*)/},{re:/place\/[^"']*?@(-?\d+\.?\d*),(-?\d+\.?\d*)/},{re:/[?&](?:q|query|ll|sll)=(-?\d+\.?\d*)[,%20\s+]+(-?\d+\.?\d*)/i},{re:/center=(-?\d+\.?\d*)%2C(-?\d+\.?\d*)/i},{re:/\[null,null,(-?\d+\.?\d*),(-?\d+\.?\d*)\]/},{re:/"lat":\s*(-?\d+\.?\d*)\s*,\s*"lng":\s*(-?\d+\.?\d*)/},{re:/"latitude":\s*(-?\d+\.?\d*)\s*,\s*"longitude":\s*(-?\d+\.?\d*)/},{re:/"(-?\d+\.\d{4,})","(-?\d+\.\d{4,})"/},{re:/og:url[^>]+content="[^"]*@(-?\d+\.?\d*),(-?\d+\.?\d*)/i}]; for(const{re,swap}of patterns){ const m=text.match(re); if(!m) continue; let lat=parseFloat(m[1]), lng=parseFloat(m[2]); if(swap){ const t=lat; lat=lng; lng=t; } if(lat>=-90 && lat<=90 && lng>=-180 && lng<=180 && !(lat===0&&lng===0)) return {lat,lng}; } return null; }
+    async function resolveMapLinkToCoords(link){
+        if(!link) return null;
+        let coords=parseCoordsFromMapLink(link);
+        if(coords) return coords;
+        if(!/maps|goo\.gl|g\.co/i.test(link)) return null;
+        try{
+            const resp=await fetch(link,{method:'GET',redirect:'follow'});
+            coords=parseCoordsFromMapLink(resp.url);
+            if(coords) return coords;
+            const body=await resp.text();
+            coords=parseCoordsFromMapLink(body);
+            if(coords) return coords;
+        }catch(e){}
+        return null;
+    }
+    async function applyCoordsToLocationForm(prefix,link,latVal,lngVal){
+        let coords=resolveQrLocationCoords(link,latVal,lngVal);
+        if(!coords && link) coords=await resolveMapLinkToCoords(link);
+        if(coords){
+            document.getElementById(prefix+'LocLat').value=coords.lat;
+            document.getElementById(prefix+'LocLng').value=coords.lng;
         }
         return coords;
     }
-
-    async function addLocation() {
-        const data = readLocationForm('new');
-        if (!data.name) return showToast('Nama titik wajib diisi');
-        if (!data.id) return showToast('Kode QR tidak valid');
-        if (LOCATIONS.some(l => l.id === data.id)) return showToast('Kode QR sudah dipakai');
-        const coords = await applyCoordsToLocationForm('new', data.link, data.lat, data.lng);
-        if (!coords || isNaN(coords.lat)) return showToast('Isi Lat/Lng atau paste link GMap');
-        const newLoc = { id: data.id, name: data.name, address: data.address || data.name, lat: coords.lat, lng: coords.lng, radius: data.radius };
-        const ok = await dbUpsertLocation(newLoc);
-        if (!ok) return;
+    async function autoFillCoordsForLocForm(prefix){
+        const link=document.getElementById(prefix+'LocLink')?.value.trim();
+        const statusEl=document.getElementById(prefix+'LocParseStatus');
+        if(!link){ if(statusEl) statusEl.textContent=''; return; }
+        if(statusEl) statusEl.textContent=/goo\.gl|maps\.app/i.test(link)?'Membuka link pendek GMap...':'Membaca koordinat...';
+        const coords=await resolveMapLinkToCoords(link);
+        if(coords){
+            document.getElementById(prefix+'LocLat').value=coords.lat;
+            document.getElementById(prefix+'LocLng').value=coords.lng;
+            if(statusEl){ statusEl.textContent=`✓ Koordinat terisi (${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)})`; statusEl.style.color='var(--success)'; }
+        } else if(statusEl){ statusEl.textContent='Gagal baca link. Isi Lat/Lng manual.'; statusEl.style.color='var(--danger)'; }
+    }
+    async function addLocation(){
+        const data=readLocationForm('new');
+        if(!data.name) return showToast('Nama titik wajib diisi');
+        if(!data.id) return showToast('Kode QR tidak valid');
+        if(LOCATIONS.some(l=>l.id===data.id)) return showToast('Kode QR sudah dipakai');
+        const coords=await applyCoordsToLocationForm('new', data.link, data.lat, data.lng);
+        if(!coords || isNaN(coords.lat)) return showToast('Isi Lat/Lng atau paste link GMap');
+        const newLoc={ id:data.id, name:data.name, address:data.address||data.name, lat:coords.lat, lng:coords.lng, radius:data.radius };
+        const ok=await dbUpsertLocation(newLoc);
+        if(!ok) return;
         LOCATIONS.push(newLoc);
-        document.getElementById('newLocName').value = '';
-        document.getElementById('newLocId').value = '';
-        document.getElementById('newLocAddress').value = '';
-        document.getElementById('newLocLink').value = '';
-        document.getElementById('newLocLat').value = '';
-        document.getElementById('newLocLng').value = '';
-        document.getElementById('newLocRadius').value = '20';
+        document.getElementById('newLocName').value=''; document.getElementById('newLocId').value=''; document.getElementById('newLocAddress').value=''; document.getElementById('newLocLink').value=''; document.getElementById('newLocLat').value=''; document.getElementById('newLocLng').value=''; document.getElementById('newLocRadius').value='20';
         showToast('Titik patroli berhasil ditambahkan');
         await renderAdminLocations();
     }
-
-    async function openEditLocationModal(locId) {
-        const loc = LOCATIONS.find(l => l.id === locId);
-        if (!loc) return;
-        document.getElementById('editLocOldId').value = loc.id;
-        document.getElementById('editLocName').value = loc.name;
-        document.getElementById('editLocId').value = loc.id;
-        document.getElementById('editLocAddress').value = loc.address;
-        document.getElementById('editLocLink').value = '';
-        document.getElementById('editLocLat').value = loc.lat || '';
-        document.getElementById('editLocLng').value = loc.lng || '';
-        document.getElementById('editLocRadius').value = loc.radius || 20;
-        document.getElementById('editLocationModal').style.display = 'flex';
+    async function openEditLocationModal(locId){
+        const loc=LOCATIONS.find(l=>l.id===locId);
+        if(!loc) return;
+        document.getElementById('editLocOldId').value=loc.id;
+        document.getElementById('editLocName').value=loc.name;
+        document.getElementById('editLocId').value=loc.id;
+        document.getElementById('editLocAddress').value=loc.address;
+        document.getElementById('editLocLink').value='';
+        document.getElementById('editLocLat').value=loc.lat||'';
+        document.getElementById('editLocLng').value=loc.lng||'';
+        document.getElementById('editLocRadius').value=loc.radius||20;
+        document.getElementById('editLocationModal').style.display='flex';
     }
-
-    function closeEditLocationModal() {
-        document.getElementById('editLocationModal').style.display = 'none';
-    }
-
-    async function saveEditLocation() {
-        const oldId = document.getElementById('editLocOldId').value;
-        const data = readLocationForm('edit');
-        if (!data.name) return showToast('Nama titik wajib diisi');
-        const coords = await applyCoordsToLocationForm('edit', data.link, data.lat, data.lng);
-        if (!coords || isNaN(coords.lat)) return showToast('Isi Lat/Lng atau paste link GMap');
-        const updatedLoc = { id: data.id, name: data.name, address: data.address || data.name, lat: coords.lat, lng: coords.lng, radius: data.radius };
-        const ok = await dbUpsertLocation(updatedLoc);
-        if (!ok) return;
-        const idx = LOCATIONS.findIndex(l => l.id === oldId);
-        if (idx >= 0) LOCATIONS[idx] = updatedLoc;
+    function closeEditLocationModal(){ document.getElementById('editLocationModal').style.display='none'; }
+    async function saveEditLocation(){
+        const oldId=document.getElementById('editLocOldId').value;
+        const data=readLocationForm('edit');
+        if(!data.name) return showToast('Nama titik wajib diisi');
+        const coords=await applyCoordsToLocationForm('edit', data.link, data.lat, data.lng);
+        if(!coords || isNaN(coords.lat)) return showToast('Isi Lat/Lng atau paste link GMap');
+        const updatedLoc={ id:data.id, name:data.name, address:data.address||data.name, lat:coords.lat, lng:coords.lng, radius:data.radius };
+        const ok=await dbUpsertLocation(updatedLoc);
+        if(!ok) return;
+        const idx=LOCATIONS.findIndex(l=>l.id===oldId);
+        if(idx>=0) LOCATIONS[idx]=updatedLoc;
         else LOCATIONS.push(updatedLoc);
         showToast('Titik patroli berhasil diperbarui');
         closeEditLocationModal();
         await renderAdminLocations();
     }
-
-    async function deleteLocation(locId) {
-        if (!confirm('Hapus titik patroli ini?')) return;
-        const ok = await dbDeleteLocation(locId);
-        if (!ok) return;
-        LOCATIONS = LOCATIONS.filter(l => l.id !== locId);
+    async function deleteLocation(locId){
+        if(!confirm('Hapus titik patroli ini?')) return;
+        const ok=await dbDeleteLocation(locId);
+        if(!ok) return;
+        LOCATIONS=LOCATIONS.filter(l=>l.id!==locId);
         showToast('Titik patroli berhasil dihapus');
         await renderAdminLocations();
     }
-
-    function renderAdminGuards() {
-        const container = document.getElementById('adminGuardsList');
-        if (!container) return;
-        const guardsOnly = GUARDS.filter(g => g.role === 'guard');
-        if (!guardsOnly.length) {
-            container.innerHTML = '<div class="card-subtitle">Belum ada satpam</div>';
-            return;
-        }
-        container.innerHTML = guardsOnly.map(g => `<div class="list-item"><div class="list-info"><div class="list-title">${g.name}</div><div class="list-sub">PIN: ${g.pin}</div></div><button class="btn btn-secondary btn-tiny" onclick="openEditGuardModal(${g.id})">Edit</button><button class="btn btn-danger btn-tiny" onclick="deleteGuard(${g.id})">Hapus</button></div>`).join('');
+    function renderAdminGuards(){
+        const container=document.getElementById('adminGuardsList');
+        if(!container) return;
+        const guardsOnly=GUARDS.filter(g=>g.role==='guard');
+        if(!guardsOnly.length){ container.innerHTML='<div class="card-subtitle">Belum ada satpam</div>'; return; }
+        container.innerHTML=guardsOnly.map(g=>`<div class="list-item"><div class="list-info"><div class="list-title">${g.name}</div><div class="list-sub">PIN: ${g.pin}</div></div><button class="btn btn-secondary btn-tiny" onclick="openEditGuardModal(${g.id})">Edit</button><button class="btn btn-danger btn-tiny" onclick="deleteGuard(${g.id})">Hapus</button></div>`).join('');
     }
-
-    async function addGuard() {
-        const name = document.getElementById('newGuardName').value.trim();
-        if (!name) return showToast('Nama satpam wajib diisi');
-        const newId = Math.max(...GUARDS.map(g => g.id || 0)) + 1;
-        const pin = String(newId).padStart(4, '0');
-        const newGuard = { id: newId, name, pin, role: 'guard', avatar: '' };
-        const ok = await dbAddGuard(newGuard);
-        if (!ok) return;
+    async function addGuard(){
+        const name=document.getElementById('newGuardName').value.trim();
+        if(!name) return showToast('Nama satpam wajib diisi');
+        const newId=Math.max(...GUARDS.map(g=>g.id||0),0)+1;
+        const pin=String(newId).padStart(4,'0');
+        const newGuard={ id:newId, name, pin, role:'guard', avatar:'' };
+        const ok=await dbAddGuard(newGuard);
+        if(!ok) return;
         GUARDS.push(newGuard);
-        document.getElementById('newGuardName').value = '';
+        document.getElementById('newGuardName').value='';
         showToast(`Satpam berhasil ditambahkan (PIN: ${pin})`);
         renderAdminGuards();
     }
-
-    function openEditGuardModal(guardId) {
-        const guard = GUARDS.find(g => g.id === guardId);
-        if (!guard) return;
-        document.getElementById('editGuardId').value = guard.id;
-        document.getElementById('editGuardName').value = guard.name;
-        document.getElementById('editGuardPin').value = guard.pin;
-        document.getElementById('editModal').style.display = 'flex';
+    function openEditGuardModal(guardId){
+        const guard=GUARDS.find(g=>g.id===guardId);
+        if(!guard) return;
+        document.getElementById('editGuardId').value=guard.id;
+        document.getElementById('editGuardName').value=guard.name;
+        document.getElementById('editGuardPin').value=guard.pin;
+        document.getElementById('editModal').style.display='flex';
     }
-
-    function closeEditModal() {
-        document.getElementById('editModal').style.display = 'none';
-    }
-
-    async function saveEditGuard() {
-        const id = parseInt(document.getElementById('editGuardId').value);
-        const name = document.getElementById('editGuardName').value.trim();
-        const pin = document.getElementById('editGuardPin').value.trim();
-        if (!name || !pin || pin.length !== 4) return showToast('Nama dan PIN (4 digit) wajib diisi');
-        const guard = GUARDS.find(g => g.id === id);
-        if (!guard) return;
-        guard.name = name;
-        guard.pin = pin;
-        const ok = await dbUpdateGuard(guard);
-        if (!ok) return;
+    function closeEditModal(){ document.getElementById('editModal').style.display='none'; }
+    async function saveEditGuard(){
+        const id=parseInt(document.getElementById('editGuardId').value);
+        const name=document.getElementById('editGuardName').value.trim();
+        const pin=document.getElementById('editGuardPin').value.trim();
+        if(!name || !pin || pin.length!==4) return showToast('Nama dan PIN (4 digit) wajib diisi');
+        const guard=GUARDS.find(g=>g.id===id);
+        if(!guard) return;
+        guard.name=name; guard.pin=pin;
+        const ok=await dbUpdateGuard(guard);
+        if(!ok) return;
         showToast('Satpam berhasil diperbarui');
         closeEditModal();
         renderAdminGuards();
     }
-
-    async function deleteGuard(guardId) {
-        if (!confirm('Hapus satpam ini?')) return;
-        const ok = await dbDeleteGuard(guardId);
-        if (!ok) return;
-        GUARDS = GUARDS.filter(g => g.id !== guardId);
+    async function deleteGuard(guardId){
+        if(!confirm('Hapus satpam ini?')) return;
+        const ok=await dbDeleteGuard(guardId);
+        if(!ok) return;
+        GUARDS=GUARDS.filter(g=>g.id!==guardId);
         showToast('Satpam berhasil dihapus');
         renderAdminGuards();
     }
-
-    async function changeAdminPin() {
-        const newPin = document.getElementById('newAdminPin').value.trim();
-        if (!newPin || newPin.length !== 4) return showToast('PIN harus 4 digit');
-        const admin = GUARDS.find(g => g.role === 'admin');
-        if (!admin) return;
-        admin.pin = newPin;
-        const ok = await dbUpdateGuard(admin);
-        if (!ok) return;
-        document.getElementById('newAdminPin').value = '';
+    async function changeAdminPin(){
+        const newPin=document.getElementById('newAdminPin').value.trim();
+        if(!newPin || newPin.length!==4) return showToast('PIN harus 4 digit');
+        const admin=GUARDS.find(g=>g.role==='admin');
+        if(!admin) return;
+        admin.pin=newPin;
+        const ok=await dbUpdateGuard(admin);
+        if(!ok) return;
+        document.getElementById('newAdminPin').value='';
         showToast('PIN Admin berhasil diubah');
     }
+
+    // ==================== AUTOFILL EVENT LISTENERS ====================
+    ['new', 'edit'].forEach(prefix => {
+        const linkEl = document.getElementById(prefix + 'LocLink');
+        if (!linkEl) return;
+        let timer;
+        linkEl.addEventListener('input', () => {
+            clearTimeout(timer);
+            timer = setTimeout(() => autoFillCoordsForLocForm(prefix), 700);
+        });
+        linkEl.addEventListener('paste', () => {
+            clearTimeout(timer);
+            timer = setTimeout(() => autoFillCoordsForLocForm(prefix), 200);
+        });
+    });
 </script>
-    <!-- Modal untuk menampilkan QR Code -->
-<div id="qrModal" class="modal" style="display: none;">
-    <div class="modal-card" style="text-align: center;">
-        <div class="card-title" style="margin-bottom: 1rem;">📱 QR Code Patroli</div>
-        <div id="qrCodeContainer" style="display: flex; justify-content: center; margin: 1rem 0;"></div>
-        <div style="font-size: 0.85rem; word-break: break-all; background: var(--bg); padding: 0.5rem; border-radius: 8px; margin-bottom: 1rem;">
-            <strong>Kode:</strong> <span id="qrCodeText"></span>
-        </div>
-        <div class="modal-buttons" style="grid-template-columns: 1fr 1fr;">
-            <button class="btn btn-primary" id="downloadQrBtn">💾 Simpan QR</button>
-            <button class="btn btn-secondary" onclick="closeQrModal()">Tutup</button>
-        </div>
-    </div>
-</div>
 </body>
 </html>
