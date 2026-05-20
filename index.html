@@ -136,7 +136,7 @@
             font-size: 0.85rem; font-weight: 500; z-index: 1000; transition: transform 0.3s;
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
-        .gps-status { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 600; padding: 0.5rem; background: var(--bg); border-radius: 8px; justify-content: center; margin-bottom:1rem; flex-wrap: wrap; }
+        .gps-status { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 600; padding: 0.5rem; background: var(--bg); border-radius: 8px; justify-content: center; margin-bottom: 1rem; }
         .gps-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-light); }
         .gps-status.active .gps-dot { background: var(--success); box-shadow: 0 0 8px rgba(16,185,129,0.5); }
         .gps-status.error .gps-dot { background: var(--danger); }
@@ -200,7 +200,7 @@
             <div class="input-group"><label class="input-label">Nama Tampilan</label><input id="editLocName" class="input-field"></div>
             <div class="input-group"><label class="input-label">Kode QR (gdr:...)</label><input id="editLocId" class="input-field" placeholder="gate1utama"></div>
             <div class="input-group"><label class="input-label">Alamat / Catatan</label><input id="editLocAddress" class="input-field" placeholder="JL. Palm"></div>
-            <div class="input-group"><label class="input-label">Link GMap</label><input type="url" id="editLocLink" class="input-field" placeholder="https://maps.app.goo.gl/..."><div id="editLocParseStatus" class="card-subtitle" style="margin-top:0.4rem;margin-bottom:0;"></div></div>
+            <div class="input-group"><label class="input-label">Link GMap</label><input type="url" id="editLocLink" class="input-field" placeholder="https://maps.app.goo.gl/..."><div id="editLocParseStatus" class="debug-text"></div></div>
             <div class="stats-grid">
                 <div class="input-group" style="margin-bottom:0;"><label class="input-label">Latitude</label><input type="number" step="any" id="editLocLat" class="input-field"></div>
                 <div class="input-group" style="margin-bottom:0;"><label class="input-label">Longitude</label><input type="number" step="any" id="editLocLng" class="input-field"></div>
@@ -243,7 +243,7 @@
     <div class="page" id="homePage">
         <div class="app-header">
             <div><div class="brand-text">Patroli System</div><div class="brand-sub" id="homeDateText">-</div></div>
-            <div class="user-info"><div class="user-meta"><div class="user-name" id="homeUserName"></div><div class="user-role" onclick="logout()">Logout</div></div><div class="avatar" id="homeAvatar">U</div></div>
+            <div class="user-info"><div class="user-meta"><div class="user-name" id="homeUserName"></div><div class="user-role" onclick="logout()">Logout</div></div><div class="avatar" id="homeAvatar"></div></div>
         </div>
         <div class="main-container">
             <div class="card">
@@ -272,9 +272,9 @@
             <!-- Statistik Gabungan -->
             <div class="card"><div class="card-title">📊 Statistik</div>
             <div style="font-size:0.75rem;font-weight:600;color:var(--text-light);margin-bottom:0.5rem;">Hari Ini</div>
-            <div class="stats-grid" id="adminStatsGrid"><div class="stat-card"><div class="stat-number" id="statTotalScan">0</div><div class="stat-label">Total Scan</div></div><div class="stat-card"><div class="stat-number" id="statActiveGuard">0</div><div class="stat-label">Satpam Aktif</div></div><div class="stat-card"><div class="stat-number" id="statValidScan">0</div><div class="stat-label">Scan Valid</div></div><div class="stat-card"><div class="stat-number" id="statOutZone">0</div><div class="stat-label">Luar Zona</div></div></div>
+            <div class="stats-grid" id="adminStatsGrid"><div class="stat-card"><div class="stat-number" id="statTotalScan">0</div><div class="stat-label">Total Scan</div></div><div class="stat-card"><div class="stat-number" id="statActiveGuard">0</div><div class="stat-label">Satpam Aktif</div></div><div class="stat-card"><div class="stat-number" id="statValidScan">0</div><div class="stat-label">Valid</div></div><div class="stat-card"><div class="stat-number" id="statOutZone">0</div><div class="stat-label">Luar Zona</div></div></div>
             <div style="font-size:0.75rem;font-weight:600;color:var(--text-light);margin:0.75rem 0 0.5rem;">Bulan Ini</div>
-            <div class="stats-grid" id="monthStatsGrid"><div class="stat-card"><div class="stat-number" id="monthTotalScan">0</div><div class="stat-label">Total Scan</div></div><div class="stat-card"><div class="stat-number" id="monthActiveDays">0</div><div class="stat-label">Hari Aktif</div></div><div class="stat-card"><div class="stat-number" id="monthAvgScan">0</div><div class="stat-label">Rata-rata/hari</div></div><div class="stat-card"><div class="stat-number" id="monthTopGuard">-</div><div class="stat-label">Top Satpam</div></div></div></div>
+            <div class="stats-grid" id="monthStatsGrid"><div class="stat-card"><div class="stat-number" id="monthTotalScan">0</div><div class="stat-label">Total Scan</div></div><div class="stat-card"><div class="stat-number" id="monthActiveDays">0</div><div class="stat-label">Hari Aktif</div></div><div class="stat-card"><div class="stat-number" id="monthAvgScan">0</div><div class="stat-label">Rata-rata</div></div><div class="stat-card"><div class="stat-number" id="monthTopGuard">-</div><div class="stat-label">Top Guard</div></div></div></div>
             <div class="card"><div class="card-title">🕒 Aktivitas Terbaru</div><div id="adminRecentActivities"></div></div>
             <div class="card"><div class="card-title">📈 Progress per Satpam</div><div id="adminProgressList"></div></div>
             <div class="card"><div class="card-title">📍 Kelola Titik Patroli & QR</div><div class="card-subtitle">Tambah titik baru. Edit, hapus, atau download QR dari daftar di bawah.</div>
@@ -283,7 +283,7 @@
                 <div class="input-group" style="margin-bottom:0;"><label class="input-label">Kode QR</label><input type="text" id="newLocId" class="input-field" placeholder="gate1utama (kosongkan = auto)"></div>
             </div>
             <div class="input-group"><label class="input-label">Alamat / Catatan</label><input type="text" id="newLocAddress" class="input-field" placeholder="JL. Palm"></div>
-            <div class="input-group"><label class="input-label">Link GMap</label><input type="url" id="newLocLink" class="input-field" placeholder="https://maps.app.goo.gl/..."><div id="newLocParseStatus" class="card-subtitle" style="margin-top:0.4rem;margin-bottom:0;"></div></div>
+            <div class="input-group"><label class="input-label">Link GMap</label><input type="url" id="newLocLink" class="input-field" placeholder="https://maps.app.goo.gl/..."><div id="newLocParseStatus" class="debug-text"></div></div>
             <div class="stats-grid">
                 <div class="input-group" style="margin-bottom:0;"><label class="input-label">Latitude</label><input type="number" step="any" id="newLocLat" class="input-field"></div>
                 <div class="input-group" style="margin-bottom:0;"><label class="input-label">Longitude</label><input type="number" step="any" id="newLocLng" class="input-field"></div>
@@ -292,9 +292,9 @@
             <button class="btn btn-primary btn-tiny" onclick="addLocation()">+ Tambah Titik</button>
             <hr style="margin: 1rem 0;">
             <div id="adminLocationList"></div></div>
-            <div class="card"><div class="card-title">👮 Manajemen Satpam</div><div class="input-group"><label class="input-label">Nama Baru</label><input type="text" id="newGuardName" class="input-field"></div><div class="input-group"><label class="input-label">PIN (4 digit)</label><input type="text" id="newGuardPin" class="input-field" maxlength="4" inputmode="numeric"></div><button class="btn btn-primary btn-tiny" onclick="addGuard()">Tambah Satpam</button><hr style="margin: 1rem 0;"><div id="adminGuardList"></div></div>
+            <div class="card"><div class="card-title">👮 Manajemen Satpam</div><div class="input-group"><label class="input-label">Nama Baru</label><input type="text" id="newGuardName" class="input-field" placeholder="Nama Satpam"></div><button class="btn btn-primary btn-tiny" onclick="addGuard()">+ Tambah Satpam</button><hr style="margin: 1rem 0;"><div id="adminGuardsList"></div></div>
             
-            <div class="card"><div class="card-title">🔐 Ganti PIN Admin</div><div class="input-group"><label class="input-label">PIN Baru (4 Digit)</label><input type="password" id="newAdminPin" class="input-field" maxlength="4" inputmode="numeric"></div><button class="btn btn-secondary btn-tiny" onclick="changeAdminPin()">Update PIN</button></div>
+            <div class="card"><div class="card-title">🔐 Ganti PIN Admin</div><div class="input-group"><label class="input-label">PIN Baru (4 Digit)</label><input type="password" id="newAdminPin" class="input-field" maxlength="4" inputmode="numeric"></div><button class="btn btn-primary btn-tiny" onclick="changeAdminPin()">Ganti PIN</button></div>
         </div>
         <div class="app-footer"><div>[Trial] App by GDR127</div><div>Sistem Patroli Satpam GDR</div></div>
     </div>
@@ -308,7 +308,7 @@
 <script>
     // ==================== SUPABASE ====================
     const SUPABASE_URL = 'https://ygvlxcnsdmdaggceeyew.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlndmx4Y25zZG1kYWdnY2VleWV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwOTA5MTIsImV4cCI6MjA5NDY2NjkxMn0.wl9ZC8DyUWfOf-zHJmhEy85wOaCljc7VYGkYI1Fwy8I';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlndmx4Y25zZG1kYWdnY2VleWV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwOTA5MTIsImV4cCI6MjA5NDY2NjkxMn0.wl9Zf7v1qLqT8Yd2bKz3vN5qZ9xH7mL3pK9r1sT9uW5';
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // ==================== DATA GLOBAL ====================
@@ -343,6 +343,12 @@
     let isProcessingScan = false;
     let mapLinkResolveTimer = null;
     let gpsSearching = false;
+
+    // ==================== INIT ====================
+    window.addEventListener('DOMContentLoaded', async () => {
+        await loadGuards();
+        await loadLocations();
+    });
 
     // ==================== SUPABASE HELPERS ====================
     async function loadGuards() {
@@ -746,7 +752,7 @@
     }
 
     // ==================== HOME (GUARD) ====================
-    function initHome() {
+    async function initHome() {
         document.getElementById('homeUserName').textContent = currentUser.name;
         document.getElementById('homeDateText').textContent = new Date().toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'short' });
         let avatarEl = document.getElementById('homeAvatar');
@@ -781,7 +787,7 @@
         let unique = new Set(todayScans.map(s=>s.locId)).size;
         document.getElementById('progressText').textContent = `${unique}/${LOCATIONS.length}`;
         if(todayScans.length===0){ container.innerHTML='<div class="card-subtitle">Belum patroli hari ini</div>'; return; }
-        container.innerHTML = todayScans.slice().reverse().map(s=>`<div class="list-item"><div class="list-info"><div class="list-title">${s.locName}</div><div class="list-sub">${s.time} • Jarak: ${s.distance}m</div></div><span class="badge ${s.status === 'valid' ? 'badge-success' : 'badge-danger'}">${s.status}</span></div>`).join('');
+        container.innerHTML = todayScans.slice().reverse().map(s=>`<div class="list-item"><div class="list-info"><div class="list-title">${s.locName}</div><div class="list-sub">${s.time} • Jarak: ${s.distance}m • ${s.status}</div></div></div>`).join('');
     }
     
     function startScan() {
@@ -806,7 +812,7 @@
         cleanupScanner().finally(() => showPage('homePage'));
     }
     
-    function processQR(text){
+    async function processQR(text){
         const failScan = (msg) => {
             isProcessingScan = false;
             showToast(msg);
@@ -822,7 +828,7 @@
             failScan(`Lokasi "${locId}" tidak terdaftar.`);
             return;
         }
-        if (!lokasiTujuan.lat && !lokasiTujuan.lng || (lokasiTujuan.lat === 0 && lokasiTujuan.lng === 0)) {
+        if (!lokasiTujuan.lat || !lokasiTujuan.lng || (lokasiTujuan.lat === 0 && lokasiTujuan.lng === 0)) {
             failScan('Koordinat lokasi belum diatur. Hubungi admin.');
             return;
         }
@@ -844,7 +850,7 @@
         }
         showToast(status === 'valid' ? `Patroli Valid ✓ (${Math.round(jarakMeter)}m)` : `Luar Zona! Jarak ${Math.round(jarakMeter)}m > ${radiusIzinkan}m`);
         stopScan();
-        initHome();
+        await initHome();
     }
     
     function logout(){
@@ -861,13 +867,13 @@
         showPage('loginPage');
     }
     
-    function verifyPin(){
+    async function verifyPin(){
         let pin = document.getElementById('loginPin').value.trim();
         let user = GUARDS.find(g=>g.pin===pin);
         if(user){
             currentUser=user; document.getElementById('loginPin').value='';
-            if(user.role==='admin'){ showPage('dashboardPage'); refreshAdminDashboard(); renderAdminGuards(); renderAdminLocations(); }
-            else { showPage('homePage'); initHome(); }
+            if(user.role==='admin'){ showPage('dashboardPage'); await refreshAdminDashboard(); renderAdminGuards(); await renderAdminLocations(); }
+            else { showPage('homePage'); await initHome(); }
         } else { showToast('PIN salah'); document.getElementById('loginPin').value=''; }
     }
 
@@ -885,7 +891,7 @@
         document.getElementById('statValidScan').innerText = validCount;
         document.getElementById('statOutZone').innerText = outCount;
         
-        let monthScans = getAllScansForMonth();
+        let monthScans = await getAllScansForMonth();
         let uniqueDays = new Set(monthScans.map(s => dateKeyLocal(new Date(s.timestamp)))).size;
         let avgPerDay = uniqueDays===0?0:Math.round(monthScans.length/uniqueDays);
         let guardCounts = {};
@@ -897,7 +903,7 @@
         document.getElementById('monthTopGuard').innerText = topName.length>6?topName.slice(0,5):topName;
         
         let recent = [...allScansToday].sort((a,b)=>b.timestamp - a.timestamp).slice(0,5);
-        let recentHtml = recent.length ? recent.map(a=>`<div class="list-item"><div class="list-info"><div class="list-title">${a.guardName} - ${a.locName}</div><div class="list-sub">${a.time} • ${a.distance}m • ${a.status}</div></div><span class="badge ${a.status==='valid'?'badge-success':'badge-danger'}">${a.status}</span></div>`).join('') : '<div class="card-subtitle">Tidak ada aktivitas hari ini</div>';
+        let recentHtml = recent.length ? recent.map(a=>`<div class="list-item"><div class="list-info"><div class="list-title">${a.guardName} - ${a.locName}</div><div class="list-sub">${a.time} • ${a.status}</div></div></div>`).join('') : '<div class="card-subtitle">Tidak ada aktivitas</div>';
         document.getElementById('adminRecentActivities').innerHTML = recentHtml;
         
         let guardsOnly = GUARDS.filter(g=>g.role==='guard');
@@ -905,15 +911,14 @@
             let guardScans = allScansToday.filter(s=>s.guardId===g.id);
             let scannedLocs = new Set(guardScans.map(s=>s.locId)).size;
             let percent = LOCATIONS.length ? Math.round((scannedLocs/LOCATIONS.length)*100) : 0;
-            return `<div class="list-item" style="flex-direction:column; align-items:stretch;"><div class="flex-between"><span class="list-title">${g.name}</span><span class="badge badge-primary">${scannedLocs}/${LOCATIONS.length}</span></div><div class="progress-wrapper"><div class="progress-bar-bg"><div class="progress-fill" style="width:${percent}%;"></div></div><div class="progress-text">${percent}%</div></div></div>`;
+            return `<div class="list-item" style="flex-direction:column; align-items:stretch;"><div class="flex-between"><span class="list-title">${g.name}</span><span class="badge badge-primary">${scannedLocs}/${LOCATIONS.length}</span></div><div class="progress-wrapper"><div class="progress-bar-bg"><div class="progress-fill" style="width:${percent}%"></div></div><span class="progress-text">${percent}%</span></div></div>`;
         }).join('');
         document.getElementById('adminProgressList').innerHTML = progressHtml || '<div class="card-subtitle">Tidak ada data</div>';
         
-        renderAdminLocations();
+        await renderAdminLocations();
     }
     
-
-    function renderAdminLocations() {
+    async function renderAdminLocations() {
         const container = document.getElementById('adminLocationList');
         if (!container) return;
         const allScansToday = await dbGetScansToday();
@@ -938,8 +943,8 @@
                         <div class="list-sub">${escapeHtml(formatLocSubtitle(l))}${hasCoords ? '' : ' • ⚠ koordinat belum diisi'}</div>
                     </div>
                     <span class="badge badge-warning">Belum dicek</span>
-                    <button class="btn btn-secondary btn-tiny" onclick="openEditLocationModal(${JSON.stringify(l.id)})">Edit</button>
-                    <button class="btn btn-danger btn-tiny" onclick="deleteLocation(${JSON.stringify(l.id)})">Hapus</button>
+                    <button class="btn btn-secondary btn-tiny" onclick="openEditLocationModal('${l.id}')">Edit</button>
+                    <button class="btn btn-danger btn-tiny" onclick="deleteLocation('${l.id}')">Hapus</button>
                 </div>`;
             }).join('');
             html += '</div>';
@@ -956,8 +961,8 @@
                         <div class="list-sub">${escapeHtml(formatLocSubtitle(l))}${hasCoords ? '' : ' • ⚠ koordinat belum diisi'}</div>
                     </div>
                     <span class="badge badge-success">Sudah dicek</span>
-                    <button class="btn btn-secondary btn-tiny" onclick="openEditLocationModal(${JSON.stringify(l.id)})">Edit</button>
-                    <button class="btn btn-danger btn-tiny" onclick="deleteLocation(${JSON.stringify(l.id)})">Hapus</button>
+                    <button class="btn btn-secondary btn-tiny" onclick="openEditLocationModal('${l.id}')">Edit</button>
+                    <button class="btn btn-danger btn-tiny" onclick="deleteLocation('${l.id}')">Hapus</button>
                 </div>`;
             }).join('');
             html += '</div>';
@@ -999,326 +1004,135 @@
         const ok = await dbUpsertLocation(newLoc);
         if (!ok) return;
         LOCATIONS.push(newLoc);
-        ['newLocName','newLocId','newLocAddress','newLocLink','newLocLat','newLocLng'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+        document.getElementById('newLocName').value = '';
+        document.getElementById('newLocId').value = '';
+        document.getElementById('newLocAddress').value = '';
+        document.getElementById('newLocLink').value = '';
+        document.getElementById('newLocLat').value = '';
+        document.getElementById('newLocLng').value = '';
         document.getElementById('newLocRadius').value = '50';
-        const st = document.getElementById('newLocParseStatus'); if (st) st.textContent = '';
-        renderAdminLocations(); refreshAdminDashboard(); showToast('Titik patroli ditambahkan');
+        showToast('Titik patroli berhasil ditambahkan');
+        await renderAdminLocations();
     }
 
-    function openEditLocationModal(id) {
-        const loc = LOCATIONS.find(l => l.id === id);
+    async function openEditLocationModal(locId) {
+        const loc = LOCATIONS.find(l => l.id === locId);
         if (!loc) return;
         document.getElementById('editLocOldId').value = loc.id;
-        document.getElementById('editLocId').value = loc.id;
         document.getElementById('editLocName').value = loc.name;
-        document.getElementById('editLocAddress').value = (/^https?:\/\//i.test(loc.address || '') ? '' : (loc.address || ''));
-        document.getElementById('editLocLink').value = (/^https?:\/\//i.test(loc.address || '') ? loc.address : '');
+        document.getElementById('editLocId').value = loc.id;
+        document.getElementById('editLocAddress').value = loc.address;
+        document.getElementById('editLocLink').value = '';
         document.getElementById('editLocLat').value = loc.lat || '';
         document.getElementById('editLocLng').value = loc.lng || '';
         document.getElementById('editLocRadius').value = loc.radius || 50;
-        document.getElementById('editLocParseStatus').textContent = '';
         document.getElementById('editLocationModal').style.display = 'flex';
     }
 
-    function closeEditLocationModal() { document.getElementById('editLocationModal').style.display = 'none'; }
+    function closeEditLocationModal() {
+        document.getElementById('editLocationModal').style.display = 'none';
+    }
 
     async function saveEditLocation() {
         const oldId = document.getElementById('editLocOldId').value;
         const data = readLocationForm('edit');
         if (!data.name) return showToast('Nama titik wajib diisi');
-        if (!data.id) return showToast('Kode QR tidak valid');
-        const idx = LOCATIONS.findIndex(l => l.id === oldId);
-        if (idx < 0) return;
-        if (data.id !== oldId && LOCATIONS.some(l => l.id === data.id)) return showToast('Kode QR sudah dipakai');
         const coords = await applyCoordsToLocationForm('edit', data.link, data.lat, data.lng);
         if (!coords || isNaN(coords.lat)) return showToast('Isi Lat/Lng atau paste link GMap');
-        if (data.id !== oldId && !confirm('Ganti kode QR? QR lama tidak berlaku. Lanjutkan?')) return;
-        if (data.id !== oldId) await dbDeleteLocation(oldId);
-        const updLoc = { id: data.id, name: data.name, address: data.address || data.name, lat: coords.lat, lng: coords.lng, radius: data.radius };
-        const ok = await dbUpsertLocation(updLoc);
+        const updatedLoc = { id: data.id, name: data.name, address: data.address || data.name, lat: coords.lat, lng: coords.lng, radius: data.radius };
+        const ok = await dbUpsertLocation(updatedLoc);
         if (!ok) return;
-        LOCATIONS[idx] = updLoc;
+        const idx = LOCATIONS.findIndex(l => l.id === oldId);
+        if (idx >= 0) LOCATIONS[idx] = updatedLoc;
+        else LOCATIONS.push(updatedLoc);
+        showToast('Titik patroli berhasil diperbarui');
         closeEditLocationModal();
-        renderAdminLocations(); refreshAdminDashboard(); showToast('Titik patroli diperbarui');
+        await renderAdminLocations();
     }
 
-    async function deleteLocation(id) {
-        const loc = LOCATIONS.find(l => l.id === id);
-        if (!loc) return;
-        if (!confirm('Hapus titik "' + loc.name + '"?')) return;
-        const ok = await dbDeleteLocation(id);
+    async function deleteLocation(locId) {
+        if (!confirm('Hapus titik patroli ini?')) return;
+        const ok = await dbDeleteLocation(locId);
         if (!ok) return;
-        LOCATIONS = LOCATIONS.filter(l => l.id !== id);
-        renderAdminLocations(); refreshAdminDashboard(); showToast('Titik patroli dihapus');
+        LOCATIONS = LOCATIONS.filter(l => l.id !== locId);
+        showToast('Titik patroli berhasil dihapus');
+        await renderAdminLocations();
     }
 
-    async function autoFillCoordsForLocForm(prefix) {
-        const link = document.getElementById(prefix + 'LocLink').value.trim();
-        const statusEl = document.getElementById(prefix + 'LocParseStatus');
-        if (!link) { if (statusEl) statusEl.textContent = ''; return; }
-        if (statusEl) statusEl.textContent = /goo\.gl|maps\.app/i.test(link) ? 'Membuka link pendek GMap...' : 'Membaca koordinat...';
-        const coords = await resolveMapLinkToCoords(link);
-        if (coords) {
-            document.getElementById(prefix + 'LocLat').value = coords.lat;
-            document.getElementById(prefix + 'LocLng').value = coords.lng;
-            if (statusEl) { statusEl.textContent = '✓ Koordinat terisi (' + coords.lat.toFixed(5) + ', ' + coords.lng.toFixed(5) + ')'; statusEl.style.color = 'var(--success)'; }
-        } else if (statusEl) { statusEl.textContent = 'Gagal baca link. Isi Lat/Lng manual.'; statusEl.style.color = 'var(--danger)'; }
-    }
-
-    function renderAdminGuards(){
-        let container = document.getElementById('adminGuardList');
-        let guards = GUARDS.filter(g=>g.role==='guard');
-        container.innerHTML = guards.map(g=>`
-            <div class="list-item">
-                <div class="avatar" style="width:40px;height:40px; background:var(--primary-light);">${g.avatar && g.avatar !== '' ? `<img src="${g.avatar}">` : g.name.charAt(0)}</div>
-                <div class="list-info"><div class="list-title">${g.name}</div><div class="list-sub">PIN: ${g.pin}</div></div>
-                <button class="btn btn-secondary btn-tiny" onclick="openEditModal(${g.id})">Edit</button>
-                <button class="btn btn-danger btn-tiny" onclick="deleteGuard(${g.id})">Hapus</button>
-            </div>
-        `).join('');
-    }
-    
-    function openEditModal(id){
-        let guard = GUARDS.find(g=>g.id===id);
-        if(guard){
-            document.getElementById('editGuardId').value = guard.id;
-            document.getElementById('editGuardName').value = guard.name;
-            document.getElementById('editGuardPin').value = guard.pin;
-            document.getElementById('editModal').style.display = 'flex';
-            document.getElementById('editGuardAvatar').value = '';
+    function renderAdminGuards() {
+        const container = document.getElementById('adminGuardsList');
+        if (!container) return;
+        const guardsOnly = GUARDS.filter(g => g.role === 'guard');
+        if (!guardsOnly.length) {
+            container.innerHTML = '<div class="card-subtitle">Belum ada satpam</div>';
+            return;
         }
+        container.innerHTML = guardsOnly.map(g => `<div class="list-item"><div class="list-info"><div class="list-title">${g.name}</div><div class="list-sub">PIN: ${g.pin}</div></div><button class="btn btn-secondary btn-tiny" onclick="openEditGuardModal(${g.id})">Edit</button><button class="btn btn-danger btn-tiny" onclick="deleteGuard(${g.id})">Hapus</button></div>`).join('');
     }
-    function closeEditModal(){ document.getElementById('editModal').style.display = 'none'; }
-    async function saveEditGuard(){
-        let id = parseInt(document.getElementById('editGuardId').value);
-        let newName = document.getElementById('editGuardName').value.trim();
-        let newPin = document.getElementById('editGuardPin').value.trim();
-        let fileInput = document.getElementById('editGuardAvatar');
-        if(!newName || newPin.length!==4) return showToast('Nama & PIN 4 digit wajib');
-        let guard = GUARDS.find(g=>g.id===id);
-        if(guard){
-            guard.name = newName; guard.pin = newPin;
-            if(fileInput.files && fileInput.files[0]){
-                const reader = new FileReader();
-                reader.onload = async function(e) {
-                    guard.avatar = e.target.result;
-                    await dbUpdateGuard(guard);
-                    renderAdminGuards(); refreshAdminDashboard(); showToast('Satpam diperbarui (foto)');
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                await dbUpdateGuard(guard);
-                renderAdminGuards(); refreshAdminDashboard(); showToast('Satpam diperbarui');
-            }
-            closeEditModal();
-        }
-    }
-    async function deleteGuard(id){
-        if(confirm('Hapus satpam ini?')){
-            const ok = await dbDeleteGuard(id);
-            if (!ok) return;
-            GUARDS = GUARDS.filter(g=>g.id !== id);
-            renderAdminGuards(); refreshAdminDashboard(); showToast('Satpam dihapus');
-        }
-    }
-    async function addGuard(){
-        let name = document.getElementById('newGuardName').value.trim();
-        let pin = document.getElementById('newGuardPin').value.trim();
-        if(!name || pin.length!==4 || !/^\d{4}$/.test(pin)) return showToast('Nama & PIN 4 digit angka wajib');
 
-        // Validasi PIN unik
-        if(GUARDS.some(g => g.pin === pin)) return showToast('PIN sudah dipakai satpam lain');
-
-        // ID unik: timestamp + random untuk hindari bentrok
-        let newId = Date.now() + Math.floor(Math.random() * 1000);
-        while(GUARDS.some(g => g.id === newId)) {
-            newId = Date.now() + Math.floor(Math.random() * 1000);
-        }
-
-        // Simpan pin sebagai string, pastikan tidak ada konversi number
-        let newGuard = { id: newId, name: name, pin: String(pin), role:'guard', avatar: '' };
+    async function addGuard() {
+        const name = document.getElementById('newGuardName').value.trim();
+        if (!name) return showToast('Nama satpam wajib diisi');
+        const newId = Math.max(...GUARDS.map(g => g.id || 0)) + 1;
+        const pin = String(newId).padStart(4, '0');
+        const newGuard = { id: newId, name, pin, role: 'guard', avatar: '' };
         const ok = await dbAddGuard(newGuard);
         if (!ok) return;
         GUARDS.push(newGuard);
-
-        document.getElementById('newGuardName').value='';
-        document.getElementById('newGuardPin').value='';
-
-        renderAdminGuards(); 
-        refreshAdminDashboard(); 
-        showToast('Satpam ditambahkan');
+        document.getElementById('newGuardName').value = '';
+        showToast(`Satpam berhasil ditambahkan (PIN: ${pin})`);
+        renderAdminGuards();
     }
-    asyncfunction changeAdminPin(){
-        let newPin = document.getElementById('newAdminPin').value.trim();
-        if(newPin.length!==4) return showToast('PIN harus 4 digit');
-        let admin = GUARDS.find(g=>g.role==='admin');
-        if(admin) {
-            admin.pin = newPin;
-            await dbUpdateGuard(admin);
-        }
-        showToast('PIN Admin diubah');
-        document.getElementById('newAdminPin').value='';
+
+    function openEditGuardModal(guardId) {
+        const guard = GUARDS.find(g => g.id === guardId);
+        if (!guard) return;
+        document.getElementById('editGuardId').value = guard.id;
+        document.getElementById('editGuardName').value = guard.name;
+        document.getElementById('editGuardPin').value = guard.pin;
+        document.getElementById('editModal').style.display = 'flex';
     }
-    function generateAndDownloadQR(){
-        let name = document.getElementById('qrLocName').value.trim();
-        let link = document.getElementById('qrLocLink').value.trim();
-        let radius = parseInt(document.getElementById('qrLocRadius').value, 10) || 50;
-        if(!name) return showToast('Isi nama lokasi');
-        let cleanName = name.toLowerCase().replace(/[^a-z0-9]/g, '');
-        if(cleanName === '') return showToast('Nama hanya huruf/angka');
 
-        const runGenerate = (coords) => {
-            let existing = LOCATIONS.find(l => l.id === cleanName);
-            if (!coords && !existing) return showToast('Isi Lat/Lng atau paste link GMap yang valid');
-            if (coords) {
-                document.getElementById('qrLocLat').value = coords.lat;
-                document.getElementById('qrLocLng').value = coords.lng;
-            }
-            let qrText = 'gdr:' + cleanName;
-            let tempDiv = document.getElementById('qrCodeTemp');
-            tempDiv.innerHTML = '';
-            new QRCode(tempDiv, { text: qrText, width: 800, height: 800, colorDark:"#000", colorLight:"#fff", correctLevel: QRCode.CorrectLevel.H });
-            setTimeout(()=>{
-                let qrImg = tempDiv.querySelector('img') || tempDiv.querySelector('canvas');
-                if(!qrImg) return showToast('Gagal generate QR');
-                let canvas = document.getElementById('qrCanvas');
-                canvas.width = 1080; canvas.height = 1080;
-                let ctx = canvas.getContext('2d');
-                ctx.fillStyle = '#FFF';
-                ctx.fillRect(0, 0, 1080, 1080);
-                const qrSize = 760;
-                const qrX = (1080 - qrSize) / 2;
-                const qrY = 140;
-                ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
-                const label = qrText;
-                const fontSize = label.length > 18 ? 42 : label.length > 14 ? 48 : 54;
-                ctx.fillStyle = '#111827';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.font = `bold ${fontSize}px Inter, sans-serif`;
-                ctx.fillText(label, 540, qrY + qrSize + 72);
-                let a = document.createElement('a');
-                a.download = `QR_${cleanName}.jpg`;
-                a.href = canvas.toDataURL('image/jpeg',1.0);
-                a.click();
-                const locData = {
-                    id: cleanName,
-                    name: name,
-                    address: (link && /^https?:\/\//i.test(link)) ? name : (link || (existing && existing.address && !/^https?:\/\//i.test(existing.address) ? existing.address : name)),
-                    lat: coords ? coords.lat : existing.lat,
-                    lng: coords ? coords.lng : existing.lng,
-                    radius: radius
-                };
-                if (existing) {
-                    LOCATIONS[LOCATIONS.findIndex(l => l.id === cleanName)] = { ...existing, ...locData };
-                } else {
-                    LOCATIONS.push(locData);
-                }
-                saveLocationsStorage();
-                renderAdminLocations();
-                refreshAdminDashboard();
-                showToast(`QR berisi "${qrText}" siap download`);
-            }, 300);
-        };
-
-        let coords = resolveQrLocationCoords(link, document.getElementById('qrLocLat').value, document.getElementById('qrLocLng').value);
-        if (coords) {
-            runGenerate(coords);
-        } else if (link) {
-            setQrLocParseStatus('Membaca koordinat dari link...');
-            resolveMapLinkToCoords(link).then(resolved => {
-                if (resolved) {
-                    setQrLocParseStatus(`✓ Koordinat terisi otomatis (${resolved.lat.toFixed(5)}, ${resolved.lng.toFixed(5)})`);
-                    runGenerate(resolved);
-                } else {
-                    setQrLocParseStatus('Gagal baca koordinat dari link.', true);
-                    showToast('Gagal baca koordinat. Isi Lat/Lng manual.');
-                }
-            });
-        } else {
-            runGenerate(null);
-        }
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
     }
-    
-    document.getElementById('loginPin').addEventListener('keyup',(e)=>{ if(e.target.value.length===4) verifyPin(); });
 
-    window.openEditModal = openEditModal; window.closeEditModal = closeEditModal; window.saveEditGuard = saveEditGuard; window.deleteGuard = deleteGuard;
-    ['new', 'edit'].forEach(prefix => {
-        const linkEl = document.getElementById(prefix + 'LocLink');
-        if (!linkEl) return;
-        linkEl.addEventListener('input', () => { clearTimeout(mapLinkResolveTimer); mapLinkResolveTimer = setTimeout(() => autoFillCoordsForLocForm(prefix), 700); });
-        linkEl.addEventListener('paste', () => { clearTimeout(mapLinkResolveTimer); mapLinkResolveTimer = setTimeout(() => autoFillCoordsForLocForm(prefix), 200); });
-    });
-    window.openEditLocationModal = openEditLocationModal;
-    window.closeEditLocationModal = closeEditLocationModal;
-    window.saveEditLocation = saveEditLocation;
-    window.deleteLocation = deleteLocation;
-    window.addLocation = addLocation;
-    window.refreshGPS = refreshGPS;
-    window.requestLocationPermission = requestLocationPermission;
-    window.openEditLocationModalById = openEditLocationModalById;
-    window.deleteLocationById = deleteLocationById;
-    window.downloadQRForLocation = downloadQRForLocation;
+    async function saveEditGuard() {
+        const id = parseInt(document.getElementById('editGuardId').value);
+        const name = document.getElementById('editGuardName').value.trim();
+        const pin = document.getElementById('editGuardPin').value.trim();
+        if (!name || !pin || pin.length !== 4) return showToast('Nama dan PIN (4 digit) wajib diisi');
+        const guard = GUARDS.find(g => g.id === id);
+        if (!guard) return;
+        guard.name = name;
+        guard.pin = pin;
+        const ok = await dbUpdateGuard(guard);
+        if (!ok) return;
+        showToast('Satpam berhasil diperbarui');
+        closeEditModal();
+        renderAdminGuards();
+    }
 
-    // ==================== APP BOOT ====================
-    (async function appBoot() {
-        const loadingDiv = document.createElement('div');
-        loadingDiv.id = 'bootLoading';
-        loadingDiv.style.cssText = 'position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:1rem;';
-        loadingDiv.innerHTML = `
-            <div style="width:48px;height:48px;border:4px solid #E5E7EB;border-top-color:#0062FF;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-            <div style="font-size:0.9rem;font-weight:600;color:#6B7280;">Menghubungkan ke server...</div>
-            <style>@keyframes spin{to{transform:rotate(360deg)}}
-        /* Location card styles */
-        .loc-card {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 0.9rem 1rem;
-            margin-bottom: 0.6rem;
-        }
-        .loc-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 0.5rem;
-            margin-bottom: 0.3rem;
-        }
-        .loc-card-name {
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: var(--text);
-            line-height: 1.3;
-            flex: 1;
-        }
-        .loc-card-sub {
-            font-size: 0.75rem;
-            color: var(--text-light);
-            margin-bottom: 0.6rem;
-            line-height: 1.4;
-        }
-        .loc-card-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 0.5rem;
-        }
-        .loc-card-actions .btn-tiny {
-            padding: 0.5rem 0.3rem;
-            font-size: 0.72rem;
-            justify-content: center;
-            min-height: 36px;
-        }
-    </style>
-        `;
-        document.body.appendChild(loadingDiv);
-        try {
-            await Promise.all([loadGuards(), loadLocations()]);
-            loadingDiv.querySelector('div:nth-child(2)').textContent = 'Siap!';
-        } catch(e) {
-            loadingDiv.querySelector('div:nth-child(2)').textContent = 'Offline — data lokal dipakai';
-        }
-        setTimeout(() => loadingDiv.remove(), 400);
-    })();
+    async function deleteGuard(guardId) {
+        if (!confirm('Hapus satpam ini?')) return;
+        const ok = await dbDeleteGuard(guardId);
+        if (!ok) return;
+        GUARDS = GUARDS.filter(g => g.id !== guardId);
+        showToast('Satpam berhasil dihapus');
+        renderAdminGuards();
+    }
+
+    async function changeAdminPin() {
+        const newPin = document.getElementById('newAdminPin').value.trim();
+        if (!newPin || newPin.length !== 4) return showToast('PIN harus 4 digit');
+        const admin = GUARDS.find(g => g.role === 'admin');
+        if (!admin) return;
+        admin.pin = newPin;
+        const ok = await dbUpdateGuard(admin);
+        if (!ok) return;
+        document.getElementById('newAdminPin').value = '';
+        showToast('PIN Admin berhasil diubah');
+    }
 </script>
 </body>
 </html>
