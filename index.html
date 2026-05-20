@@ -907,7 +907,53 @@
             else { showPage('homePage'); await initHome(); }
         } else { showToast('PIN salah'); document.getElementById('loginPin').value=''; }
     }
+    // ==================== QR MODAL FUNCTIONS ====================
+function showQRCode(qrText) {
+    // Bersihkan container sebelumnya
+    const container = document.getElementById('qrCodeContainer');
+    container.innerHTML = '';
+    // Tampilkan teks QR
+    document.getElementById('qrCodeText').innerText = qrText;
+    // Generate QR code menggunakan library QRCode.js
+    new QRCode(container, {
+        text: qrText,
+        width: 220,
+        height: 220,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+    // Tampilkan modal
+    document.getElementById('qrModal').style.display = 'flex';
+    
+    // Siapkan download
+    const downloadBtn = document.getElementById('downloadQrBtn');
+    // Hapus event listener lama untuk menghindari duplikasi
+    const newBtn = downloadBtn.cloneNode(true);
+    downloadBtn.parentNode.replaceChild(newBtn, downloadBtn);
+    newBtn.addEventListener('click', () => {
+        const canvas = container.querySelector('canvas') || container.querySelector('img');
+        if (!canvas) {
+            showToast('Gagal membuat QR');
+            return;
+        }
+        // Buat canvas sementara untuk download
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
+        const ctx = tempCanvas.getContext('2d');
+        ctx.drawImage(canvas, 0, 0);
+        const link = document.createElement('a');
+        link.download = `${qrText.replace(/:/g, '_')}.png`;
+        link.href = tempCanvas.toDataURL('image/png');
+        link.click();
+        showToast('QR Code disimpan');
+    });
+}
 
+function closeQrModal() {
+    document.getElementById('qrModal').style.display = 'none';
+}
     // ==================== ADMIN FUNCTIONS ====================
     async function getAllScansForMonth(){
         return await dbGetScansMonth();
@@ -972,7 +1018,9 @@
                     <div class="list-info">
                         <div class="list-title">${escapeHtml(l.name)}</div>
                         <div class="list-sub">${escapeHtml(formatLocSubtitle(l))}${hasCoords ? '' : ' • ⚠ koordinat belum diisi'}</div>
-                        <div class="list-sub" style="font-family: monospace; font-size: 0.7rem; color: var(--primary); margin-top: 0.3rem;">QR: gdr:${escapeHtml(l.id)}</div>
+                        <div class="list-sub" style="font-family: monospace; font-size: 0.7rem; margin-top: 0.3rem;">
+    <span style="color: var(--primary); text-decoration: underline; cursor: pointer;" onclick="showQRCode('gdr:${escapeHtml(l.id)}')">📱 QR: gdr:${escapeHtml(l.id)}</span>
+</div>
                     </div>
                     <span class="badge badge-warning">Belum dicek</span>
                     <button class="btn btn-secondary btn-tiny" onclick="openEditLocationModal('${l.id}')">Edit</button>
@@ -991,7 +1039,9 @@
                     <div class="list-info">
                         <div class="list-title">${escapeHtml(l.name)}</div>
                         <div class="list-sub">${escapeHtml(formatLocSubtitle(l))}${hasCoords ? '' : ' • ⚠ koordinat belum diisi'}</div>
-                        <div class="list-sub" style="font-family: monospace; font-size: 0.7rem; color: var(--primary); margin-top: 0.3rem;">QR: gdr:${escapeHtml(l.id)}</div>
+                        <div class="list-sub" style="font-family: monospace; font-size: 0.7rem; margin-top: 0.3rem;">
+    <span style="color: var(--primary); text-decoration: underline; cursor: pointer;" onclick="showQRCode('gdr:${escapeHtml(l.id)}')">📱 QR: gdr:${escapeHtml(l.id)}</span>
+</div>
                     </div>
                     <span class="badge badge-success">Sudah dicek</span>
                     <button class="btn btn-secondary btn-tiny" onclick="openEditLocationModal('${l.id}')">Edit</button>
@@ -1012,7 +1062,7 @@
         const link = document.getElementById(prefix + 'LocLink').value.trim();
         const lat = parseFloat(document.getElementById(prefix + 'LocLat').value);
         const lng = parseFloat(document.getElementById(prefix + 'LocLng').value);
-        const radius = parseInt(document.getElementById(prefix + 'LocRadius').value, 10) || 50;
+        const radius = parseInt(document.getElementById(prefix + 'LocRadius').value, 10) || 20;
         return { name, id, address, link, lat, lng, radius };
     }
 
@@ -1043,7 +1093,7 @@
         document.getElementById('newLocLink').value = '';
         document.getElementById('newLocLat').value = '';
         document.getElementById('newLocLng').value = '';
-        document.getElementById('newLocRadius').value = '50';
+        document.getElementById('newLocRadius').value = '20';
         showToast('Titik patroli berhasil ditambahkan');
         await renderAdminLocations();
     }
@@ -1167,5 +1217,19 @@
         showToast('PIN Admin berhasil diubah');
     }
 </script>
+    <!-- Modal untuk menampilkan QR Code -->
+<div id="qrModal" class="modal" style="display: none;">
+    <div class="modal-card" style="text-align: center;">
+        <div class="card-title" style="margin-bottom: 1rem;">📱 QR Code Patroli</div>
+        <div id="qrCodeContainer" style="display: flex; justify-content: center; margin: 1rem 0;"></div>
+        <div style="font-size: 0.85rem; word-break: break-all; background: var(--bg); padding: 0.5rem; border-radius: 8px; margin-bottom: 1rem;">
+            <strong>Kode:</strong> <span id="qrCodeText"></span>
+        </div>
+        <div class="modal-buttons" style="grid-template-columns: 1fr 1fr;">
+            <button class="btn btn-primary" id="downloadQrBtn">💾 Simpan QR</button>
+            <button class="btn btn-secondary" onclick="closeQrModal()">Tutup</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
