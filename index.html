@@ -614,7 +614,10 @@
             document.getElementById(prefix+'LocLat').value=coords.lat;
             document.getElementById(prefix+'LocLng').value=coords.lng;
             if(statusEl){ statusEl.textContent=`✓ Koordinat terisi (${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)})`; statusEl.style.color='var(--success)'; }
-        } else if(statusEl){ statusEl.textContent='Gagal baca link. Isi Lat/Lng manual.'; statusEl.style.color='var(--danger)'; }
+        } else if (statusEl) {
+            statusEl.innerHTML = '⚠️ Link pendek tidak bisa dibaca otomatis. <strong>Cara manual:</strong> Buka link di browser → copy URL panjang dari address bar → paste lagi. Atau isi Lat/Lng manual.';
+            statusEl.style.color = 'var(--warning)';
+}
     }
     async function addLocation(){
         const data=readLocationForm('new');
