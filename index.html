@@ -203,7 +203,7 @@
                 <div id="successScanDetail" class="alert alert-success mt-3 small">Memuat detail...</div>
             </div>
             <div class="modal-footer justify-content-center border-0 pb-4">
-                <button type="button" class="btn btn-primary px-4 py-2" id="btnSiapClose"><i class="bi bi-hand-thumbs-up me-2"></i>Siap</button>
+                <button type="button" class="btn btn-primary px-4 py-2" id="btnSiapClose" data-bs-dismiss="modal"><i class="bi bi-hand-thumbs-up me-2"></i>Siap</button>
             </div>
         </div>
     </div>
@@ -461,7 +461,6 @@
         container.innerHTML=todayScans.slice().reverse().map(s=>`<div class="list-group-item list-group-item-custom d-flex align-items-center"><div><i class="bi bi-check-circle-fill text-success me-2"></i></div><div><strong>${s.locName}</strong><br><small>${s.time} • Jarak: ${s.distance}m • ${s.status}</small></div></div>`).join(''); 
     }
     
-    // Tampilkan modal sukses
     function showSuccessModal(scanData) {
         const detailEl = document.getElementById('successScanDetail');
         const statusText = scanData.status === 'valid' ? '✅ Valid (dalam radius)' : '⚠️ Luar Zona';
@@ -474,7 +473,6 @@
         if (successModal) successModal.show();
     }
 
-    // SCAN QR
     function startScan() { 
         if(!currentPosition){ showToast('GPS belum aktif. Tekan "Refresh GPS" dulu.'); return; } 
         if(isProcessingScan) { showToast('Sedang memproses scan sebelumnya'); return; }
@@ -499,7 +497,7 @@
                         }
                     }, 
                     (errorMessage)=>{ 
-                        // ignore frequent errors
+                        // ignore
                     }
                 ).catch((err)=>{ 
                     console.error('Start scanner error', err);
@@ -569,16 +567,14 @@
             if(ok){ 
                 todayScans.push(newScan); 
                 renderHistory(); 
-                // Tampilkan modal sukses
                 showSuccessModal(newScan);
-                // Setelah modal ditutup (tombol Siap), kembali ke home
+                // Setelah modal ditutup, panggil stopScan
                 const modalElement = document.getElementById('successScanModal');
-                const handleModalHidden = function() {
-                    modalElement.removeEventListener('hidden.bs.modal', handleModalHidden);
-                    stopScan(); // akan panggil showPage('homePage')
+                const handleHidden = function() {
+                    modalElement.removeEventListener('hidden.bs.modal', handleHidden);
+                    stopScan();
                 };
-                modalElement.addEventListener('hidden.bs.modal', handleModalHidden);
-                // Jika tombol Siap (dengan data-bs-dismiss) ditekan, modal akan tertutup dan event di atas dijalankan.
+                modalElement.addEventListener('hidden.bs.modal', handleHidden);
             } else {
                 showToast('Gagal menyimpan data patroli');
                 isProcessingScan=false;
@@ -802,7 +798,6 @@
         await loadGuards(); 
         await loadLocations(); 
         successModal = new bootstrap.Modal(document.getElementById('successScanModal'));
-        // Pastikan tombol Siap hanya menutup modal (tidak perlu event tambahan lagi)
     });
 </script>
 </body>
