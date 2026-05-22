@@ -147,7 +147,14 @@
             cursor: pointer;
         }
 
-        /* ========= FOOTER FIXED DI BAWAH LAYAR ========= */
+        /* Fix Bootstrap Icons font */
+        @font-face {
+            font-family: "bootstrap-icons";
+            src: url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/fonts/bootstrap-icons.woff2") format("woff2"),
+                 url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/fonts/bootstrap-icons.woff") format("woff");
+        }
+
+        /* Footer fixed di bawah */
         .page {
             display: none;
             flex-direction: column;
@@ -179,12 +186,32 @@
         .page .container {
             padding-bottom: 3rem;
         }
-        /* ================================================ */
     </style>
 </head>
 <body>
 
 <div id="toast" class="toast-custom"></div>
+
+<!-- MODAL SUKSES SCAN -->
+<div class="modal fade" id="successScanModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title w-100 text-center fw-bold"><i class="bi bi-check-circle-fill me-2"></i>Patroli Berhasil!</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="bi bi-emoji-smile-fill text-primary display-1"></i>
+                <h3 class="mt-3 fw-bold">Terima Kasih!</h3>
+                <p class="mt-2">Anda telah melakukan patroli dengan baik.</p>
+                <div id="successScanDetail" class="alert alert-success mt-3 small">Memuat detail...</div>
+            </div>
+            <div class="modal-footer justify-content-center border-0 pb-4">
+                <button type="button" class="btn btn-primary px-4 py-2" id="btnSiapClose" data-bs-dismiss="modal"><i class="bi bi-hand-thumbs-up me-2"></i>Siap</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- MODAL EDIT LOKASI -->
 <div id="editLocationModal" class="modal fade" tabindex="-1" data-bs-backdrop="static">
@@ -243,20 +270,6 @@
                 <div id="qrCodeContainer" class="d-flex justify-content-center my-3"></div>
                 <div class="alert alert-secondary small"><strong>Kode:</strong> <span id="qrCodeText" class="font-monospace"></span></div>
                 <button class="btn btn-primary w-100" id="downloadQrBtn"><i class="bi bi-download"></i> Simpan QR</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL POPUP SETELAH SCAN BERHASIL -->
-<div id="scanSuccessModal" class="modal fade" tabindex="-1" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-center p-3">
-            <div class="modal-body">
-                <i class="bi bi-check-circle-fill text-success display-1"></i>
-                <h4 class="fw-bold mt-3">Terima Kasih!</h4>
-                <p id="scanSuccessMessage" class="text-secondary">Patroli berhasil dicatat.</p>
-                <button type="button" class="btn btn-primary w-100 py-2 mt-3" data-bs-dismiss="modal">Siap</button>
             </div>
         </div>
     </div>
@@ -394,7 +407,7 @@
     const DEFAULT_LOCATIONS = [{ id: 'gate1utama', name: 'Gate 1 Utama', address: 'JL. Palm', lat: -6.4012, lng: 106.7885, radius: 20 },{ id: 'gate2', name: 'Gate 2', address: 'JL. Camelia', lat: -6.4025, lng: 106.7860, radius: 20 },{ id: 'gate3rawakalong', name: 'Gate 3 Rawa Kalong', address: 'JL. Asoka 1', lat: -6.4040, lng: 106.7845, radius: 20 },{ id: 'poskeamanantengah', name: 'Pos Keamanan Tengah', address: 'JL. Bougenville', lat: -6.4005, lng: 106.7865, radius: 20 },{ id: 'lapanganbadminton', name: 'Lapangan Badminton GDR', address: 'JL. Anggrek', lat: -6.3990, lng: 106.7870, radius: 20 },{ id: 'cherry1', name: 'JL. Cherry 1 / Pojok Barat', address: 'Cherry 1', lat: -6.4035, lng: 106.7830, radius: 20 },{ id: 'lavender', name: 'JL. Lavender / Area Selatan', address: 'JL. Lavender', lat: -6.4060, lng: 106.7860, radius: 20 },{ id: 'edelweiss', name: 'JL. Edelweiss / Pojok Timur', address: 'JL. Edelweiss', lat: -6.3995, lng: 106.7910, radius: 20 }];
 
     let GUARDS = [], LOCATIONS = [], currentUser = null, currentPosition = null, scanner = null, todayScans = [], watchId = null, isProcessingScan = false, gpsSearching = false;
-    let scanSuccessModal = null;
+    let successModal = null; // akan diisi setelah DOM ready
 
     function showToast(msg) { let t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
     function showPage(pageId) { 
@@ -452,6 +465,19 @@
         container.innerHTML=todayScans.slice().reverse().map(s=>`<div class="list-group-item list-group-item-custom d-flex align-items-center"><div><i class="bi bi-check-circle-fill text-success me-2"></i></div><div><strong>${s.locName}</strong><br><small>${s.time} • Jarak: ${s.distance}m • ${s.status}</small></div></div>`).join(''); 
     }
     
+    function showSuccessModal(scanData) {
+        const detailEl = document.getElementById('successScanDetail');
+        const statusText = scanData.status === 'valid' ? '✅ Valid (dalam radius)' : '⚠️ Luar Zona';
+        detailEl.innerHTML = `
+            <strong>Lokasi:</strong> ${escapeHtml(scanData.locName)}<br>
+            <strong>Jarak:</strong> ${scanData.distance} meter<br>
+            <strong>Status:</strong> ${statusText}<br>
+            <strong>Waktu:</strong> ${scanData.time}
+        `;
+        if (successModal) successModal.show();
+    }
+
+    // Perbaikan fungsi startScan
     function startScan() { 
         if(!currentPosition){ showToast('GPS belum aktif. Tekan "Refresh GPS" dulu.'); return; } 
         if(isProcessingScan) { showToast('Sedang memproses scan sebelumnya'); return; }
@@ -546,27 +572,16 @@
             if(ok){ 
                 todayScans.push(newScan); 
                 renderHistory(); 
-                // Tampilkan modal sukses dengan pesan sesuai status
-                let successMsg = (status === 'valid') 
-                    ? `✓ Patroli Valid di ${lokasiTujuan.name} (${Math.round(jarakMeter)}m dari titik patroli)`
-                    : `⚠️ Luar Zona! Jarak ${Math.round(jarakMeter)}m > ${radiusIzinkan}m dari ${lokasiTujuan.name}`;
-                document.getElementById('scanSuccessMessage').innerText = successMsg;
-                if (scanSuccessModal) {
-                    scanSuccessModal.show();
-                } else {
-                    // Fallback jika modal belum diinisialisasi
-                    const modalEl = document.getElementById('scanSuccessModal');
-                    scanSuccessModal = new bootstrap.Modal(modalEl);
-                    scanSuccessModal.show();
-                }
-                // Jangan langsung stopScan, biarkan modal muncul, setelah modal ditutup baru balik ke home
-                // Kita akan set listener sekali untuk menutup modal dan kembali
-                const modalElement = document.getElementById('scanSuccessModal');
-                const handleModalHidden = () => {
-                    stopScan();
-                    modalElement.removeEventListener('hidden.bs.modal', handleModalHidden);
-                };
-                modalElement.addEventListener('hidden.bs.modal', handleModalHidden);
+                // Tampilkan modal sukses
+                showSuccessModal(newScan);
+                // Tidak perlu stopScan di sini, modal akan menutup dan kita panggil stopScan setelah modal ditutup
+                // Tapi kita harus menunggu modal closed untuk kembali ke home.
+                // Karena tombol "Siap" sudah menutup modal, kita tambahkan event listener sekali
+                const modalEl = document.getElementById('successScanModal');
+                modalEl.addEventListener('hidden.bs.modal', function onHidden() {
+                    modalEl.removeEventListener('hidden.bs.modal', onHidden);
+                    stopScan(); // kembali ke home page setelah modal tertutup
+                }, { once: true });
             } else {
                 showToast('Gagal menyimpan data patroli');
                 isProcessingScan=false;
@@ -577,7 +592,6 @@
             isProcessingScan=false;
             stopScan();
         }
-        // Reset flag setelah proses selesai (tapi stopScan akan dipanggil dari modal hidden)
     }
     
     function logout(){ 
@@ -790,11 +804,12 @@
     window.addEventListener('DOMContentLoaded', async()=>{ 
         await loadGuards(); 
         await loadLocations(); 
-        // Inisialisasi modal sukses scan
-        const modalEl = document.getElementById('scanSuccessModal');
-        if (modalEl) {
-            scanSuccessModal = new bootstrap.Modal(modalEl);
-        }
+        successModal = new bootstrap.Modal(document.getElementById('successScanModal'));
+        // Pastikan tombol Siap juga menutup modal dan kembali ke home (sudah ada data-bs-dismiss)
+        // Event listener tambahan jika diperlukan
+        document.getElementById('btnSiapClose').addEventListener('click', function() {
+            // sudah ada data-bs-dismiss, hanya fallback
+        });
     });
 </script>
 </body>
