@@ -378,7 +378,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // ==================== SUPABASE ====================
+        // ==================== SUPABASE ====================
     const SUPABASE_URL = 'https://ygvlxcnsdmdaggceeyew.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlndmx4Y25zZG1kYWdnY2VleWV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwOTA5MTIsImV4cCI6MjA5NDY2NjkxMn0.wl9ZC8DyUWfOf-zHJmhEy85wOaCljc7VYGkYI1Fwy8I';
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -395,7 +395,7 @@
         window.scrollTo(0,0); 
         if(pageId === 'dashboardPage' && currentUser?.role === 'admin') {
             refreshAdminDashboard();
-            updateDashboardHeader(); // update header dashboard
+            updateDashboardHeader();
         }
         if(pageId === 'homePage' && currentUser?.role === 'guard') {
             initHome(); 
@@ -405,7 +405,12 @@
     function cleanLocId(name) { return name.toLowerCase().replace(/[^a-z0-9]/g, ''); }
     function formatLocSubtitle(loc) { if (loc.address && !/^https?:\/\//i.test(loc.address)) return loc.address; return 'gdr:' + loc.id + ' • radius ' + (loc.radius || 20) + 'm'; }
     function hitungJarak(lat1, lon1, lat2, lon2) { const R=6371e3; const φ1=lat1*Math.PI/180, φ2=lat2*Math.PI/180, Δφ=(lat2-lat1)*Math.PI/180, Δλ=(lon2-lon1)*Math.PI/180; const a=Math.sin(Δφ/2)**2+Math.cos(φ1)*Math.cos(φ2)*Math.sin(Δλ/2)**2; const c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)); return R*c; }
-    function cleanupScanner() { if(!scanner) return Promise.resolve(); const active=scanner; scanner=null; return active.stop().then(()=>active.clear()).catch(()=>{}); }
+    function cleanupScanner() { 
+        if(!scanner) return Promise.resolve(); 
+        const active=scanner; 
+        scanner=null; 
+        return active.stop().then(()=>active.clear()).catch((err)=>{ console.warn('Cleanup error', err); }); 
+    }
     function updateScanButtonState() { const btn=document.getElementById('btnScanQr'); if(btn) btn.disabled = !(!!currentPosition && !gpsSearching); }
     function requestLocationPermission() { if(navigator.geolocation) refreshGPS(); else showToast('Browser tidak mendukung GPS'); }
     function refreshGPS() { const statusDiv=document.getElementById('homeGpsStatus'), textSpan=document.getElementById('homeGpsText'), debugDiv=document.getElementById('gpsDebug'); statusDiv.className='gps-status'; textSpan.textContent='Mencari GPS...'; if(debugDiv) debugDiv.textContent=''; if(!navigator.geolocation) { textSpan.textContent='GPS tidak didukung'; statusDiv.classList.add('error'); updateScanButtonState(); return; } if(watchId) { navigator.geolocation.clearWatch(watchId); watchId=null; } gpsSearching=true; updateScanButtonState(); const tryGet=(high,onFail)=>{ navigator.geolocation.getCurrentPosition(pos=>{ gpsSearching=false; onGPSSuccess(pos,statusDiv,textSpan,debugDiv); }, err=>{ if(!high){ tryGet(true,onFail); } else { gpsSearching=false; onFail(err); } }, high ? { enableHighAccuracy:true, timeout:25000, maximumAge:0 } : { enableHighAccuracy:false, timeout:15000, maximumAge:120000 }); }; tryGet(false, (error)=>handleGPSError(error,statusDiv,textSpan,debugDiv)); }
@@ -414,7 +419,7 @@
     function handleGPSError(error,statusDiv,textSpan,debugDiv){ let pesan=''; switch(error.code){ case 1: pesan='Izin lokasi ditolak'; break; case 2: pesan='GPS mati'; break; case 3: pesan='GPS timeout'; break; default: pesan='GPS gagal'; } textSpan.textContent=pesan; statusDiv.className='gps-status error'; if(debugDiv) debugDiv.textContent=''; showToast(pesan); updateScanButtonState(); }
     async function loadGuards() { const { data, error } = await sb.from('guards').select('*'); if (error || !data || data.length === 0) { GUARDS = [...DEFAULT_GUARDS]; } else { GUARDS = data; } }
     async function loadLocations() { const { data, error } = await sb.from('locations').select('*'); if (error || !data || data.length === 0) { LOCATIONS = [...DEFAULT_LOCATIONS]; } else { LOCATIONS = data; } }
-    async function dbInsertScan(scan) { const row = { guard_id: scan.guardId, guard_name: scan.guardName, loc_id: scan.locId, loc_name: scan.locName, time: scan.time, timestamp: scan.timestamp, status: scan.status, distance: scan.distance, scan_date: dateKeyLocal() }; const { error } = await sb.from('scans').insert([row]); if (error) { showToast('Gagal simpan'); return false; } return true; }
+    async function dbInsertScan(scan) { const row = { guard_id: scan.guardId, guard_name: scan.guardName, loc_id: scan.locId, loc_name: scan.locName, time: scan.time, timestamp: scan.timestamp, status: scan.status, distance: scan.distance, scan_date: dateKeyLocal() }; const { error } = await sb.from('scans').insert([row]); if (error) { showToast('Gagal simpan scan: '+error.message); return false; } return true; }
     async function dbGetScansToday() { const { data, error } = await sb.from('scans').select('*').eq('scan_date', dateKeyLocal()); if (error) return []; return (data || []).map(r => ({ guardId: r.guard_id, guardName: r.guard_name, locId: r.loc_id, locName: r.loc_name, time: r.time, timestamp: r.timestamp, status: r.status, distance: r.distance })); }
     function dateKeyLocal(d = new Date()) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
     
@@ -439,46 +444,122 @@
         container.innerHTML=todayScans.slice().reverse().map(s=>`<div class="list-group-item list-group-item-custom d-flex align-items-center"><div><i class="bi bi-check-circle-fill text-success me-2"></i></div><div><strong>${s.locName}</strong><br><small>${s.time} • Jarak: ${s.distance}m • ${s.status}</small></div></div>`).join(''); 
     }
     
+    // PERBAIKAN FUNGSI SCAN QR
     function startScan() { 
-        if(!currentPosition){ showToast('GPS belum aktif'); return; } 
+        if(!currentPosition){ showToast('GPS belum aktif. Tekan "Refresh GPS" dulu.'); return; } 
+        if(isProcessingScan) { showToast('Sedang memproses scan sebelumnya'); return; }
         isProcessingScan=false; 
         showPage('scanPage'); 
         cleanupScanner().finally(()=>{ 
-            scanner=new Html5Qrcode('scannerContainer'); 
-            scanner.start({ facingMode:'environment' }, { fps:10, qrbox:{ width:250, height:250 } }, 
-                (text)=>{ if(isProcessingScan) return; isProcessingScan=true; if(scanner) scanner.stop().then(()=>processQR(text)).catch(()=>processQR(text)); }, 
-                ()=>{} 
-            ).catch(()=>{ showToast('Kamera tidak tersedia'); stopScan(); }); 
+            try {
+                scanner=new Html5Qrcode('scannerContainer'); 
+                scanner.start({ facingMode:'environment' }, { fps:10, qrbox:{ width:250, height:250 } }, 
+                    (decodedText, decodedResult)=>{ 
+                        if(isProcessingScan) return; 
+                        isProcessingScan=true; 
+                        // Hentikan scanner segera setelah berhasil scan
+                        if(scanner) {
+                            scanner.stop().then(()=>{
+                                processQR(decodedText);
+                            }).catch((err)=>{
+                                console.error('Stop scanner error', err);
+                                processQR(decodedText);
+                            });
+                        } else {
+                            processQR(decodedText);
+                        }
+                    }, 
+                    (errorMessage)=>{ 
+                        // Abaikan error scanning biasa, hanya log jika penting
+                        // console.log(errorMessage);
+                    }
+                ).catch((err)=>{ 
+                    console.error('Start scanner error', err);
+                    showToast('Kamera tidak tersedia atau error: '+err.message); 
+                    stopScan(); 
+                }); 
+            } catch(e) {
+                showToast('Gagal memulai kamera: '+e.message);
+                stopScan();
+            }
         }); 
     }
     
-    function stopScan() { isProcessingScan=false; cleanupScanner().finally(()=>showPage('homePage')); }
+    function stopScan() { 
+        isProcessingScan=false; 
+        cleanupScanner().finally(()=>{
+            // Kembali ke halaman home hanya jika masih di halaman scan
+            if(document.getElementById('scanPage').classList.contains('active')) {
+                showPage('homePage');
+            }
+        }); 
+    }
     
     async function processQR(text){ 
-        if(isProcessingScan) return; 
-        isProcessingScan=true; 
-        const failScan=(msg)=>{ isProcessingScan=false; showToast(msg); setTimeout(()=>{ if(document.getElementById('scanPage').classList.contains('active')) stopScan(); },1500); }; 
-        if(!text || !text.startsWith('gdr:')){ failScan('QR tidak valid'); return; } 
-        let locId=text.substring(4); 
+        if(!text) {
+            showToast('QR code tidak terbaca, coba lagi');
+            isProcessingScan=false;
+            return;
+        }
+        console.log('QR terdeteksi:', text);
+        const failScan=(msg)=>{ 
+            showToast(msg); 
+            isProcessingScan=false; 
+            // Jangan otomatis stopScan di sini, biarkan user scan ulang
+        }; 
+        if(!text || !text.startsWith('gdr:')){ 
+            failScan('QR tidak valid! Gunakan QR dari menu admin (format gdr:...).'); 
+            return; 
+        } 
+        let locId=text.substring(4).trim(); 
         let lokasiTujuan=LOCATIONS.find(l=>l.id===locId); 
-        if(!lokasiTujuan){ failScan(`Lokasi tidak terdaftar`); return; } 
-        if(!lokasiTujuan.lat || !lokasiTujuan.lng){ failScan('Koordinat belum diatur'); return; } 
-        if(!currentPosition){ failScan('GPS belum siap'); return; } 
+        if(!lokasiTujuan){ 
+            failScan(`Lokasi "${locId}" tidak terdaftar di sistem.`); 
+            return; 
+        } 
+        if(!lokasiTujuan.lat || !lokasiTujuan.lng){ 
+            failScan('Koordinat lokasi belum diatur. Hubungi admin.'); 
+            return; 
+        } 
+        if(!currentPosition){ 
+            failScan('GPS belum siap. Refresh GPS dan coba lagi.'); 
+            return; 
+        } 
         let jarakMeter=hitungJarak(currentPosition.lat, currentPosition.lng, lokasiTujuan.lat, lokasiTujuan.lng); 
         let radiusIzinkan=lokasiTujuan.radius||20; 
         let status=(jarakMeter<=radiusIzinkan)?'valid':'Luar Zona'; 
-        let newScan={ guardId:currentUser.id, guardName:currentUser.name, locId:lokasiTujuan.id, locName:lokasiTujuan.name, time:new Date().toLocaleTimeString('id-ID',{hour:'2-digit', minute:'2-digit'}), timestamp:Date.now(), status:status, distance:Math.round(jarakMeter) }; 
-        const ok=await dbInsertScan(newScan); 
-        if(ok){ todayScans.push(newScan); renderHistory(); } 
-        showToast(status==='valid'?`Patroli Valid (${Math.round(jarakMeter)}m)`:`Luar Zona! ${Math.round(jarakMeter)}m > ${radiusIzinkan}m`); 
+        let newScan={ 
+            guardId:currentUser.id, 
+            guardName:currentUser.name, 
+            locId:lokasiTujuan.id, 
+            locName:lokasiTujuan.name, 
+            time:new Date().toLocaleTimeString('id-ID',{hour:'2-digit', minute:'2-digit'}), 
+            timestamp:Date.now(), 
+            status:status, 
+            distance:Math.round(jarakMeter) 
+        }; 
+        try {
+            const ok=await dbInsertScan(newScan); 
+            if(ok){ 
+                todayScans.push(newScan); 
+                renderHistory(); 
+                showToast(status==='valid'?`✓ Patroli Valid (${Math.round(jarakMeter)}m)`:`⚠️ Luar Zona! ${Math.round(jarakMeter)}m > ${radiusIzinkan}m`); 
+            } else {
+                showToast('Gagal menyimpan data patroli');
+            }
+        } catch(e) {
+            showToast('Error: '+e.message);
+        }
         isProcessingScan=false; 
-        stopScan(); 
+        // Kembali ke halaman home setelah scan berhasil/gagal
+        stopScan();
     }
     
     function logout(){ 
         currentUser=null; 
         if(watchId){ navigator.geolocation.clearWatch(watchId); watchId=null; } 
-        currentPosition=null; gpsSearching=false; cleanupScanner(); 
+        currentPosition=null; gpsSearching=false; 
+        cleanupScanner(); 
         showPage('loginPage'); 
     }
     
