@@ -146,15 +146,11 @@
         .cursor-pointer {
             cursor: pointer;
         }
-
-        /* Fix Bootstrap Icons font */
         @font-face {
             font-family: "bootstrap-icons";
             src: url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/fonts/bootstrap-icons.woff2") format("woff2"),
                  url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/fonts/bootstrap-icons.woff") format("woff");
         }
-
-        /* Footer fixed di bawah */
         .page {
             display: none;
             flex-direction: column;
@@ -207,7 +203,7 @@
                 <div id="successScanDetail" class="alert alert-success mt-3 small">Memuat detail...</div>
             </div>
             <div class="modal-footer justify-content-center border-0 pb-4">
-                <button type="button" class="btn btn-primary px-4 py-2" id="btnSiapClose" data-bs-dismiss="modal"><i class="bi bi-hand-thumbs-up me-2"></i>Siap</button>
+                <button type="button" class="btn btn-primary px-4 py-2" id="btnSiapClose"><i class="bi bi-hand-thumbs-up me-2"></i>Siap</button>
             </div>
         </div>
     </div>
@@ -407,7 +403,7 @@
     const DEFAULT_LOCATIONS = [{ id: 'gate1utama', name: 'Gate 1 Utama', address: 'JL. Palm', lat: -6.4012, lng: 106.7885, radius: 20 },{ id: 'gate2', name: 'Gate 2', address: 'JL. Camelia', lat: -6.4025, lng: 106.7860, radius: 20 },{ id: 'gate3rawakalong', name: 'Gate 3 Rawa Kalong', address: 'JL. Asoka 1', lat: -6.4040, lng: 106.7845, radius: 20 },{ id: 'poskeamanantengah', name: 'Pos Keamanan Tengah', address: 'JL. Bougenville', lat: -6.4005, lng: 106.7865, radius: 20 },{ id: 'lapanganbadminton', name: 'Lapangan Badminton GDR', address: 'JL. Anggrek', lat: -6.3990, lng: 106.7870, radius: 20 },{ id: 'cherry1', name: 'JL. Cherry 1 / Pojok Barat', address: 'Cherry 1', lat: -6.4035, lng: 106.7830, radius: 20 },{ id: 'lavender', name: 'JL. Lavender / Area Selatan', address: 'JL. Lavender', lat: -6.4060, lng: 106.7860, radius: 20 },{ id: 'edelweiss', name: 'JL. Edelweiss / Pojok Timur', address: 'JL. Edelweiss', lat: -6.3995, lng: 106.7910, radius: 20 }];
 
     let GUARDS = [], LOCATIONS = [], currentUser = null, currentPosition = null, scanner = null, todayScans = [], watchId = null, isProcessingScan = false, gpsSearching = false;
-    let successModal = null; // akan diisi setelah DOM ready
+    let successModal = null;
 
     function showToast(msg) { let t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
     function showPage(pageId) { 
@@ -465,6 +461,7 @@
         container.innerHTML=todayScans.slice().reverse().map(s=>`<div class="list-group-item list-group-item-custom d-flex align-items-center"><div><i class="bi bi-check-circle-fill text-success me-2"></i></div><div><strong>${s.locName}</strong><br><small>${s.time} • Jarak: ${s.distance}m • ${s.status}</small></div></div>`).join(''); 
     }
     
+    // Tampilkan modal sukses
     function showSuccessModal(scanData) {
         const detailEl = document.getElementById('successScanDetail');
         const statusText = scanData.status === 'valid' ? '✅ Valid (dalam radius)' : '⚠️ Luar Zona';
@@ -477,7 +474,7 @@
         if (successModal) successModal.show();
     }
 
-    // Perbaikan fungsi startScan
+    // SCAN QR
     function startScan() { 
         if(!currentPosition){ showToast('GPS belum aktif. Tekan "Refresh GPS" dulu.'); return; } 
         if(isProcessingScan) { showToast('Sedang memproses scan sebelumnya'); return; }
@@ -502,7 +499,7 @@
                         }
                     }, 
                     (errorMessage)=>{ 
-                        // ignore
+                        // ignore frequent errors
                     }
                 ).catch((err)=>{ 
                     console.error('Start scanner error', err);
@@ -574,14 +571,14 @@
                 renderHistory(); 
                 // Tampilkan modal sukses
                 showSuccessModal(newScan);
-                // Tidak perlu stopScan di sini, modal akan menutup dan kita panggil stopScan setelah modal ditutup
-                // Tapi kita harus menunggu modal closed untuk kembali ke home.
-                // Karena tombol "Siap" sudah menutup modal, kita tambahkan event listener sekali
-                const modalEl = document.getElementById('successScanModal');
-                modalEl.addEventListener('hidden.bs.modal', function onHidden() {
-                    modalEl.removeEventListener('hidden.bs.modal', onHidden);
-                    stopScan(); // kembali ke home page setelah modal tertutup
-                }, { once: true });
+                // Setelah modal ditutup (tombol Siap), kembali ke home
+                const modalElement = document.getElementById('successScanModal');
+                const handleModalHidden = function() {
+                    modalElement.removeEventListener('hidden.bs.modal', handleModalHidden);
+                    stopScan(); // akan panggil showPage('homePage')
+                };
+                modalElement.addEventListener('hidden.bs.modal', handleModalHidden);
+                // Jika tombol Siap (dengan data-bs-dismiss) ditekan, modal akan tertutup dan event di atas dijalankan.
             } else {
                 showToast('Gagal menyimpan data patroli');
                 isProcessingScan=false;
@@ -805,11 +802,7 @@
         await loadGuards(); 
         await loadLocations(); 
         successModal = new bootstrap.Modal(document.getElementById('successScanModal'));
-        // Pastikan tombol Siap juga menutup modal dan kembali ke home (sudah ada data-bs-dismiss)
-        // Event listener tambahan jika diperlukan
-        document.getElementById('btnSiapClose').addEventListener('click', function() {
-            // sudah ada data-bs-dismiss, hanya fallback
-        });
+        // Pastikan tombol Siap hanya menutup modal (tidak perlu event tambahan lagi)
     });
 </script>
 </body>
