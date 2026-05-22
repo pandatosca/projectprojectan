@@ -188,7 +188,7 @@
 
 <div id="toast" class="toast-custom"></div>
 
-<!-- MODAL SUKSES SCAN -->
+<!-- MODAL SUKSES SCAN (dengan dua tombol) -->
 <div class="modal fade" id="successScanModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -202,14 +202,15 @@
                 <p class="mt-2">Anda telah melakukan patroli dengan baik.</p>
                 <div id="successScanDetail" class="alert alert-success mt-3 small">Memuat detail...</div>
             </div>
-            <div class="modal-footer justify-content-center border-0 pb-4">
-                <button type="button" class="btn btn-primary px-4 py-2" id="btnSiapClose" data-bs-dismiss="modal"><i class="bi bi-hand-thumbs-up me-2"></i>Siap</button>
+            <div class="modal-footer justify-content-center gap-3 border-0 pb-4">
+                <button type="button" class="btn btn-outline-primary px-4" id="btnScanLagi"><i class="bi bi-upc-scan me-2"></i>Scan Lagi</button>
+                <button type="button" class="btn btn-primary px-4" id="btnBeranda"><i class="bi bi-house-door me-2"></i>Beranda</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- MODAL EDIT LOKASI -->
+<!-- MODAL EDIT LOKASI (sama seperti sebelumnya) -->
 <div id="editLocationModal" class="modal fade" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -382,14 +383,19 @@
     <footer>© GDR127 • Admin Monitoring</footer>
 </div>
 
-<!-- SCAN PAGE -->
+<!-- SCAN PAGE (dengan tombol batal sudah ada, tapi kita tambahkan instruksi) -->
 <div class="page" id="scanPage">
     <nav class="navbar navbar-custom px-3 py-2 sticky-top d-flex justify-content-between">
         <span class="fw-bold text-primary"><i class="bi bi-upc-scan"></i> Scan QR</span>
         <button class="btn btn-sm btn-outline-secondary" onclick="stopScan()"><i class="bi bi-x-lg"></i> Batal</button>
     </nav>
-    <div class="container py-3"><div id="scannerContainer" style="width:100%; border-radius:1.5rem; overflow:hidden;"></div></div>
-    <footer>Arahkan kamera ke QR Code patroli</footer>
+    <div class="container py-3">
+        <div id="scannerContainer" style="width:100%; border-radius:1.5rem; overflow:hidden;"></div>
+        <div class="text-center mt-3 text-muted small">
+            <i class="bi bi-info-circle"></i> Arahkan kamera ke QR Code patroli
+        </div>
+    </div>
+    <footer>© GDR127 • Sistem Patroli</footer>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
@@ -404,6 +410,7 @@
 
     let GUARDS = [], LOCATIONS = [], currentUser = null, currentPosition = null, scanner = null, todayScans = [], watchId = null, isProcessingScan = false, gpsSearching = false;
     let successModal = null;
+    let lastScannedData = null; // untuk keperluan scan lagi
 
     function showToast(msg) { let t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
     function showPage(pageId) { 
@@ -461,6 +468,7 @@
         container.innerHTML=todayScans.slice().reverse().map(s=>`<div class="list-group-item list-group-item-custom d-flex align-items-center"><div><i class="bi bi-check-circle-fill text-success me-2"></i></div><div><strong>${s.locName}</strong><br><small>${s.time} • Jarak: ${s.distance}m • ${s.status}</small></div></div>`).join(''); 
     }
     
+    // Tampilkan modal sukses dengan dua tombol
     function showSuccessModal(scanData) {
         const detailEl = document.getElementById('successScanDetail');
         const statusText = scanData.status === 'valid' ? '✅ Valid (dalam radius)' : '⚠️ Luar Zona';
@@ -470,9 +478,17 @@
             <strong>Status:</strong> ${statusText}<br>
             <strong>Waktu:</strong> ${scanData.time}
         `;
+        lastScannedData = scanData; // simpan untuk scan lagi jika perlu
         if (successModal) successModal.show();
     }
 
+    // restart scanner (scan lagi)
+    async function restartScan() {
+        await cleanupScanner();
+        startScan(); // fungsi startScan akan membuka scanner lagi
+    }
+
+    // SCAN QR
     function startScan() { 
         if(!currentPosition){ showToast('GPS belum aktif. Tekan "Refresh GPS" dulu.'); return; } 
         if(isProcessingScan) { showToast('Sedang memproses scan sebelumnya'); return; }
@@ -567,23 +583,16 @@
             if(ok){ 
                 todayScans.push(newScan); 
                 renderHistory(); 
+                // Tampilkan modal sukses dengan dua tombol
                 showSuccessModal(newScan);
-                // Setelah modal ditutup, panggil stopScan
-                const modalElement = document.getElementById('successScanModal');
-                const handleHidden = function() {
-                    modalElement.removeEventListener('hidden.bs.modal', handleHidden);
-                    stopScan();
-                };
-                modalElement.addEventListener('hidden.bs.modal', handleHidden);
+                // Tidak langsung stopScan, biarkan modal terbuka, user pilih tombol
             } else {
                 showToast('Gagal menyimpan data patroli');
                 isProcessingScan=false;
-                stopScan();
             }
         } catch(e) {
             showToast('Error: '+e.message);
             isProcessingScan=false;
-            stopScan();
         }
     }
     
@@ -798,6 +807,18 @@
         await loadGuards(); 
         await loadLocations(); 
         successModal = new bootstrap.Modal(document.getElementById('successScanModal'));
+        // Tombol "Beranda" di modal
+        document.getElementById('btnBeranda').addEventListener('click', function() {
+            if (successModal) successModal.hide();
+            stopScan(); // kembali ke home
+        });
+        // Tombol "Scan Lagi" di modal
+        document.getElementById('btnScanLagi').addEventListener('click', function() {
+            if (successModal) successModal.hide();
+            // restart scanner tanpa keluar dari halaman scan
+            isProcessingScan = false;
+            restartScan();
+        });
     });
 </script>
 </body>
