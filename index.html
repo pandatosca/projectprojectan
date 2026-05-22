@@ -359,7 +359,7 @@
             <div class="input-group mb-3"><input type="text" id="newGuardName" class="form-control" placeholder="Nama Satpam"><button class="btn btn-primary" onclick="addGuard()"><i class="bi bi-person-plus"></i> Tambah</button></div>
             <div id="adminGuardsList"></div>
         </div></div>
-        <div class="card card-custom"><div class="card-body"><h5 class="fw-bold"><i class="bi bi-key-fill text-primary me-2"></i>Ganti PIN Admin</h5>
+        <div class="card card-custom mb-5"><div class="card-body"><h5 class="fw-bold"><i class="bi bi-key-fill text-primary me-2"></i>Ganti PIN Admin</h5>
             <div class="input-group"><input type="password" id="newAdminPin" class="form-control" maxlength="4" placeholder="PIN baru 4 digit"><button class="btn btn-primary" onclick="changeAdminPin()">Ganti</button></div>
         </div></div>
     </div>
@@ -539,8 +539,8 @@
         let progressHtml=guardsOnly.map(g=>{ 
             let guardScans=allScansToday.filter(s=>s.guardId===g.id); 
             let scannedLocs=new Set(guardScans.map(s=>s.locId)).size; 
-            let percent=LOCATIONS.length?Math.round((scannedLocs/LOCATIONS.length)*100):0; 
-            return `<div class="mb-2"><div class="d-flex justify-content-between"><span>${g.name}</span><span class="badge bg-primary rounded-pill">${scannedLocs}/${LOCATIONS.length}</span></div><div class="progress progress-thin"><div class="progress-bar" style="width:${percent}%"></div></div></div>`; 
+            let badgeClass = scannedLocs===0 ? 'bg-secondary' : scannedLocs===LOCATIONS.length ? 'bg-success' : 'bg-warning text-dark'; 
+            return `<div class="d-flex justify-content-between align-items-center py-2 border-bottom"><span class="fw-medium">${g.name}</span><span class="badge rounded-pill ${badgeClass}">${scannedLocs}/${LOCATIONS.length}</span></div>`; 
         }).join(''); 
         document.getElementById('adminProgressList').innerHTML=progressHtml; 
         await renderAdminLocations(); 
@@ -553,7 +553,7 @@
         const scannedToday=new Set(allScansToday.map(s=>s.locId)); 
         let html=''; 
         LOCATIONS.forEach(l=>{ 
-            html+=`<div class="border rounded-3 p-2 mb-2"><div class="d-flex justify-content-between align-items-start"><div><i class="bi bi-geo-alt-fill text-primary"></i> <strong>${escapeHtml(l.name)}</strong><br><small class="text-secondary">${escapeHtml(formatLocSubtitle(l))}</small><div class="mt-1"><span class="badge ${scannedToday.has(l.id)?'bg-success':'bg-warning'} me-2">${scannedToday.has(l.id)?'Sudah dicek':'Belum dicek'}</span><span class="text-primary small cursor-pointer" onclick="showQRCode('gdr:${escapeHtml(l.id)}')"><i class="bi bi-qr-code"></i> QR</span></div></div><div><button class="btn btn-sm btn-outline-secondary" onclick="openEditLocationModal('${l.id}')"><i class="bi bi-pencil"></i></button> <button class="btn btn-sm btn-outline-danger" onclick="deleteLocation('${l.id}')"><i class="bi bi-trash"></i></button></div></div></div>`; 
+            html+=`<div class="border rounded-3 p-2 mb-2"><div class="d-flex justify-content-between align-items-start"><div><i class="bi bi-geo-alt-fill text-primary"></i> <strong>${escapeHtml(l.name)}</strong><br><small class="text-secondary">${escapeHtml(formatLocSubtitle(l))}</small><div class="mt-1"><span class="badge ${scannedToday.has(l.id)?'bg-success':'bg-warning'} me-2">${scannedToday.has(l.id)?'Sudah dicek':'Belum dicek'}</span><span class="text-primary small cursor-pointer" onclick="showQRCode('gdr:${escapeHtml(l.id)}')"><i class="bi bi-qr-code"></i> QR</span></div></div><div class="d-flex gap-1 align-items-center"><button class="btn btn-sm btn-outline-secondary" onclick="openEditLocationModal('${l.id}')"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline-danger" onclick="deleteLocation('${l.id}')"><i class="bi bi-trash"></i></button></div></div></div>`; 
         }); 
         container.innerHTML=html||'<div class="text-muted">Belum ada titik</div>'; 
     }
@@ -641,7 +641,7 @@
     window.renderAdminGuards = ()=>{ 
         let container=document.getElementById('adminGuardsList'); 
         if(!container) return; 
-        container.innerHTML=GUARDS.filter(g=>g.role==='guard').map(g=>`<div class="d-flex justify-content-between align-items-center border rounded p-2 mb-2"><div><strong>${g.name}</strong><br><small>PIN: ${g.pin}</small></div><div><button class="btn btn-sm btn-outline-secondary" onclick="openEditGuardModal(${g.id})">Edit</button> <button class="btn btn-sm btn-outline-danger" onclick="deleteGuard(${g.id})">Hapus</button></div></div>`).join(''); 
+        container.innerHTML=GUARDS.filter(g=>g.role==='guard').map(g=>`<div class="d-flex justify-content-between align-items-center border rounded p-2 mb-2"><div><strong>${g.name}</strong><br><small>PIN: ${g.pin}</small></div><div class="d-flex gap-1"><button class="btn btn-sm btn-outline-secondary" onclick="openEditGuardModal(${g.id})"><i class="bi bi-pencil-fill"></i></button> <button class="btn btn-sm btn-outline-danger" onclick="deleteGuard(${g.id})"><i class="bi bi-trash-fill"></i></button></div></div>`).join(''); 
     };
     window.openEditGuardModal = (id)=>{ 
         let g=GUARDS.find(g=>g.id===id); 
